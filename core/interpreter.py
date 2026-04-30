@@ -6,6 +6,10 @@ from .exceptions import StateChangeException
 class InterpreterError(Exception):
     pass
 
+class ReturnException(Exception):
+    def __init__(self, value: Any):
+        self.value = value
+
 class ExecutionContext:
     def __init__(self, globals: Dict[str, Any] = None):
         self.globals = globals if globals is not None else {}
@@ -135,13 +139,33 @@ class Evaluator:
 
     def eval_FuncCallExpr(self, node: FuncCallExpr):
         args = [self.evaluate(a) for a in node.args]
+        # print(f"DEBUG [Call]: {node.name}({', '.join(map(str, args))})")
         if node.name == "llSetTimerEvent":
             if self.script:
                 self.script.timer_interval = float(args[0])
                 self.script.last_timer_fire = 0.0
             return None
         if node.name == "llSay":
-            print(f"DEBUG [llSay]: Channel {args[0]}: {args[1]}")
+            if self.script and self.script.container_prim and self.script.container_prim.parent_object and self.script.container_prim.parent_object.region:
+                sender_uuid = self.script.container_prim.uuid
+                sender_name = self.script.container_prim.name
+                self.script.container_prim.parent_object.region.broadcast_chat(sender_uuid, sender_name, int(args[0]), str(args[1]))
+            else:
+                print(f"DEBUG [llSay]: Channel {args[0]}: {args[1]}")
+            return None
+        if node.name == "llListen":
+            if self.script:
+                from sim.prim import Listener
+                handle = self.script.next_listener_handle
+                self.script.listeners[handle] = Listener(int(args[0]), str(args[1]), str(args[2]), str(args[3]))
+                self.script.next_listener_handle += 1
+                return handle
+            return 0
+        if node.name == "llListenRemove":
+            if self.script:
+                handle = int(args[0])
+                if handle in self.script.listeners:
+                    del self.script.listeners[handle]
             return None
         raise InterpreterError(f"Unknown function: {node.name}")
 
@@ -201,11 +225,40 @@ class Evaluator:
                 raise InterpreterError("Complex component assignment not yet supported")
         return value
 
+    def exec_IfStmt(self, node: IfStmt):
+        condition = self.evaluate(node.condition)
+        if bool(condition):
+            self.execute(node.then_branch)
+        elif node.else_branch:
+            self.execute(node.else_branch)
+
+    def exec_WhileStmt(self, node: WhileStmt):
+        while bool(self.evaluate(node.condition)):
+            self.execute(node.body)
+
+    def exec_ForStmt(self, node: ForStmt):
+        self.ctx.push_frame()
+        for stmt in node.init:
+            self.execute(stmt)
+        while node.condition is None or bool(self.evaluate(node.condition)):
+            self.execute(node.body)
+            for expr in node.update:
+                self.evaluate(expr)
+        self.ctx.pop_frame()
+
+    def exec_ReturnStmt(self, node: ReturnStmt):
+        val = None
+        if node.value:
+            val = self.evaluate(node.value)
+        raise ReturnException(val)
+
     def exec_BlockStmt(self, node: BlockStmt):
         self.ctx.push_frame()
-        for stmt in node.statements:
-            self.execute(stmt)
-        self.ctx.pop_frame()
+        try:
+            for stmt in node.statements:
+                self.execute(stmt)
+        finally:
+            self.ctx.pop_frame()
 
     def exec_StateChangeStmt(self, node: StateChangeStmt):
         raise StateChangeException(node.state_name)

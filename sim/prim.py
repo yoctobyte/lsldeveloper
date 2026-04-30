@@ -37,5 +37,21 @@ class ScriptItem(InventoryItem):
         self.ast = None # Script AST
         self.timer_interval = 0.0
         self.last_timer_fire = 0.0
+        self.listeners: Dict[int, 'Listener'] = {}
+        self.next_listener_handle = 1
+
+class Listener:
+    def __init__(self, channel: int, name: str, key: str, message: str):
+        self.channel = channel
+        self.name = name # Filter by sender name
+        self.key = key   # Filter by sender key
+        self.message = message # Filter by message content
+
+    def matches(self, channel: int, name: str, key: str, message: str) -> bool:
+        if self.channel != channel: return False
+        if self.name and self.name != name: return False
+        if self.key and self.key != key: return False
+        if self.message and self.message != message: return False
+        return True
 
 from events.queue import EventQueue
