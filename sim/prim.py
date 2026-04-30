@@ -28,7 +28,14 @@ class InventoryItem:
 
 class ScriptItem(InventoryItem):
     def __init__(self, name: str, source: str):
-        super().__init__(name, 10) # 10 is LSL script type
+        super().__init__(name, 10)
         self.source = source
         self.running = False
-        self.context: Any = None # To be linked to Interpreter context
+        self.current_state = "default"
+        self.event_queue = EventQueue()
+        self.ctx = None # ExecutionContext
+        self.ast = None # Script AST
+        self.timer_interval = 0.0
+        self.last_timer_fire = 0.0
+
+from events.queue import EventQueue
