@@ -1,5 +1,7 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List
 from .ast_nodes import *
+from .builtins.runtime import UNHANDLED, call_builtin
+from .lslconstants import default_globals
 from .types import LSLVector, LSLRotation, LSLList, cast_to_lsl_type, NULL_KEY
 from .exceptions import StateChangeException
 
@@ -10,9 +12,15 @@ class ReturnException(Exception):
     def __init__(self, value: Any):
         self.value = value
 
+class JumpException(Exception):
+    def __init__(self, label: str):
+        self.label = label
+
 class ExecutionContext:
     def __init__(self, globals: Dict[str, Any] = None):
-        self.globals = globals if globals is not None else {}
+        self.globals = default_globals()
+        if globals is not None:
+            self.globals.update(globals)
         self.stack: List[Dict[str, Any]] = [] # For local variables
 
     def get_var(self, name: str) -> Any:
@@ -77,7 +85,14 @@ class Evaluator:
         )
 
     def eval_ListLiteral(self, node: ListLiteral):
-        return LSLList([self.evaluate(e) for e in node.elements])
+        res = LSLList()
+        for e in node.elements:
+            val = self.evaluate(e)
+            if isinstance(val, LSLList):
+                res.extend(val)
+            else:
+                res.append(val)
+        return res
 
     def eval_VariableExpr(self, node: VariableExpr):
         return self.ctx.get_var(node.name)
@@ -137,36 +152,36 @@ class Evaluator:
         val = self.evaluate(node.expr)
         return cast_to_lsl_type(val, node.target_type)
 
+    def eval_AssignmentStmt(self, node: AssignmentStmt):
+        # Allow assignment to be evaluated as an expression
+        return self.exec_AssignmentStmt(node)
+
     def eval_FuncCallExpr(self, node: FuncCallExpr):
         args = [self.evaluate(a) for a in node.args]
-        # print(f"DEBUG [Call]: {node.name}({', '.join(map(str, args))})")
-        if node.name == "llSetTimerEvent":
-            if self.script:
-                self.script.timer_interval = float(args[0])
-                self.script.last_timer_fire = 0.0
-            return None
-        if node.name == "llSay":
-            if self.script and self.script.container_prim and self.script.container_prim.parent_object and self.script.container_prim.parent_object.region:
-                sender_uuid = self.script.container_prim.uuid
-                sender_name = self.script.container_prim.name
-                self.script.container_prim.parent_object.region.broadcast_chat(sender_uuid, sender_name, int(args[0]), str(args[1]))
-            else:
-                print(f"DEBUG [llSay]: Channel {args[0]}: {args[1]}")
-            return None
-        if node.name == "llListen":
-            if self.script:
-                from sim.prim import Listener
-                handle = self.script.next_listener_handle
-                self.script.listeners[handle] = Listener(int(args[0]), str(args[1]), str(args[2]), str(args[3]))
-                self.script.next_listener_handle += 1
-                return handle
-            return 0
-        if node.name == "llListenRemove":
-            if self.script:
-                handle = int(args[0])
-                if handle in self.script.listeners:
-                    del self.script.listeners[handle]
-            return None
+        builtin_result = call_builtin(self, node.name, args)
+        if builtin_result is not UNHANDLED:
+            return builtin_result
+        # User-defined functions
+        if self.script and self.script.ast:
+            func_def = next((g for g in self.script.ast.globals if isinstance(g, FunctionDef) and g.name == node.name), None)
+            if func_def:
+                # Push a new frame
+                self.ctx.push_frame()
+                try:
+                    # Set parameters
+                    for i, (p_type, p_name) in enumerate(func_def.parameters):
+                        if i < len(args):
+                            self.ctx.stack[-1][p_name] = args[i]
+                    
+                    # Execute body
+                    try:
+                        self.execute(func_def.body)
+                    except ReturnException as e:
+                        return e.value
+                finally:
+                    self.ctx.pop_frame()
+                return None
+
         raise InterpreterError(f"Unknown function: {node.name}")
 
     def execute(self, node: Stmt):
@@ -236,6 +251,12 @@ class Evaluator:
         while bool(self.evaluate(node.condition)):
             self.execute(node.body)
 
+    def exec_DoWhileStmt(self, node: DoWhileStmt):
+        while True:
+            self.execute(node.body)
+            if not bool(self.evaluate(node.condition)):
+                break
+
     def exec_ForStmt(self, node: ForStmt):
         self.ctx.push_frame()
         for stmt in node.init:
@@ -252,11 +273,33 @@ class Evaluator:
             val = self.evaluate(node.value)
         raise ReturnException(val)
 
+    def exec_JumpStmt(self, node: JumpStmt):
+        raise JumpException(node.label)
+
+    def exec_LabelStmt(self, node: LabelStmt):
+        return None
+
     def exec_BlockStmt(self, node: BlockStmt):
         self.ctx.push_frame()
         try:
-            for stmt in node.statements:
-                self.execute(stmt)
+            i = 0
+            while i < len(node.statements):
+                try:
+                    self.execute(node.statements[i])
+                    i += 1
+                except JumpException as e:
+                    # Look for label in current block
+                    label_idx = -1
+                    for idx, stmt in enumerate(node.statements):
+                        if isinstance(stmt, LabelStmt) and stmt.label == e.label:
+                            label_idx = idx
+                            break
+                    if label_idx != -1:
+                        i = label_idx
+                        # Continue execution from the label (LSL skip logic)
+                    else:
+                        # Re-raise to parent block
+                        raise e
         finally:
             self.ctx.pop_frame()
 

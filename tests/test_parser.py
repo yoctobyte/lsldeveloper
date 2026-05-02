@@ -1,6 +1,5 @@
 import sys
 import os
-from pprint import pprint
 
 # Add the project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -50,22 +49,14 @@ state other {
 """
 
 def test_parsing():
-    print("--- Lexing ---")
     lexer = Lexer(sample_lsl)
     tokens = lexer.tokenize()
-    for t in tokens:
-        print(t)
-    
-    print("\n--- Parsing ---")
     parser = Parser(tokens)
-    try:
-        ast = parser.parse()
-        print("Successfully parsed!")
-        pprint(ast)
-    except SyntaxError as e:
-        print(f"Parsing failed: {e}")
-        # Print context around the error if possible
-        pass
+
+    ast = parser.parse()
+
+    assert len(ast.globals) == 4
+    assert [state.name for state in ast.states] == ["default", "other"]
 
 if __name__ == "__main__":
     test_parsing()

@@ -1,0 +1,540 @@
+# LSL Function Status
+
+Source: https://wiki.secondlife.com/w/index.php?title=Template:LSL_All_Functions/Name&action=raw
+
+Total functions copied: 520
+
+| Status | Count |
+|---|---:|
+| Implemented | 19 |
+| Partial | 209 |
+| Missing | 292 |
+
+Wiki flags are copied from the official template where present. Local status means:
+
+- `implemented`: usable local behavior exists for the common offline case.
+- `partial`: a handler exists, but behavior is stubbed, simplified, or simulator-limited.
+- `missing`: no local builtin handler exists yet.
+
+| Function | Local status | Wiki flags | Notes |
+|---|---|---|---|
+| `llAbs` | missing |  |  |
+| `llAcos` | missing |  |  |
+| `llAddToLandBanList` | missing |  |  |
+| `llAddToLandPassList` | partial |  | stub: prints not implemented and returns default void |
+| `llAdjustDamage` | missing | NEW |  |
+| `llAdjustSoundVolume` | partial |  | stub: prints not implemented and returns default void |
+| `llAgentInExperience` | missing | X I |  |
+| `llAllowInventoryDrop` | partial |  | stub: prints not implemented and returns default void |
+| `llAngleBetween` | missing |  |  |
+| `llApplyImpulse` | partial |  | stub: prints not implemented and returns default void |
+| `llApplyRotationalImpulse` | partial |  | stub: prints not implemented and returns default void |
+| `llAsin` | missing |  |  |
+| `llAtan2` | missing |  |  |
+| `llAttachToAvatar` | partial |  | stub: prints not implemented and returns default void |
+| `llAttachToAvatarTemp` | partial | I | stub: prints not implemented and returns default void |
+| `llAvatarOnLinkSitTarget` | missing | I |  |
+| `llAvatarOnSitTarget` | partial |  | stub: prints not implemented and returns default key |
+| `llAxes2Rot` | missing |  |  |
+| `llAxisAngle2Rot` | missing |  |  |
+| `llBase64ToInteger` | missing |  |  |
+| `llBase64ToString` | missing |  |  |
+| `llBreakAllLinks` | missing |  |  |
+| `llBreakLink` | missing |  |  |
+| `llCastRay` | missing | I |  |
+| `llCeil` | missing |  |  |
+| `llChar` | missing | I |  |
+| `llClearCameraParams` | partial |  | stub: prints not implemented and returns default void |
+| `llClearLinkMedia` | missing | I |  |
+| `llClearPrimMedia` | missing |  |  |
+| `llCloseRemoteDataChannel` | missing | D |  |
+| `llCloud` | missing | D |  |
+| `llCollisionFilter` | partial |  | stub: prints not implemented and returns default void |
+| `llCollisionSound` | missing |  |  |
+| `llCollisionSprite` | missing |  |  |
+| `llComputeHash` | missing | NEW |  |
+| `llCos` | missing |  |  |
+| `llCreateCharacter` | missing | I |  |
+| `llCreateKeyValue` | missing | X I |  |
+| `llCreateLink` | partial |  | stub: prints not implemented and returns default void |
+| `llCSV2List` | implemented |  | basic CSV split |
+| `llDamage` | missing | NEW |  |
+| `llDataSizeKeyValue` | missing | X I |  |
+| `llDeleteCharacter` | partial | I | stub: prints not implemented and returns default void |
+| `llDeleteKeyValue` | missing | X I |  |
+| `llDeleteSubList` | implemented |  | basic slice delete |
+| `llDeleteSubString` | missing |  |  |
+| `llDerezObject` | missing | U |  |
+| `llDetachFromAvatar` | partial |  | stub: prints not implemented and returns default void |
+| `llDetectedDamage` | missing | NEW |  |
+| `llDetectedGrab` | missing |  |  |
+| `llDetectedGroup` | partial |  | reads current simplified sensor detection record |
+| `llDetectedKey` | partial |  | reads current simplified sensor detection record |
+| `llDetectedLinkNumber` | partial |  | reads current simplified sensor detection record |
+| `llDetectedName` | partial |  | reads current simplified sensor detection record |
+| `llDetectedOwner` | partial |  | reads current simplified sensor detection record |
+| `llDetectedPos` | partial |  | reads current simplified sensor detection record |
+| `llDetectedRezzer` | missing | NEW |  |
+| `llDetectedRot` | partial |  | reads current simplified sensor detection record |
+| `llDetectedTouchBinormal` | missing |  |  |
+| `llDetectedTouchFace` | missing |  |  |
+| `llDetectedTouchNormal` | missing |  |  |
+| `llDetectedTouchPos` | missing |  |  |
+| `llDetectedTouchST` | missing |  |  |
+| `llDetectedTouchUV` | missing |  |  |
+| `llDetectedType` | partial |  | reads current simplified sensor detection record |
+| `llDetectedVel` | partial |  | reads current simplified sensor detection record |
+| `llDialog` | partial |  | records latest dialog and emits button responses through chat |
+| `llDie` | partial |  | stub: prints not implemented and returns default void |
+| `llDumpList2String` | missing |  |  |
+| `llEdgeOfWorld` | missing |  |  |
+| `llEjectFromLand` | partial |  | stub: prints not implemented and returns default void |
+| `llEmail` | partial |  | stub: prints not implemented and returns default void |
+| `llEscapeURL` | partial |  | stub: prints not implemented and returns default string |
+| `llEuler2Rot` | missing |  |  |
+| `llEvade` | missing | I |  |
+| `llExecCharacterCmd` | missing | I |  |
+| `llFabs` | missing |  |  |
+| `llFindNotecardTextSync` | missing | NEW I |  |
+| `llFleeFrom` | missing | I |  |
+| `llFloor` | missing |  |  |
+| `llForceMouselook` | missing |  |  |
+| `llFrand` | missing |  |  |
+| `llGenerateKey` | missing | I |  |
+| `llGetAccel` | missing |  |  |
+| `llGetAgentInfo` | missing |  |  |
+| `llGetAgentLanguage` | partial |  | reads demo avatar language |
+| `llGetAgentList` | partial | I | returns avatars in the current harness region |
+| `llGetAgentSize` | missing |  |  |
+| `llGetAlpha` | missing |  |  |
+| `llGetAndResetTime` | partial |  | stub: prints not implemented and returns default float |
+| `llGetAnimation` | partial |  | stub: prints not implemented and returns default string |
+| `llGetAnimationList` | partial |  | stub: prints not implemented and returns default list |
+| `llGetAnimationOverride` | missing | I |  |
+| `llGetAttached` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetAttachedList` | missing | I |  |
+| `llGetAttachedListFiltered` | missing | NEW I |  |
+| `llGetBoundingBox` | partial |  | stub: prints not implemented and returns default list |
+| `llGetCameraAspect` | missing | NEW |  |
+| `llGetCameraFOV` | missing | NEW |  |
+| `llGetCameraPos` | partial |  | stub: prints not implemented and returns default vector |
+| `llGetCameraRot` | partial |  | stub: prints not implemented and returns default rotation |
+| `llGetCenterOfMass` | partial |  | stub: prints not implemented and returns default vector |
+| `llGetClosestNavPoint` | missing | I |  |
+| `llGetColor` | missing |  |  |
+| `llGetCreator` | partial |  | reads harness object creator key |
+| `llGetDate` | missing |  |  |
+| `llGetDayLength` | missing | I |  |
+| `llGetDayOffset` | missing | I |  |
+| `llGetDisplayName` | partial |  | reads demo avatar display name |
+| `llGetEnergy` | missing |  |  |
+| `llGetEnv` | missing | U |  |
+| `llGetEnvironment` | missing | I |  |
+| `llGetExperienceDetails` | missing | X I |  |
+| `llGetExperienceErrorMessage` | missing | X I |  |
+| `llGetForce` | missing |  |  |
+| `llGetFreeMemory` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetFreeURLs` | missing |  |  |
+| `llGetGeometricCenter` | partial |  | stub: prints not implemented and returns default vector |
+| `llGetGMTclock` | partial |  | stub: prints not implemented and returns default float |
+| `llGetHealth` | missing | NEW |  |
+| `llGetHTTPHeader` | missing |  |  |
+| `llGetInventoryAcquireTime` | partial | I | reads stored inventory metadata when present |
+| `llGetInventoryCreator` | partial |  | reads stored inventory metadata when present |
+| `llGetInventoryKey` | partial |  | returns inventory item UUID by name |
+| `llGetInventoryName` | partial |  | returns inventory item names by type/index |
+| `llGetInventoryDesc` | partial |  | reads stored inventory metadata when present |
+| `llGetInventoryNumber` | partial |  | counts current prim inventory by type |
+| `llGetInventoryPermMask` | partial |  | returns stored inventory permissions or permissive default |
+| `llGetInventoryType` | partial |  | returns inventory item type by name |
+| `llGetKey` | partial |  | returns current harness object UUID |
+| `llGetLandOwnerAt` | missing |  |  |
+| `llGetLinkKey` | partial |  | reads prim UUID by link number |
+| `llGetLinkMedia` | missing | I |  |
+| `llGetLinkName` | partial |  | reads prim name by link number |
+| `llGetLinkNumber` | partial |  | reads current prim link number |
+| `llGetLinkNumberOfSides` | missing |  |  |
+| `llGetLinkPrimitiveParams` | partial |  | supports a small model-backed PRIM_* subset |
+| `llGetLinkSitFlags` | missing | NEW |  |
+| `llGetListEntryType` | missing |  |  |
+| `llGetListLength` | implemented |  | Python len over list |
+| `llGetLocalPos` | missing |  |  |
+| `llGetLocalRot` | missing |  |  |
+| `llGetMass` | partial |  | returns simplified object mass from prim count |
+| `llGetMassMKS` | missing | I |  |
+| `llGetMaxScaleFactor` | missing | I |  |
+| `llGetMemoryLimit` | missing | I |  |
+| `llGetMinScaleFactor` | missing | I |  |
+| `llGetMoonDirection` | missing | I |  |
+| `llGetMoonRotation` | missing | I |  |
+| `llGetNextEmail` | partial |  | stub: prints not implemented and returns default void |
+| `llGetNotecardLine` | partial |  | queues dataserver event from stored notecard lines |
+| `llGetNotecardLineSync` | missing | NEW I |  |
+| `llGetNumberOfNotecardLines` | partial |  | queues dataserver event with stored notecard line count |
+| `llGetNumberOfPrims` | partial |  | counts prims in current linkset |
+| `llGetNumberOfSides` | missing |  |  |
+| `llGetObjectAnimationNames` | missing |  |  |
+| `llGetObjectDesc` | partial |  | reads harness object description |
+| `llGetObjectDetails` | partial | U | supports a subset of OBJECT_* constants |
+| `llGetObjectLinkKey` | missing |  |  |
+| `llGetObjectMass` | partial |  | returns simplified object mass from prim count |
+| `llGetObjectName` | partial |  | returns harness object name |
+| `llGetObjectPermMask` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetObjectPrimCount` | partial |  | counts prims for a known object |
+| `llGetOmega` | missing |  |  |
+| `llGetOwner` | partial |  | returns harness owner key |
+| `llGetOwnerKey` | partial |  | resolves owner for known objects/agents |
+| `llGetParcelDetails` | partial |  | supports a subset of PARCEL_DETAILS_* constants |
+| `llGetParcelFlags` | missing |  |  |
+| `llGetParcelMaxPrims` | missing |  |  |
+| `llGetParcelMusicURL` | partial | I | reads current demo parcel music URL |
+| `llGetParcelPrimCount` | missing |  |  |
+| `llGetParcelPrimOwners` | missing |  |  |
+| `llGetPermissions` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetPermissionsKey` | partial |  | stub: prints not implemented and returns default key |
+| `llGetPhysicsMaterial` | missing | I |  |
+| `llGetPos` | partial |  | returns harness object position |
+| `llGetPrimitiveParams` | partial |  | supports a small model-backed PRIM_* subset |
+| `llGetPrimMediaParams` | missing |  |  |
+| `llGetRegionAgentCount` | missing |  |  |
+| `llGetRegionCorner` | partial |  | reads demo region corner |
+| `llGetRegionDayLength` | missing | I |  |
+| `llGetRegionDayOffset` | missing | I |  |
+| `llGetRegionFlags` | missing |  |  |
+| `llGetRegionFPS` | partial |  | reads demo region FPS |
+| `llGetRegionMoonDirection` | missing | I |  |
+| `llGetRegionMoonRotation` | missing | I |  |
+| `llGetRegionName` | partial |  | reads demo region name |
+| `llGetRegionSunDirection` | missing | I |  |
+| `llGetRegionSunRotation` | missing | I |  |
+| `llGetRegionTimeDilation` | partial |  | reads demo region time dilation |
+| `llGetRegionTimeOfDay` | missing |  |  |
+| `llGetRenderMaterial` | missing | NEW |  |
+| `llGetRootPosition` | partial |  | stub: prints not implemented and returns default vector |
+| `llGetRootRotation` | partial |  | stub: prints not implemented and returns default rotation |
+| `llGetRot` | partial |  | reads harness object rotation |
+| `llGetScale` | partial |  | reads current prim scale |
+| `llGetScriptName` | partial |  | stub: prints not implemented and returns default string |
+| `llGetScriptState` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetSimStats` | missing | I |  |
+| `llGetSimulatorHostname` | missing |  |  |
+| `llGetSPMaxMemory` | missing | I |  |
+| `llGetStartParameter` | missing |  |  |
+| `llGetStartString` | missing | NEW |  |
+| `llGetStaticPath` | missing | I |  |
+| `llGetStatus` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetSubString` | implemented |  | basic inclusive substring |
+| `llGetSunDirection` | partial | I | stub: prints not implemented and returns default vector |
+| `llGetSunRotation` | missing | I |  |
+| `llGetTexture` | missing |  |  |
+| `llGetTextureOffset` | missing |  |  |
+| `llGetTextureRot` | missing |  |  |
+| `llGetTextureScale` | missing |  |  |
+| `llGetTime` | partial |  | stubbed constant |
+| `llGetTimeOfDay` | partial |  | stub: prints not implemented and returns default float |
+| `llGetTimestamp` | partial |  | stub: prints not implemented and returns default string |
+| `llGetTorque` | missing |  |  |
+| `llGetUnixTime` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetUsedMemory` | partial | I | stub: prints not implemented and returns default integer |
+| `llGetUsername` | missing |  |  |
+| `llGetVel` | partial |  | reads harness object velocity |
+| `llGetVisualParams` | missing | I |  |
+| `llGetWallclock` | missing |  |  |
+| `llGiveAgentInventory` | missing |  |  |
+| `llGiveInventory` | partial |  | stub: prints not implemented and returns default void |
+| `llGiveInventoryList` | partial |  | stub: prints not implemented and returns default void |
+| `llGiveMoney` | missing |  |  |
+| `llGodLikeRezObject` | missing | G |  |
+| `llGround` | partial |  | stub: prints not implemented and returns default float |
+| `llGroundContour` | partial |  | stub: prints not implemented and returns default vector |
+| `llGroundNormal` | partial |  | stub: prints not implemented and returns default vector |
+| `llGroundRepel` | partial |  | stub: prints not implemented and returns default void |
+| `llGroundSlope` | partial |  | stub: prints not implemented and returns default vector |
+| `llHash` | missing | I |  |
+| `llHMAC` | missing | I |  |
+| `llHTTPRequest` | partial |  | stdlib HTTP request; simplified options/headers/events |
+| `llHTTPResponse` | missing |  |  |
+| `llInsertString` | missing |  |  |
+| `llInstantMessage` | missing |  |  |
+| `llIntegerToBase64` | missing |  |  |
+| `llIsFriend` | missing | I |  |
+| `llIsLinkGLTFMaterial` | missing | NEW I |  |
+| `llJson2List` | missing | I |  |
+| `llJsonGetValue` | partial | I | basic JSON path lookup |
+| `llJsonSetValue` | missing | I |  |
+| `llJsonValueType` | missing | I |  |
+| `llKey2Name` | partial | I | resolves known avatar/object names |
+| `llKeyCountKeyValue` | missing | X I |  |
+| `llKeysKeyValue` | missing | X I |  |
+| `llLinear2sRGB` | missing | I |  |
+| `llLinkAdjustSoundVolume` | missing | I |  |
+| `llLinkParticleSystem` | missing |  |  |
+| `llLinkPlaySound` | missing | I |  |
+| `llLinksetDataAvailable` | missing | I |  |
+| `llLinksetDataCountFound` | missing | I |  |
+| `llLinksetDataCountKeys` | missing | I |  |
+| `llLinksetDataDelete` | implemented | I | in-memory linkset data |
+| `llLinksetDataDeleteFound` | missing | I |  |
+| `llLinksetDataDeleteProtected` | missing | I |  |
+| `llLinksetDataFindKeys` | missing | I |  |
+| `llLinksetDataListKeys` | missing | I |  |
+| `llLinksetDataRead` | implemented | I | in-memory linkset data |
+| `llLinksetDataReadProtected` | missing | I |  |
+| `llLinksetDataReset` | implemented | I | in-memory linkset data |
+| `llLinksetDataWrite` | implemented | I | in-memory linkset data |
+| `llLinksetDataWriteProtected` | missing | I |  |
+| `llLinkSetSoundQueueing` | missing | I |  |
+| `llLinkSetSoundRadius` | missing | I |  |
+| `llLinkSitTarget` | missing | I |  |
+| `llLinkStopSound` | missing | I |  |
+| `llList2CSV` | implemented |  | basic join |
+| `llList2Float` | implemented |  | basic indexed conversion |
+| `llList2Integer` | implemented |  | basic indexed conversion |
+| `llList2Json` | missing | I |  |
+| `llList2Key` | implemented |  | basic indexed conversion |
+| `llList2List` | partial |  | basic and wrap slice handling only |
+| `llList2ListSlice` | missing | I |  |
+| `llList2ListStrided` | missing |  |  |
+| `llList2Rot` | implemented |  | basic indexed conversion |
+| `llList2String` | implemented |  | basic indexed conversion |
+| `llList2Vector` | implemented |  | basic indexed conversion |
+| `llListen` | partial |  | basic chat listener registration |
+| `llListenControl` | missing |  |  |
+| `llListenRemove` | partial |  | basic listener removal |
+| `llListFindList` | implemented |  | basic contiguous search |
+| `llListFindListNext` | missing | I |  |
+| `llListFindStrided` | missing | I |  |
+| `llListInsertList` | missing |  |  |
+| `llListRandomize` | missing |  |  |
+| `llListReplaceList` | implemented |  | basic slice replace |
+| `llListSort` | missing |  |  |
+| `llListSortStrided` | missing | I |  |
+| `llListStatistics` | missing |  |  |
+| `llLoadURL` | partial |  | stub: prints not implemented and returns default void |
+| `llLog` | missing |  |  |
+| `llLog10` | missing |  |  |
+| `llLookAt` | missing |  |  |
+| `llLoopSound` | partial |  | stores looping sound state and history without audio playback |
+| `llLoopSoundMaster` | missing |  |  |
+| `llLoopSoundSlave` | missing |  |  |
+| `llMakeExplosion` | partial | D | stub: prints not implemented and returns default void |
+| `llMakeFire` | partial | D | stub: prints not implemented and returns default void |
+| `llMakeFountain` | partial | D | stub: prints not implemented and returns default void |
+| `llMakeSmoke` | partial | D | stub: prints not implemented and returns default void |
+| `llManageEstateAccess` | missing | I |  |
+| `llMapBeacon` | missing | NEW I |  |
+| `llMapDestination` | partial |  | stub: prints not implemented and returns default void |
+| `llMD5String` | missing |  |  |
+| `llMessageLinked` | partial |  | queues link_message in linkset; ignores target details |
+| `llMinEventDelay` | partial |  | stub: prints not implemented and returns default void |
+| `llModifyLand` | partial |  | stub: prints not implemented and returns default void |
+| `llModPow` | missing |  |  |
+| `llMoveToTarget` | missing |  |  |
+| `llName2Key` | missing | I |  |
+| `llNavigateTo` | missing |  |  |
+| `llOffsetTexture` | missing |  |  |
+| `llOpenFloater` | missing | I |  |
+| `llOpenRemoteDataChannel` | partial | D | stub: prints not implemented and returns default void |
+| `llOrd` | missing | I |  |
+| `llOverMyLand` | partial |  | stub: prints not implemented and returns default integer |
+| `llOwnerSay` | partial |  | prints to stdout |
+| `llParcelMediaCommandList` | missing |  |  |
+| `llParcelMediaQuery` | missing |  |  |
+| `llParseString2List` | missing |  |  |
+| `llParseStringKeepNulls` | missing |  |  |
+| `llParticleSystem` | partial |  | stores particle parameters on the current prim without rendering |
+| `llPassCollisions` | partial |  | stub: prints not implemented and returns default void |
+| `llPassTouches` | partial |  | stub: prints not implemented and returns default void |
+| `llPatrolPoints` | missing | I |  |
+| `llPlaySound` | partial |  | stores current sound state and history without audio playback |
+| `llPlaySoundSlave` | missing |  |  |
+| `llPointAt` | missing | R |  |
+| `llPow` | missing |  |  |
+| `llPreloadSound` | partial |  | records preloaded sound names on the current prim |
+| `llPursue` | missing | I |  |
+| `llPushObject` | partial |  | stub: prints not implemented and returns default void |
+| `llReadKeyValue` | missing | X I |  |
+| `llRefreshPrimURL` | partial | D | stub: prints not implemented and returns default void |
+| `llRegionSay` | partial |  | routes through harness chat without range semantics |
+| `llRegionSayTo` | partial |  | routes through harness chat without private delivery semantics |
+| `llReleaseCamera` | missing | D |  |
+| `llReleaseControls` | partial |  | stub: prints not implemented and returns default void |
+| `llReleaseURL` | partial |  | stub: prints not implemented and returns default void |
+| `llRemoteDataReply` | partial | D | stub: prints not implemented and returns default void |
+| `llRemoteDataSetRegion` | missing | D |  |
+| `llRemoteLoadScript` | missing | R |  |
+| `llRemoteLoadScriptPin` | partial |  | stub: prints not implemented and returns default void |
+| `llRemoveFromLandBanList` | missing |  |  |
+| `llRemoveFromLandPassList` | partial |  | stub: prints not implemented and returns default void |
+| `llRemoveInventory` | partial |  | stub: prints not implemented and returns default void |
+| `llRemoveVehicleFlags` | missing |  |  |
+| `llReplaceAgentEnvironment` | missing | X I |  |
+| `llReplaceEnvironment` | missing | I |  |
+| `llReplaceSubString` | missing | NEW I |  |
+| `llRequestAgentData` | partial |  | stub: prints not implemented and returns default key |
+| `llRequestDisplayName` | partial |  | synchronous name lookup instead of dataserver event |
+| `llRequestExperiencePermissions` | missing | X I |  |
+| `llRequestInventoryData` | partial |  | stub: prints not implemented and returns default key |
+| `llRequestPermissions` | partial |  | stub: prints not implemented and returns default void |
+| `llRequestSecureURL` | partial |  | stub: prints not implemented and returns default key |
+| `llRequestSimulatorData` | partial |  | stub: prints not implemented and returns default key |
+| `llRequestURL` | partial |  | stub: prints not implemented and returns default key |
+| `llRequestUserKey` | missing | I |  |
+| `llRequestUsername` | partial |  | synchronous name lookup instead of dataserver event |
+| `llResetAnimationOverride` | missing | I |  |
+| `llResetLandBanList` | missing |  |  |
+| `llResetLandPassList` | missing |  |  |
+| `llResetOtherScript` | partial |  | stub: prints not implemented and returns default void |
+| `llResetScript` | partial |  | stub: prints not implemented and returns default void |
+| `llResetTime` | partial |  | stubbed no-op |
+| `llReturnObjectsByID` | missing | I |  |
+| `llReturnObjectsByOwner` | missing | I |  |
+| `llRezAtRoot` | partial |  | clones stored object inventory into the current region with a runtime cap |
+| `llRezObject` | partial |  | clones stored object inventory into the current region with a runtime cap |
+| `llRezObjectWithParams` | missing | I |  |
+| `llRot2Angle` | missing |  |  |
+| `llRot2Axis` | missing |  |  |
+| `llRot2Euler` | missing |  |  |
+| `llRot2Fwd` | missing |  |  |
+| `llRot2Left` | missing |  |  |
+| `llRot2Up` | missing |  |  |
+| `llRotateTexture` | missing |  |  |
+| `llRotBetween` | missing |  |  |
+| `llRotLookAt` | partial |  | stub: prints not implemented and returns default void |
+| `llRotTarget` | missing |  |  |
+| `llRotTargetRemove` | missing |  |  |
+| `llRound` | missing |  |  |
+| `llSameGroup` | missing |  |  |
+| `llSay` | partial |  | routes chat in harness or prints to stdout |
+| `llScaleByFactor` | missing | I |  |
+| `llScaleTexture` | missing |  |  |
+| `llScriptDanger` | missing |  |  |
+| `llScriptProfiler` | missing | I |  |
+| `llSendRemoteData` | missing | D |  |
+| `llSensor` | partial |  | queues simplified sensor/no_sensor events from demo region entities |
+| `llSensorRemove` | partial |  | clears simplified repeated sensor registration |
+| `llSensorRepeat` | partial |  | stores and queues simplified repeated sensor scans |
+| `llSetAgentEnvironment` | missing | X I |  |
+| `llSetAgentRot` | missing | NEW I |  |
+| `llSetAlpha` | partial |  | stub: prints not implemented and returns default void |
+| `llSetAngularVelocity` | partial | I | stub: prints not implemented and returns default void |
+| `llSetAnimationOverride` | missing | I |  |
+| `llSetBuoyancy` | partial |  | stub: prints not implemented and returns default void |
+| `llSetCameraAtOffset` | partial |  | stub: prints not implemented and returns default void |
+| `llSetCameraEyeOffset` | partial |  | stub: prints not implemented and returns default void |
+| `llSetCameraParams` | partial |  | stub: prints not implemented and returns default void |
+| `llSetClickAction` | partial |  | stub: prints not implemented and returns default void |
+| `llSetColor` | partial |  | stub: prints not implemented and returns default void |
+| `llSetContentType` | missing | I |  |
+| `llSetDamage` | partial | U | stub: prints not implemented and returns default void |
+| `llSetEnvironment` | missing | I |  |
+| `llSetForce` | partial |  | stub: prints not implemented and returns default void |
+| `llSetForceAndTorque` | partial |  | stub: prints not implemented and returns default void |
+| `llSetLinkGLTFOverrides` | missing | NEW |  |
+| `llSetGroundTexture` | missing | NEW |  |
+| `llSetHoverHeight` | partial |  | stub: prints not implemented and returns default void |
+| `llSetInventoryPermMask` | missing | G |  |
+| `llSetKeyframedMotion` | missing | I |  |
+| `llSetLinkAlpha` | partial |  | stub: prints not implemented and returns default void |
+| `llSetLinkCamera` | missing | I |  |
+| `llSetLinkColor` | partial |  | stub: prints not implemented and returns default void |
+| `llSetLinkMedia` | missing | I |  |
+| `llSetLinkPrimitiveParams` | partial |  | supports a small model-backed PRIM_* subset |
+| `llSetLinkPrimitiveParamsFast` | partial |  | supports a small model-backed PRIM_* subset |
+| `llSetLinkRenderMaterial` | missing | NEW |  |
+| `llSetLinkSitFlags` | missing | NEW |  |
+| `llSetLinkTexture` | partial |  | stub: prints not implemented and returns default void |
+| `llSetLinkTextureAnim` | missing |  |  |
+| `llSetLocalRot` | partial |  | stub: prints not implemented and returns default void |
+| `llSetMemoryLimit` | missing | I |  |
+| `llSetObjectDesc` | partial |  | writes harness object description |
+| `llSetObjectName` | partial |  | writes harness object name |
+| `llSetObjectPermMask` | missing | G |  |
+| `llSetParcelMusicURL` | partial |  | writes current demo parcel music URL |
+| `llSetPayPrice` | partial |  | stub: prints not implemented and returns default void |
+| `llSetPhysicsMaterial` | missing | I |  |
+| `llSetPos` | partial |  | sets harness object position |
+| `llSetPrimitiveParams` | partial |  | supports a small model-backed PRIM_* subset |
+| `llSetPrimMediaParams` | missing |  |  |
+| `llSetPrimURL` | missing | D |  |
+| `llSetRegionPos` | missing | I |  |
+| `llSetRemoteScriptAccessPin` | partial |  | stub: prints not implemented and returns default void |
+| `llSetRenderMaterial` | missing | NEW |  |
+| `llSetRot` | partial |  | sets harness object rotation |
+| `llSetScale` | partial |  | sets current prim scale |
+| `llSetScriptState` | partial |  | stub: prints not implemented and returns default void |
+| `llSetSitText` | partial |  | stub: prints not implemented and returns default void |
+| `llSetSoundQueueing` | partial |  | stub: prints not implemented and returns default void |
+| `llSetSoundRadius` | missing |  |  |
+| `llSetStatus` | partial |  | stub: prints not implemented and returns default void |
+| `llSetText` | partial |  | stores floating text state on the current prim |
+| `llSetTexture` | partial |  | stub: prints not implemented and returns default void |
+| `llSetTextureAnim` | partial |  | stores texture animation parameters on the current prim |
+| `llSetTimerEvent` | partial |  | queues timer events in tick loop |
+| `llSetTorque` | partial |  | stub: prints not implemented and returns default void |
+| `llSetTouchText` | partial |  | stub: prints not implemented and returns default void |
+| `llSetVehicleFlags` | partial |  | stub: prints not implemented and returns default void |
+| `llSetVehicleFloatParam` | missing |  |  |
+| `llSetVehicleRotationParam` | missing |  |  |
+| `llSetVehicleType` | missing |  |  |
+| `llSetVehicleVectorParam` | missing |  |  |
+| `llSetVelocity` | missing | I |  |
+| `llSHA1String` | missing |  |  |
+| `llSHA256String` | missing | I |  |
+| `llShout` | partial |  | routes through harness chat without range semantics |
+| `llSignRSA` | missing | I |  |
+| `llSin` | missing |  |  |
+| `llSitOnLink` | missing |  |  |
+| `llSitTarget` | partial |  | stub: prints not implemented and returns default void |
+| `llSleep` | partial |  | stub: prints not implemented and returns default void |
+| `llSound` | missing | D |  |
+| `llSoundPreload` | missing | D |  |
+| `llSqrt` | missing |  |  |
+| `llsRGB2Linear` | missing | I |  |
+| `llStartAnimation` | missing |  |  |
+| `llStartObjectAnimation` | missing |  |  |
+| `llStopAnimation` | partial |  | stub: prints not implemented and returns default void |
+| `llStopObjectAnimation` | missing |  |  |
+| `llStopHover` | missing |  |  |
+| `llStopLookAt` | missing |  |  |
+| `llStopMoveToTarget` | missing |  |  |
+| `llStopPointAt` | missing | R |  |
+| `llStopSound` | partial |  | clears current stored sound state |
+| `llStringLength` | implemented |  | Python string length |
+| `llStringToBase64` | missing |  |  |
+| `llStringTrim` | missing |  |  |
+| `llSubStringIndex` | implemented |  | Python substring search |
+| `llTakeCamera` | missing | D |  |
+| `llTakeControls` | partial |  | stub: prints not implemented and returns default void |
+| `llTan` | missing |  |  |
+| `llTarget` | partial |  | stub: prints not implemented and returns default integer |
+| `llTargetedEmail` | missing | I |  |
+| `llTargetOmega` | missing |  |  |
+| `llTargetRemove` | partial |  | stub: prints not implemented and returns default void |
+| `llTeleportAgent` | partial | I | stub: prints not implemented and returns default void |
+| `llTeleportAgentGlobalCoords` | partial | I | stub: prints not implemented and returns default void |
+| `llTeleportAgentHome` | partial |  | stub: prints not implemented and returns default void |
+| `llTextBox` | partial |  | stub: prints not implemented and returns default void |
+| `llToLower` | missing |  |  |
+| `llToUpper` | missing |  |  |
+| `llTransferLindenDollars` | missing | I |  |
+| `llTransferOwnership` | missing | NEW I |  |
+| `llTriggerSound` | partial |  | stores triggered sound state and history without audio playback |
+| `llTriggerSoundLimited` | partial |  | stub: prints not implemented and returns default void |
+| `llUnescapeURL` | missing |  |  |
+| `llUnSit` | partial |  | stub: prints not implemented and returns default void |
+| `llUpdateCharacter` | missing | I |  |
+| `llUpdateKeyValue` | missing | X I |  |
+| `llVecDist` | missing |  |  |
+| `llVecMag` | missing |  |  |
+| `llVecNorm` | missing |  |  |
+| `llVerifyRSA` | missing | I |  |
+| `llVolumeDetect` | partial |  | stub: prints not implemented and returns default void |
+| `llWanderWithin` | partial | I | stub: prints not implemented and returns default void |
+| `llWater` | partial |  | reads demo region water height |
+| `llWhisper` | partial |  | routes through harness chat without range semantics |
+| `llWind` | partial |  | reads demo region wind vector |
+| `llWorldPosToHUD` | missing | NEW |  |
+| `llXorBase64` | missing | I |  |
+| `llXorBase64Strings` | missing | D |  |
+| `llXorBase64StringsCorrect` | missing | D |  |

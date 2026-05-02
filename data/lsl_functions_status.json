@@ -1,0 +1,3126 @@
+{
+  "source": "https://wiki.secondlife.com/w/index.php?title=Template:LSL_All_Functions/Name&action=raw",
+  "count": 520,
+  "functions": [
+    {
+      "name": "llAbs",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llAcos",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llAddToLandBanList",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llAddToLandPassList",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llAdjustDamage",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llAdjustSoundVolume",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llAgentInExperience",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llAllowInventoryDrop",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llAngleBetween",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llApplyImpulse",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llApplyRotationalImpulse",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llAsin",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llAtan2",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llAttachToAvatar",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llAttachToAvatarTemp",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llAvatarOnLinkSitTarget",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llAvatarOnSitTarget",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default key"
+    },
+    {
+      "name": "llAxes2Rot",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llAxisAngle2Rot",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llBase64ToInteger",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llBase64ToString",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llBreakAllLinks",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llBreakLink",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llCastRay",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llCeil",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llChar",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llClearCameraParams",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llClearLinkMedia",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llClearPrimMedia",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llCloseRemoteDataChannel",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llCloud",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llCollisionFilter",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llCollisionSound",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llCollisionSprite",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llComputeHash",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llCos",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llCreateCharacter",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llCreateKeyValue",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llCreateLink",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llCSV2List",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic CSV split"
+    },
+    {
+      "name": "llDamage",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llDataSizeKeyValue",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llDeleteCharacter",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llDeleteKeyValue",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llDeleteSubList",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic slice delete"
+    },
+    {
+      "name": "llDeleteSubString",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDerezObject",
+      "status": "missing",
+      "wiki_flags": "U",
+      "note": ""
+    },
+    {
+      "name": "llDetachFromAvatar",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llDetectedDamage",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llDetectedGrab",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDetectedGroup",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedKey",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedLinkNumber",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedOwner",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedPos",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedRezzer",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llDetectedRot",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedTouchBinormal",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDetectedTouchFace",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDetectedTouchNormal",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDetectedTouchPos",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDetectedTouchST",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDetectedTouchUV",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llDetectedType",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDetectedVel",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current simplified sensor detection record"
+    },
+    {
+      "name": "llDialog",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "records latest dialog and emits button responses through chat"
+    },
+    {
+      "name": "llDie",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llDumpList2String",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llEdgeOfWorld",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llEjectFromLand",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llEmail",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llEscapeURL",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default string"
+    },
+    {
+      "name": "llEuler2Rot",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llEvade",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llExecCharacterCmd",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llFabs",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llFindNotecardTextSync",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llFleeFrom",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llFloor",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llForceMouselook",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llFrand",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGenerateKey",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetAccel",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetAgentInfo",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetAgentLanguage",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo avatar language"
+    },
+    {
+      "name": "llGetAgentList",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "returns avatars in the current harness region"
+    },
+    {
+      "name": "llGetAgentSize",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetAlpha",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetAndResetTime",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default float"
+    },
+    {
+      "name": "llGetAnimation",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default string"
+    },
+    {
+      "name": "llGetAnimationList",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default list"
+    },
+    {
+      "name": "llGetAnimationOverride",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetAttached",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetAttachedList",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetAttachedListFiltered",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llGetBoundingBox",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default list"
+    },
+    {
+      "name": "llGetCameraAspect",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llGetCameraFOV",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llGetCameraPos",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llGetCameraRot",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default rotation"
+    },
+    {
+      "name": "llGetCenterOfMass",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llGetClosestNavPoint",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetColor",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetCreator",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads harness object creator key"
+    },
+    {
+      "name": "llGetDate",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetDayLength",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetDayOffset",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetDisplayName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo avatar display name"
+    },
+    {
+      "name": "llGetEnergy",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetEnv",
+      "status": "missing",
+      "wiki_flags": "U",
+      "note": ""
+    },
+    {
+      "name": "llGetEnvironment",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetExperienceDetails",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llGetExperienceErrorMessage",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llGetForce",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetFreeMemory",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetFreeURLs",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetGeometricCenter",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llGetGMTclock",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default float"
+    },
+    {
+      "name": "llGetHealth",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llGetHTTPHeader",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetInventoryAcquireTime",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "reads stored inventory metadata when present"
+    },
+    {
+      "name": "llGetInventoryCreator",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads stored inventory metadata when present"
+    },
+    {
+      "name": "llGetInventoryKey",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns inventory item UUID by name"
+    },
+    {
+      "name": "llGetInventoryName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns inventory item names by type/index"
+    },
+    {
+      "name": "llGetInventoryDesc",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads stored inventory metadata when present"
+    },
+    {
+      "name": "llGetInventoryNumber",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "counts current prim inventory by type"
+    },
+    {
+      "name": "llGetInventoryPermMask",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns stored inventory permissions or permissive default"
+    },
+    {
+      "name": "llGetInventoryType",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns inventory item type by name"
+    },
+    {
+      "name": "llGetKey",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns current harness object UUID"
+    },
+    {
+      "name": "llGetLandOwnerAt",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetLinkKey",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads prim UUID by link number"
+    },
+    {
+      "name": "llGetLinkMedia",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetLinkName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads prim name by link number"
+    },
+    {
+      "name": "llGetLinkNumber",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current prim link number"
+    },
+    {
+      "name": "llGetLinkNumberOfSides",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetLinkPrimitiveParams",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "supports a small model-backed PRIM_* subset"
+    },
+    {
+      "name": "llGetLinkSitFlags",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llGetListEntryType",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetListLength",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "Python len over list"
+    },
+    {
+      "name": "llGetLocalPos",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetLocalRot",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetMass",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns simplified object mass from prim count"
+    },
+    {
+      "name": "llGetMassMKS",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetMaxScaleFactor",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetMemoryLimit",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetMinScaleFactor",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetMoonDirection",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetMoonRotation",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetNextEmail",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llGetNotecardLine",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "queues dataserver event from stored notecard lines"
+    },
+    {
+      "name": "llGetNotecardLineSync",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llGetNumberOfNotecardLines",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "queues dataserver event with stored notecard line count"
+    },
+    {
+      "name": "llGetNumberOfPrims",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "counts prims in current linkset"
+    },
+    {
+      "name": "llGetNumberOfSides",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetObjectAnimationNames",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetObjectDesc",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads harness object description"
+    },
+    {
+      "name": "llGetObjectDetails",
+      "status": "partial",
+      "wiki_flags": "U",
+      "note": "supports a subset of OBJECT_* constants"
+    },
+    {
+      "name": "llGetObjectLinkKey",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetObjectMass",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns simplified object mass from prim count"
+    },
+    {
+      "name": "llGetObjectName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns harness object name"
+    },
+    {
+      "name": "llGetObjectPermMask",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetObjectPrimCount",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "counts prims for a known object"
+    },
+    {
+      "name": "llGetOmega",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetOwner",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns harness owner key"
+    },
+    {
+      "name": "llGetOwnerKey",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "resolves owner for known objects/agents"
+    },
+    {
+      "name": "llGetParcelDetails",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "supports a subset of PARCEL_DETAILS_* constants"
+    },
+    {
+      "name": "llGetParcelFlags",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetParcelMaxPrims",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetParcelMusicURL",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "reads current demo parcel music URL"
+    },
+    {
+      "name": "llGetParcelPrimCount",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetParcelPrimOwners",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetPermissions",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetPermissionsKey",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default key"
+    },
+    {
+      "name": "llGetPhysicsMaterial",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetPos",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "returns harness object position"
+    },
+    {
+      "name": "llGetPrimitiveParams",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "supports a small model-backed PRIM_* subset"
+    },
+    {
+      "name": "llGetPrimMediaParams",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionAgentCount",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionCorner",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo region corner"
+    },
+    {
+      "name": "llGetRegionDayLength",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionDayOffset",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionFlags",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionFPS",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo region FPS"
+    },
+    {
+      "name": "llGetRegionMoonDirection",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionMoonRotation",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo region name"
+    },
+    {
+      "name": "llGetRegionSunDirection",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionSunRotation",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetRegionTimeDilation",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo region time dilation"
+    },
+    {
+      "name": "llGetRegionTimeOfDay",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetRenderMaterial",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llGetRootPosition",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llGetRootRotation",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default rotation"
+    },
+    {
+      "name": "llGetRot",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads harness object rotation"
+    },
+    {
+      "name": "llGetScale",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads current prim scale"
+    },
+    {
+      "name": "llGetScriptName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default string"
+    },
+    {
+      "name": "llGetScriptState",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetSimStats",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetSimulatorHostname",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetSPMaxMemory",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetStartParameter",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetStartString",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llGetStaticPath",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetStatus",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetSubString",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic inclusive substring"
+    },
+    {
+      "name": "llGetSunDirection",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llGetSunRotation",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetTexture",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetTextureOffset",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetTextureRot",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetTextureScale",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetTime",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stubbed constant"
+    },
+    {
+      "name": "llGetTimeOfDay",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default float"
+    },
+    {
+      "name": "llGetTimestamp",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default string"
+    },
+    {
+      "name": "llGetTorque",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetUnixTime",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetUsedMemory",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llGetUsername",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGetVel",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads harness object velocity"
+    },
+    {
+      "name": "llGetVisualParams",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llGetWallclock",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGiveAgentInventory",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGiveInventory",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llGiveInventoryList",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llGiveMoney",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llGodLikeRezObject",
+      "status": "missing",
+      "wiki_flags": "G",
+      "note": ""
+    },
+    {
+      "name": "llGround",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default float"
+    },
+    {
+      "name": "llGroundContour",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llGroundNormal",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llGroundRepel",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llGroundSlope",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default vector"
+    },
+    {
+      "name": "llHash",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llHMAC",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llHTTPRequest",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stdlib HTTP request; simplified options/headers/events"
+    },
+    {
+      "name": "llHTTPResponse",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llInsertString",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llInstantMessage",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llIntegerToBase64",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llIsFriend",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llIsLinkGLTFMaterial",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llJson2List",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llJsonGetValue",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "basic JSON path lookup"
+    },
+    {
+      "name": "llJsonSetValue",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llJsonValueType",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llKey2Name",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "resolves known avatar/object names"
+    },
+    {
+      "name": "llKeyCountKeyValue",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llKeysKeyValue",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llLinear2sRGB",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinkAdjustSoundVolume",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinkParticleSystem",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llLinkPlaySound",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataAvailable",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataCountFound",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataCountKeys",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataDelete",
+      "status": "implemented",
+      "wiki_flags": "I",
+      "note": "in-memory linkset data"
+    },
+    {
+      "name": "llLinksetDataDeleteFound",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataDeleteProtected",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataFindKeys",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataListKeys",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataRead",
+      "status": "implemented",
+      "wiki_flags": "I",
+      "note": "in-memory linkset data"
+    },
+    {
+      "name": "llLinksetDataReadProtected",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinksetDataReset",
+      "status": "implemented",
+      "wiki_flags": "I",
+      "note": "in-memory linkset data"
+    },
+    {
+      "name": "llLinksetDataWrite",
+      "status": "implemented",
+      "wiki_flags": "I",
+      "note": "in-memory linkset data"
+    },
+    {
+      "name": "llLinksetDataWriteProtected",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinkSetSoundQueueing",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinkSetSoundRadius",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinkSitTarget",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llLinkStopSound",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llList2CSV",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic join"
+    },
+    {
+      "name": "llList2Float",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic indexed conversion"
+    },
+    {
+      "name": "llList2Integer",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic indexed conversion"
+    },
+    {
+      "name": "llList2Json",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llList2Key",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic indexed conversion"
+    },
+    {
+      "name": "llList2List",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "basic and wrap slice handling only"
+    },
+    {
+      "name": "llList2ListSlice",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llList2ListStrided",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llList2Rot",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic indexed conversion"
+    },
+    {
+      "name": "llList2String",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic indexed conversion"
+    },
+    {
+      "name": "llList2Vector",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic indexed conversion"
+    },
+    {
+      "name": "llListen",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "basic chat listener registration"
+    },
+    {
+      "name": "llListenControl",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llListenRemove",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "basic listener removal"
+    },
+    {
+      "name": "llListFindList",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic contiguous search"
+    },
+    {
+      "name": "llListFindListNext",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llListFindStrided",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llListInsertList",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llListRandomize",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llListReplaceList",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "basic slice replace"
+    },
+    {
+      "name": "llListSort",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llListSortStrided",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llListStatistics",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llLoadURL",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llLog",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llLog10",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llLookAt",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llLoopSound",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stores looping sound state and history without audio playback"
+    },
+    {
+      "name": "llLoopSoundMaster",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llLoopSoundSlave",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llMakeExplosion",
+      "status": "partial",
+      "wiki_flags": "D",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llMakeFire",
+      "status": "partial",
+      "wiki_flags": "D",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llMakeFountain",
+      "status": "partial",
+      "wiki_flags": "D",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llMakeSmoke",
+      "status": "partial",
+      "wiki_flags": "D",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llManageEstateAccess",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llMapBeacon",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llMapDestination",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llMD5String",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llMessageLinked",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "queues link_message in linkset; ignores target details"
+    },
+    {
+      "name": "llMinEventDelay",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llModifyLand",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llModPow",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llMoveToTarget",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llName2Key",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llNavigateTo",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llOffsetTexture",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llOpenFloater",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llOpenRemoteDataChannel",
+      "status": "partial",
+      "wiki_flags": "D",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llOrd",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llOverMyLand",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llOwnerSay",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "prints to stdout"
+    },
+    {
+      "name": "llParcelMediaCommandList",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llParcelMediaQuery",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llParseString2List",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llParseStringKeepNulls",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llParticleSystem",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stores particle parameters on the current prim without rendering"
+    },
+    {
+      "name": "llPassCollisions",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llPassTouches",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llPatrolPoints",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llPlaySound",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stores current sound state and history without audio playback"
+    },
+    {
+      "name": "llPlaySoundSlave",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llPointAt",
+      "status": "missing",
+      "wiki_flags": "R",
+      "note": ""
+    },
+    {
+      "name": "llPow",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llPreloadSound",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "records preloaded sound names on the current prim"
+    },
+    {
+      "name": "llPursue",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llPushObject",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llReadKeyValue",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llRefreshPrimURL",
+      "status": "partial",
+      "wiki_flags": "D",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRegionSay",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "routes through harness chat without range semantics"
+    },
+    {
+      "name": "llRegionSayTo",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "routes through harness chat without private delivery semantics"
+    },
+    {
+      "name": "llReleaseCamera",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llReleaseControls",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llReleaseURL",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRemoteDataReply",
+      "status": "partial",
+      "wiki_flags": "D",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRemoteDataSetRegion",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llRemoteLoadScript",
+      "status": "missing",
+      "wiki_flags": "R",
+      "note": ""
+    },
+    {
+      "name": "llRemoteLoadScriptPin",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRemoveFromLandBanList",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRemoveFromLandPassList",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRemoveInventory",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRemoveVehicleFlags",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llReplaceAgentEnvironment",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llReplaceEnvironment",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llReplaceSubString",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llRequestAgentData",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default key"
+    },
+    {
+      "name": "llRequestDisplayName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "synchronous name lookup instead of dataserver event"
+    },
+    {
+      "name": "llRequestExperiencePermissions",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llRequestInventoryData",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default key"
+    },
+    {
+      "name": "llRequestPermissions",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRequestSecureURL",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default key"
+    },
+    {
+      "name": "llRequestSimulatorData",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default key"
+    },
+    {
+      "name": "llRequestURL",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default key"
+    },
+    {
+      "name": "llRequestUserKey",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llRequestUsername",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "synchronous name lookup instead of dataserver event"
+    },
+    {
+      "name": "llResetAnimationOverride",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llResetLandBanList",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llResetLandPassList",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llResetOtherScript",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llResetScript",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llResetTime",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stubbed no-op"
+    },
+    {
+      "name": "llReturnObjectsByID",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llReturnObjectsByOwner",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llRezAtRoot",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "clones stored object inventory into the current region with a runtime cap"
+    },
+    {
+      "name": "llRezObject",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "clones stored object inventory into the current region with a runtime cap"
+    },
+    {
+      "name": "llRezObjectWithParams",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llRot2Angle",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRot2Axis",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRot2Euler",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRot2Fwd",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRot2Left",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRot2Up",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRotateTexture",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRotBetween",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRotLookAt",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llRotTarget",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRotTargetRemove",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llRound",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSameGroup",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSay",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "routes chat in harness or prints to stdout"
+    },
+    {
+      "name": "llScaleByFactor",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llScaleTexture",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llScriptDanger",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llScriptProfiler",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSendRemoteData",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llSensor",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "queues simplified sensor/no_sensor events from demo region entities"
+    },
+    {
+      "name": "llSensorRemove",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "clears simplified repeated sensor registration"
+    },
+    {
+      "name": "llSensorRepeat",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stores and queues simplified repeated sensor scans"
+    },
+    {
+      "name": "llSetAgentEnvironment",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llSetAgentRot",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llSetAlpha",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetAngularVelocity",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetAnimationOverride",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetBuoyancy",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetCameraAtOffset",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetCameraEyeOffset",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetCameraParams",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetClickAction",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetColor",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetContentType",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetDamage",
+      "status": "partial",
+      "wiki_flags": "U",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetEnvironment",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetForce",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetForceAndTorque",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetLinkGLTFOverrides",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llSetGroundTexture",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llSetHoverHeight",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetInventoryPermMask",
+      "status": "missing",
+      "wiki_flags": "G",
+      "note": ""
+    },
+    {
+      "name": "llSetKeyframedMotion",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetLinkAlpha",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetLinkCamera",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetLinkColor",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetLinkMedia",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetLinkPrimitiveParams",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "supports a small model-backed PRIM_* subset"
+    },
+    {
+      "name": "llSetLinkPrimitiveParamsFast",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "supports a small model-backed PRIM_* subset"
+    },
+    {
+      "name": "llSetLinkRenderMaterial",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llSetLinkSitFlags",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llSetLinkTexture",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetLinkTextureAnim",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSetLocalRot",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetMemoryLimit",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetObjectDesc",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "writes harness object description"
+    },
+    {
+      "name": "llSetObjectName",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "writes harness object name"
+    },
+    {
+      "name": "llSetObjectPermMask",
+      "status": "missing",
+      "wiki_flags": "G",
+      "note": ""
+    },
+    {
+      "name": "llSetParcelMusicURL",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "writes current demo parcel music URL"
+    },
+    {
+      "name": "llSetPayPrice",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetPhysicsMaterial",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetPos",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "sets harness object position"
+    },
+    {
+      "name": "llSetPrimitiveParams",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "supports a small model-backed PRIM_* subset"
+    },
+    {
+      "name": "llSetPrimMediaParams",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSetPrimURL",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llSetRegionPos",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSetRemoteScriptAccessPin",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetRenderMaterial",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llSetRot",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "sets harness object rotation"
+    },
+    {
+      "name": "llSetScale",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "sets current prim scale"
+    },
+    {
+      "name": "llSetScriptState",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetSitText",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetSoundQueueing",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetSoundRadius",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSetStatus",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetText",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stores floating text state on the current prim"
+    },
+    {
+      "name": "llSetTexture",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetTextureAnim",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stores texture animation parameters on the current prim"
+    },
+    {
+      "name": "llSetTimerEvent",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "queues timer events in tick loop"
+    },
+    {
+      "name": "llSetTorque",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetTouchText",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetVehicleFlags",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSetVehicleFloatParam",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSetVehicleRotationParam",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSetVehicleType",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSetVehicleVectorParam",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSetVelocity",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSHA1String",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSHA256String",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llShout",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "routes through harness chat without range semantics"
+    },
+    {
+      "name": "llSignRSA",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llSin",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSitOnLink",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSitTarget",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSleep",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llSound",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llSoundPreload",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llSqrt",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llsRGB2Linear",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llStartAnimation",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llStartObjectAnimation",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llStopAnimation",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llStopObjectAnimation",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llStopHover",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llStopLookAt",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llStopMoveToTarget",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llStopPointAt",
+      "status": "missing",
+      "wiki_flags": "R",
+      "note": ""
+    },
+    {
+      "name": "llStopSound",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "clears current stored sound state"
+    },
+    {
+      "name": "llStringLength",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "Python string length"
+    },
+    {
+      "name": "llStringToBase64",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llStringTrim",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llSubStringIndex",
+      "status": "implemented",
+      "wiki_flags": "",
+      "note": "Python substring search"
+    },
+    {
+      "name": "llTakeCamera",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llTakeControls",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llTan",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llTarget",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default integer"
+    },
+    {
+      "name": "llTargetedEmail",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llTargetOmega",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llTargetRemove",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llTeleportAgent",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llTeleportAgentGlobalCoords",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llTeleportAgentHome",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llTextBox",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llToLower",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llToUpper",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llTransferLindenDollars",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llTransferOwnership",
+      "status": "missing",
+      "wiki_flags": "NEW I",
+      "note": ""
+    },
+    {
+      "name": "llTriggerSound",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stores triggered sound state and history without audio playback"
+    },
+    {
+      "name": "llTriggerSoundLimited",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llUnescapeURL",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llUnSit",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llUpdateCharacter",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llUpdateKeyValue",
+      "status": "missing",
+      "wiki_flags": "X I",
+      "note": ""
+    },
+    {
+      "name": "llVecDist",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llVecMag",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llVecNorm",
+      "status": "missing",
+      "wiki_flags": "",
+      "note": ""
+    },
+    {
+      "name": "llVerifyRSA",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llVolumeDetect",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llWanderWithin",
+      "status": "partial",
+      "wiki_flags": "I",
+      "note": "stub: prints not implemented and returns default void"
+    },
+    {
+      "name": "llWater",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo region water height"
+    },
+    {
+      "name": "llWhisper",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "routes through harness chat without range semantics"
+    },
+    {
+      "name": "llWind",
+      "status": "partial",
+      "wiki_flags": "",
+      "note": "reads demo region wind vector"
+    },
+    {
+      "name": "llWorldPosToHUD",
+      "status": "missing",
+      "wiki_flags": "NEW",
+      "note": ""
+    },
+    {
+      "name": "llXorBase64",
+      "status": "missing",
+      "wiki_flags": "I",
+      "note": ""
+    },
+    {
+      "name": "llXorBase64Strings",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    },
+    {
+      "name": "llXorBase64StringsCorrect",
+      "status": "missing",
+      "wiki_flags": "D",
+      "note": ""
+    }
+  ]
+}

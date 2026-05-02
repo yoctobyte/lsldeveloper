@@ -29,7 +29,7 @@ default {
 }
 """
 
-def test_avatar_chat():
+def test_avatar_chat(capsys):
     print("--- Setting up Simulator ---")
     world = World()
     region = Region("Test Region")
@@ -78,8 +78,7 @@ def test_avatar_chat():
         loop.tick(0.1)
     
     print("\n--- Verification ---")
-    # We should see the debug output from llSay in the console
-    print("Test finished. Check output for 'Hello Test User!'")
+    assert "Hello Test User!" in capsys.readouterr().out
 
 if __name__ == "__main__":
     test_avatar_chat()

@@ -146,6 +146,9 @@ class Parser:
             self.consume(TokenType.SEMICOLON, "Expected ';'")
             return LabelStmt(label)
             
+        if self.match(TokenType.SEMICOLON):
+            return BlockStmt([]) # Treat empty statement as empty block
+            
         # Check for variable declaration: type identifier [= expr];
         if self.peek().type.name.startswith("T_"):
             type_name = self.advance().value
@@ -437,8 +440,7 @@ class Parser:
             
             self.consume(TokenType.GT, "Expected '>'")
             return VectorLiteral(x, y, z)
-        except SyntaxError as e:
-            print(f"DEBUG: Vector parse failed: {e}")
+        except SyntaxError:
             self.pos = saved_pos
             return None
 

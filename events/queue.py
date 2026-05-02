@@ -6,6 +6,7 @@ from typing import Any, List, Optional
 class LSLEvent:
     name: str
     args: List[Any]
+    detected: Optional[List[dict[str, Any]]] = None
 
 class EventQueue:
     MAX_SIZE = 64
@@ -27,6 +28,9 @@ class EventQueue:
 
     def clear(self):
         self.queue.clear()
+
+    def empty(self):
+        return len(self.queue) == 0
 
     def __len__(self):
         return len(self.queue)

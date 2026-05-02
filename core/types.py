@@ -114,14 +114,21 @@ def lsl_format(val) -> str:
     return str(val)
 
 def cast_to_lsl_type(val, target_type: str):
-    if target_type == "string":
-        return lsl_format(val)
+    if target_type == "string" or target_type == "key":
+        if isinstance(val, LSLList):
+            return ",".join(map(str, val))
+        if isinstance(val, (LSLVector, LSLRotation)):
+            return str(val)
+        if isinstance(val, bool):
+            return "1" if val else "0"
+        return str(val)
     if target_type == "integer":
         if isinstance(val, (int, float)):
             return int(val)
         if isinstance(val, str):
             try:
-                return int(val)
+                # Handle cases like "1.0" or " 1 "
+                return int(float(val.strip()))
             except ValueError:
                 return 0
         return 0
