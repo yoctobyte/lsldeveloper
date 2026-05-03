@@ -34,6 +34,8 @@ class LslIdeApp(tk.Tk):
         self.lines_var = tk.StringVar(value="Lines: 0")
         self.dialog_message_var = tk.StringVar(value="No active dialog")
         self.problem_rows: list[object] = []
+        self._dialog_signature = None
+        self._problems_signature = None
         self._fps_window_start = time.monotonic()
         self._fps_window_ticks = 0
         self._build_ui()
@@ -224,9 +226,22 @@ class LslIdeApp(tk.Tk):
     def _refresh_dialog_panel(self):
         if not hasattr(self, "dialog_buttons"):
             return
+        dialog = getattr(self.runtime.world, "latest_dialog", None) if self.runtime else None
+        signature = None
+        if dialog:
+            signature = (
+                dialog.get("source_key", ""),
+                dialog.get("source_name", ""),
+                int(dialog["channel"]),
+                dialog["message"],
+                tuple(dialog["buttons"]),
+            )
+        if signature == self._dialog_signature:
+            return
+        self._dialog_signature = signature
+
         for child in self.dialog_buttons.winfo_children():
             child.destroy()
-        dialog = getattr(self.runtime.world, "latest_dialog", None) if self.runtime else None
         if not dialog:
             self.dialog_message_var.set("No active dialog")
             ttk.Button(self.dialog_buttons, text="No buttons", state=tk.DISABLED).pack(side=tk.LEFT)
@@ -242,13 +257,29 @@ class LslIdeApp(tk.Tk):
 
     def _clear_problems(self):
         self.problem_rows = []
+        self._problems_signature = None
         if hasattr(self, "problems"):
             for item in self.problems.get_children():
                 self.problems.delete(item)
 
     def _refresh_problems(self):
-        self._clear_problems()
         diagnostics = getattr(self.runtime.world, "diagnostics", []) if self.runtime else []
+        signature = tuple(
+            (
+                diagnostic.severity,
+                diagnostic.phase,
+                diagnostic.object_name,
+                diagnostic.script_name,
+                diagnostic.line,
+                diagnostic.column,
+                diagnostic.message,
+            )
+            for diagnostic in diagnostics
+        )
+        if signature == self._problems_signature:
+            return
+        self._clear_problems()
+        self._problems_signature = signature
         for diagnostic in diagnostics:
             self.problem_rows.append(diagnostic)
             self.problems.insert(
@@ -557,20 +588,27 @@ class LslIdeApp(tk.Tk):
             self.append_console(ConsoleMessage("debug", "runtime started"))
         except Exception as exc:
             self.runtime = None
+            self._refresh_dialog_panel()
+            self._refresh_problems()
             self._set_status("Runtime error")
             self.append_console(ConsoleMessage("error", str(exc)))
+
+    def _tick_runtime_once(self, status_text: str | None = None):
+        if not self.runtime:
+            return
+        self.runtime.tick()
+        self._refresh_dialog_panel()
+        self._refresh_problems()
+        self._record_tick()
+        if status_text and not self.runtime.world.diagnostics:
+            self._set_status(status_text)
 
     def step_once(self):
         if not self.runtime:
             self.run_project()
             return
         try:
-            self.runtime.tick()
-            self._refresh_dialog_panel()
-            self._refresh_problems()
-            self._record_tick()
-            if not self.runtime.world.diagnostics:
-                self._set_status(f"Stepped frame {self.runtime.loop.tick_count}")
+            self._tick_runtime_once(f"Stepped frame {self.runtime.loop.tick_count + 1}")
         except Exception as exc:
             self._stop_auto_tick()
             self._set_status("Runtime error")
@@ -618,7 +656,10 @@ class LslIdeApp(tk.Tk):
         obj = self.selected_object()
         if self.runtime and obj:
             self.runtime.touch(obj.name)
-            self.step_once()
+            if self.auto_tick:
+                self._set_status(f"Touched {obj.name}")
+            else:
+                self.step_once()
 
     def say_input(self):
         text = self.input_var.get()
@@ -633,12 +674,10 @@ class LslIdeApp(tk.Tk):
             return
         if self.runtime:
             self.runtime.say(text, channel)
-            self.runtime.tick()
-            self._refresh_dialog_panel()
-            self._refresh_problems()
-            self._record_tick()
-            if not self.runtime.world.diagnostics:
+            if self.auto_tick:
                 self._set_status(f"Sent chat on channel {channel}")
+            else:
+                self._tick_runtime_once(f"Sent chat on channel {channel}")
         self.input_var.set("")
 
     def clear_console(self):
@@ -665,12 +704,10 @@ class LslIdeApp(tk.Tk):
         if not self.runtime:
             return
         self.runtime.dialog_response(button)
-        self.runtime.tick()
-        self._refresh_dialog_panel()
-        self._refresh_problems()
-        self._record_tick()
-        if not self.runtime.world.diagnostics:
+        if self.auto_tick:
             self._set_status(f"Dialog response: {button}")
+        else:
+            self._tick_runtime_once(f"Dialog response: {button}")
 
     def on_editor_modified(self, _event=None):
         if self.editor.edit_modified():
