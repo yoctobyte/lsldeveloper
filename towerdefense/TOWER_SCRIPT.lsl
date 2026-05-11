@@ -10,6 +10,20 @@ integer SNIPER_TOWER = 4;
 integer FOG_TOWER = 5;
 integer TOXIC_TOWER = 6;
 integer TESLA_TOWER = 7;
+integer EMP_TOWER   = 8;
+
+// Damage type bitflags — packed into every attack message so walkers apply affinity
+integer DTYPE_BALLISTIC = 0x01;
+integer DTYPE_LASER     = 0x02;
+integer DTYPE_EMP       = 0x04;
+integer DTYPE_POISON    = 0x08;
+integer DTYPE_DIGITAL   = 0x10;
+integer DTYPE_PIERCING  = 0x20;
+
+// Damage type per tower index (index = tower type constant)
+// GENERAL=0, PLANT=0, DEFENSE=0, BALLISTIC=1, SNIPER=LASER|PIERCING=34,
+// FOG=POISON=8, TOXIC=POISON=8, TESLA=EMP=4, EMP=4
+list TOWER_DTYPES = [0, 0, 0, 1, 34, 8, 8, 4, 4];
 
 // Tower names and blueprint purchase cost (index = type constant)
 list TOWER_TYPES = ["Wall", "Energy plant", "Defense tower", "Ballistic", "Sniper", "Fog", "Toxic", "Tesla", "EMP"];
@@ -45,6 +59,8 @@ float gTurretRange = 2.8;
 float gTurretMissChance = 0.95;
 float gTowerHealth = 1.0;   // 1.0 = full, 0.0 = destroyed; scales attack effectiveness
 integer gPendingAoEDmg;     // set before llSensor() for AoE pass-through to sensor()
+integer gPendingAoEDtype;   // dtype for the pending AoE pass
+integer gDamageType;        // current tower damage type from TOWER_DTYPES
 
 // Effect names (must match TOWER_FX.lsl)
 string TOUCH_FX     = "IDLEEFFECT";
@@ -166,7 +182,8 @@ AoEPulse(string effectName, integer energyCost) {
     BroadcastDelta("ENERGY", -energyCost);
     gEnergy -= energyCost;
     SendEffect(effectName, "", NULL_KEY);
-    gPendingAoEDmg = (integer)(gAttackPower * gTowerHealth);
+    gPendingAoEDmg   = (integer)(gAttackPower * gTowerHealth);
+    gPendingAoEDtype = gDamageType;
     llSensor("GAME_WALKER", NULL_KEY, SCRIPTED | ACTIVE | PASSIVE, gTurretRange, PI);
 }
 
@@ -204,7 +221,9 @@ TurretAttack() {
 
             if (llFrand(1.0) >= gTurretMissChance) {
                 llRegionSay(GAME_CHANNEL + 2,
-                    "DMG = " + (string)effectiveDmg + " " + (string)targetId);
+                    "DMG = " + (string)effectiveDmg + " " + (string)targetId + " " + (string)gDamageType);
+                if (gTowerType == TESLA_TOWER)
+                    llRegionSay(GAME_CHANNEL + 2, "SLOW = 0.3 3.0 " + (string)targetId);
                 string fx = PROJ_FX;
                 if (gTowerType == SNIPER_TOWER) fx = SNIPER_FX;
                 else if (gTowerType == TESLA_TOWER) fx = TESLA_FX;
@@ -342,6 +361,7 @@ state tower {
                         BroadcastDelta("ENERGY", -25); // construction surge
                         gFunds -= cost;
                         gTowerType = i;
+                        gDamageType = llList2Integer(TOWER_DTYPES, i);
                         gLevel = 1;
                         RecalcStats();
                         llSetTimerEvent(gTurretInterval);
@@ -385,9 +405,18 @@ state tower {
         if (gPendingAoEDmg > 0) {
             integer i;
             for (i = 0; i < n; ++i) {
-                if (~llSubStringIndex(llDetectedName(i), "walker"))
-                    llRegionSay(GAME_CHANNEL + 2,
-                        "DMG = " + (string)gPendingAoEDmg + " " + (string)llDetectedKey(i));
+                if (~llSubStringIndex(llDetectedName(i), "walker")) {
+                    key wkey = llDetectedKey(i);
+                    if (gTowerType == TOXIC_TOWER)
+                        llRegionSay(GAME_CHANNEL + 2,
+                            "DOT = " + (string)gPendingAoEDmg + " 5 " + (string)wkey + " " + (string)gPendingAoEDtype);
+                    else {
+                        // Fog: slow movement + small instant hit
+                        llRegionSay(GAME_CHANNEL + 2, "SLOW = 0.4 5.0 " + (string)wkey);
+                        llRegionSay(GAME_CHANNEL + 2,
+                            "DMG = " + (string)gPendingAoEDmg + " " + (string)wkey + " " + (string)gPendingAoEDtype);
+                    }
+                }
             }
             gPendingAoEDmg = 0;
         }

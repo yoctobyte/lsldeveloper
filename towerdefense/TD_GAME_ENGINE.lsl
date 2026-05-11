@@ -87,6 +87,7 @@ integer gGridOptions = 0x52;  // Bit flags; low 4 bits = border
 list gRezzedTowers;
 list gOccupiedSquares;
 integer gLevelTransitionCountdown = -1;
+integer gWalkerTypeMask = 1;    // WTYPE flags for current level; set from notecard type= field
 
 key gLevelsNotecard = "TD_GAME_LEVELS";
 integer gNotecardLine = 0;    // current read position; advances past comments/blanks
@@ -207,7 +208,17 @@ RezObject(string objName, vector relPos, rotation rot) {
     
     // 3. Write target position to LSD so the object can "self-transport" on rez.
     llLinksetDataWrite("REZZ_POS_" + (string)gRezSequence, (string)targetRegionPos);
-    
+    // For walkers: write per-spawn type so each walker knows its own WTYPE bitmask.
+    // Mixed levels (gWalkerTypeMask==3) randomly assign biological or mechanical per spawn.
+    if (objName == GAME_WALKER_OBJECT) {
+        integer spawnType = gWalkerTypeMask;
+        if (gWalkerTypeMask == 3) {
+            if (llFrand(1.0) < 0.5) spawnType = 1;  // WTYPE_BIOLOGICAL
+            else spawnType = 2;                       // WTYPE_MECHANICAL
+        }
+        llLinksetDataWrite("WALKER_WTYPE_" + (string)gRezSequence, (string)spawnType);
+    }
+
     // 4. Rez the object at the BOARD's position (always within 10m range).
     if (llGetInventoryType(objName) != INVENTORY_OBJECT) {
          llOwnerSay("INVENTORY " + objName + " not found");
@@ -260,6 +271,20 @@ ReadNextLevelLine() {
 ReadLevelData(integer level) {
     // level param kept for signature compat; actual read uses gNotecardLine cursor
     ReadNextLevelLine();
+}
+
+// Map notecard type strings to WTYPE bitmasks.
+// "mixed" (=3) triggers per-spawn randomisation between BIOLOGICAL and MECHANICAL in RezObject.
+integer WalkerTypeMask(string t) {
+    t = llToLower(t);
+    if (t == "ant")      return 1;   // WTYPE_BIOLOGICAL
+    if (t == "fly")      return 9;   // WTYPE_BIOLOGICAL | WTYPE_AERIAL
+    if (t == "scorpion") return 17;  // WTYPE_BIOLOGICAL | WTYPE_ARMORED
+    if (t == "drone")    return 10;  // WTYPE_MECHANICAL | WTYPE_AERIAL
+    if (t == "tank")     return 18;  // WTYPE_MECHANICAL | WTYPE_ARMORED
+    if (t == "boss")     return 50;  // WTYPE_MECHANICAL | WTYPE_ARMORED | WTYPE_INFECTED
+    if (t == "mixed")    return 3;   // signals per-spawn random pick in RezObject
+    return 1;
 }
 
 // Update the score vector based on level, time efficiency, and resource management.
@@ -563,7 +588,7 @@ default {
             string v = llStringTrim(llList2String(kv, 1), STRING_TRIM);
             if      (k == "theme") gBackgroundTheme = v;
             else if (k == "num")   { WALKERS_PER_LEVEL = (integer)v; gWalkerCount = (integer)v; }
-            else if (k == "type")  gWalkerName = v;
+            else if (k == "type")  { gWalkerName = v; gWalkerTypeMask = WalkerTypeMask(v); llLinksetDataWrite("WALKER_TYPE", (string)gWalkerTypeMask); }
             else if (k == "hp")    gWalkerHP = (integer)v;
             else if (k == "speed") gWalkerSpeed = (float)v;
         }

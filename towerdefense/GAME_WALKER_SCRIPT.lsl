@@ -13,6 +13,22 @@ integer production = FALSE;
 
 integer temporary = FALSE;
 
+// Walker type bitflags — combined to describe this walker's nature
+integer WTYPE_BIOLOGICAL = 0x01;
+integer WTYPE_MECHANICAL = 0x02;
+integer WTYPE_PHANTOM    = 0x04;
+integer WTYPE_AERIAL     = 0x08;
+integer WTYPE_ARMORED    = 0x10;
+integer WTYPE_INFECTED   = 0x20;
+
+// Damage type bitflags — must match TOWER_SCRIPT DTYPE_* constants
+integer DTYPE_BALLISTIC  = 0x01;
+integer DTYPE_LASER      = 0x02;
+integer DTYPE_EMP        = 0x04;
+integer DTYPE_POISON     = 0x08;
+integer DTYPE_DIGITAL    = 0x10;
+integer DTYPE_PIERCING   = 0x20;
+
 float gPathDuration;
 integer gStartTimeStamp;
 
@@ -119,6 +135,11 @@ integer gWalkerLife = 100;
 integer gWalkerShield = 10;
 float gWalkerSpeed = 1.0;
 integer gRezLevel = 1;      // decoded from start_param; walker computes own stats
+integer gWalkerType = 1;    // WTYPE bitflags read from LSD per wave/spawn
+integer gDoTDmg   = 0;      // damage-over-time damage per tick
+integer gDoTTicks = 0;      // DoT ticks remaining
+integer gDoTDtype = 0;      // DoT damage type for affinity
+integer gSlowEndTime = 0;   // unix timestamp when slow expires (0=none)
 vector gStartPosition;
 integer gWalkerState = 0;
 key gOwner;
@@ -131,6 +152,42 @@ integer WalkerHP(integer level) {
 }
 float WalkerSpeed(integer level) {
     return llFmin(1.5, 0.4 + 0.1 * (float)(level - 1));
+}
+
+// Returns damage multiplier based on walker type vs. attack damage type.
+// Both arguments are bitfield masks; multiple bits can be set simultaneously.
+float DamageMultiplier(integer wtype, integer dtype) {
+    float mult = 1.0;
+    // EMP: devastating vs mechanical, negligible vs biological
+    if (dtype & DTYPE_EMP) {
+        if (wtype & WTYPE_MECHANICAL)      mult *= 2.5;
+        else if (wtype & WTYPE_BIOLOGICAL) mult *= 0.1;
+    }
+    // Poison: effective vs biological, weak vs mechanical
+    if (dtype & DTYPE_POISON) {
+        if (wtype & WTYPE_BIOLOGICAL) mult *= 2.0;
+        if (wtype & WTYPE_MECHANICAL) mult *= 0.25;
+    }
+    // Digital: damages AI systems, harmless to organic
+    if (dtype & DTYPE_DIGITAL) {
+        if (wtype & WTYPE_MECHANICAL)      mult *= 2.0;
+        else                               mult *= 0.2;
+    }
+    // Laser cuts through armor well
+    if (dtype & DTYPE_LASER)    { if (wtype & WTYPE_ARMORED) mult *= 1.5; }
+    // Ballistic is blunted by armor and hard to aim at aerial targets
+    if (dtype & DTYPE_BALLISTIC) {
+        if (wtype & WTYPE_ARMORED) mult *= 0.5;
+        if (wtype & WTYPE_AERIAL)  mult *= 0.5;
+    }
+    // Piercing punches through armor
+    if (dtype & DTYPE_PIERCING) { if (wtype & WTYPE_ARMORED) mult *= 2.0; }
+    // Phantoms are immune to physical attacks but vulnerable to energy
+    if (wtype & WTYPE_PHANTOM) {
+        if (dtype & (DTYPE_LASER | DTYPE_EMP | DTYPE_DIGITAL)) mult *= 1.5;
+        else return 0.0;
+    }
+    return mult;
 }
 
 // Functions
@@ -345,6 +402,16 @@ state fetchParams {
         string finishStr = llLinksetDataRead("FINISH_POS");
         if (finishStr != "") gFinishPos = (vector)finishStr;
 
+        // Walker type: per-spawn key first (handles mixed waves), then wave-level fallback
+        string wt = llLinksetDataRead("WALKER_WTYPE_" + (string)seq);
+        if (wt != "") {
+            gWalkerType = (integer)wt;
+            llLinksetDataDelete("WALKER_WTYPE_" + (string)seq);
+        } else {
+            wt = llLinksetDataRead("WALKER_TYPE");
+            if (wt != "") gWalkerType = (integer)wt;
+        }
+
         llListen(GAME_CHANNEL, "", NULL_KEY, "START");
         llSetTimerEvent(30.0);
     }
@@ -388,22 +455,35 @@ state active {
     }
     
     listen(integer channel, string name, key id, string message) {
-        if (channel == GAME_CHANNEL + 2) {
-            if (llToLower(message) == "td game stop") {
-                llDie();
-                return;
-            }
-            if (llGetSubString(message, 0, 5) != "DMG = ") return;
-            list tokens = llParseString2List(message, [" "], []);
-            integer hitValue = (integer)llList2String(tokens, 2);
-            key targetId = (key)llList2String(tokens, 3);
-            if (targetId != llGetKey()) return;
-            gWalkerLife -= hitValue;
-            if (gWalkerLife <= 0) {
-                MoveToStartPosition();
-                gWalkerState = 2;
-                state defeated;
-            }
+        if (channel != GAME_CHANNEL + 2) return;
+        if (llToLower(message) == "td game stop") { llDie(); return; }
+        list tokens = llParseString2List(message, [" "], []);
+        string prefix = llGetSubString(message, 0, 5);
+        // DMG = <dmg> <uuid> [<dtype>]
+        if (prefix == "DMG = ") {
+            if ((key)llList2String(tokens, 3) != llGetKey()) return;
+            integer dtype = (integer)llList2String(tokens, 4); // 0 if absent = no affinity
+            gWalkerLife -= (integer)((integer)llList2String(tokens, 2) * DamageMultiplier(gWalkerType, dtype));
+            if (gWalkerLife <= 0) { MoveToStartPosition(); gWalkerState = 2; state defeated; return; }
+            return;
+        }
+        // DOT = <dmg> <ticks> <uuid> <dtype>
+        if (prefix == "DOT = ") {
+            if ((key)llList2String(tokens, 4) != llGetKey()) return;
+            gDoTDmg   = (integer)llList2String(tokens, 2);
+            gDoTTicks = (integer)llList2String(tokens, 3);
+            gDoTDtype = (integer)llList2String(tokens, 5);
+            return;
+        }
+        // SLOW = <factor> <duration> <uuid>
+        if (llGetSubString(message, 0, 6) == "SLOW = ") {
+            if ((key)llList2String(tokens, 4) != llGetKey()) return;
+            float factor   = (float)llList2String(tokens, 2);
+            float duration = (float)llList2String(tokens, 3);
+            integer newEnd = llGetUnixTime() + (integer)(duration * (1.0 - factor));
+            if (newEnd > gSlowEndTime) gSlowEndTime = newEnd;
+            llSetKeyframedMotion([], [KFM_COMMAND, KFM_CMD_PAUSE]);
+            llSetTimerEvent(1.0);
         }
     }
     
@@ -418,9 +498,21 @@ state active {
         state survived;
     }
     
-    timer() {  
-        SetHoverText();             
-        
+    timer() {
+        // Slow effect expiry — resume KFM when the pause window is over
+        if (gSlowEndTime > 0 && llGetUnixTime() >= gSlowEndTime) {
+            gSlowEndTime = 0;
+            llSetKeyframedMotion([], [KFM_COMMAND, KFM_CMD_PLAY]);
+            llSetTimerEvent(1.5);
+        }
+        // DoT tick — apply damage once per timer period
+        if (gDoTTicks > 0) {
+            gWalkerLife -= (integer)(gDoTDmg * DamageMultiplier(gWalkerType, gDoTDtype));
+            if (--gDoTTicks == 0) gDoTDmg = 0;
+            if (gWalkerLife <= 0) { MoveToStartPosition(); gWalkerState = 2; state defeated; return; }
+        }
+        SetHoverText();
+
         // --- Wall Blocking Logic ---
         vector pos = llGetPos();
         // Read board params from LSD to calculate our grid position
