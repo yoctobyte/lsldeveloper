@@ -117,10 +117,21 @@ list MOTION_PATH = [
 // Variables
 integer gWalkerLife = 100;
 integer gWalkerShield = 10;
-float gWalkerSpeed = 1.0; // 1.0 = baseline 60s path; loaded from LSD per level
+float gWalkerSpeed = 1.0;
+integer gRezLevel = 1;      // decoded from start_param; walker computes own stats
 vector gStartPosition;
 integer gWalkerState = 0;
 key gOwner;
+
+// HP and speed formulae (level 1 baseline matches notecard values)
+//   HP:    30 * 1.5^(level-1)   →  30 / 45 / 67 / 101 / 151 / … / ~14 000 at 15
+//   Speed: min(1.5, 0.4 + 0.1*(level-1))  →  0.4 / 0.5 / … / 1.5 (capped)
+integer WalkerHP(integer level) {
+    return (integer)(30.0 * llPow(1.5, (float)(level - 1)));
+}
+float WalkerSpeed(integer level) {
+    return llFmin(1.5, 0.4 + 0.1 * (float)(level - 1));
+}
 
 // Functions
 keyframeMotion(list path) {
@@ -213,12 +224,9 @@ list StringToPathData(string data) {
 
 
 SetHoverText() {
-    float speedPerSecond = llVecMag(llGetVel());
     float timeLeft = gPathDuration - (llGetUnixTime() - gStartTimeStamp);
-    string hoverText = (string)[ WALKER_NAME , "\n",
-                       "Life: ", gWalkerLife, "  Shield", gWalkerShield,"\n",
-                       "Speed: ", llRound(1000.0*speedPerSecond), " mm/s\n",
-                       "Time left: ",llFloor(timeLeft), " s"];
+    string hoverText = (string)[WALKER_NAME, " [Lv", gRezLevel, "]\n",
+                                "HP: ", gWalkerLife, "  ETA: ", llFloor(timeLeft), "s"];
     llSetText(hoverText, <0.8,0.5,0.9>, 1.0);
 }
 
@@ -305,8 +313,13 @@ state initial {
 
 state fetchParams {
     state_entry() {
-        // Self-transport and channel init using the rez start_param
-        integer seq = llGetStartParameter();
+        // Decode packed start_param: level * 1_000_000 + seq
+        integer packed = llGetStartParameter();
+        integer seq    = packed % 1000000;
+        gRezLevel      = packed / 1000000;
+        if (gRezLevel < 1) gRezLevel = 1;
+
+        // Self-transport and channel init
         if (seq != 0) {
             string chanStr = llLinksetDataRead("GAME_CHANNEL");
             if (chanStr != "") GAME_CHANNEL = (integer)chanStr;
@@ -318,6 +331,10 @@ state fetchParams {
             gStartPosition = llGetPos();
         }
 
+        // Compute stats from level — no LSD lookup needed
+        gWalkerLife  = WalkerHP(gRezLevel);
+        gWalkerSpeed = WalkerSpeed(gRezLevel);
+
         // Board geometry
         string scaleStr = llLinksetDataRead("BOARD_SCALE");
         if (scaleStr != "") gScale = (vector)scaleStr;
@@ -327,12 +344,6 @@ state fetchParams {
         if (spawnStr != "") gSpawnPos = (vector)spawnStr;
         string finishStr = llLinksetDataRead("FINISH_POS");
         if (finishStr != "") gFinishPos = (vector)finishStr;
-
-        // Level-specific stats
-        string hpStr = llLinksetDataRead("WALKER_HP");
-        if (hpStr != "") gWalkerLife = (integer)hpStr;
-        string speedStr = llLinksetDataRead("WALKER_SPEED");
-        if (speedStr != "") gWalkerSpeed = (float)speedStr;
 
         llListen(GAME_CHANNEL, "", NULL_KEY, "START");
         llSetTimerEvent(30.0);

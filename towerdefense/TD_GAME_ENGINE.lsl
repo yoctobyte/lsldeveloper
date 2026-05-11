@@ -51,7 +51,7 @@ integer gFunds = 100;
 integer gLives = 10;
 integer gShield = 100;
 integer gEnergy = 100;
-integer gMaxEnergy = 500;
+integer gMaxEnergy = 200; // small battery — energy plants must keep up
 integer gKarma = 10000;             // New Alternate Resource
 integer gGameInProgress = FALSE;
 
@@ -215,8 +215,12 @@ RezObject(string objName, vector relPos, rotation rot) {
     }
     
     if (!gDebugSkipRez) {
-         // Passing the sequence number as start_param
-         llRezObject(objName, llGetPos() + <0,0,1>, ZERO_VECTOR, rot * llGetRot(), gRezSequence);
+         // Walkers: pack level*1_000_000 + seq so walker can self-compute stats.
+         // Towers: just sequence (GAME_CHANNEL is written to LSD).
+         integer param = gRezSequence;
+         if (objName == GAME_WALKER_OBJECT)
+             param = gLevel * 1000000 + gRezSequence;
+         llRezObject(objName, llGetPos() + <0,0,1>, ZERO_VECTOR, rot * llGetRot(), param);
     }
 }
 
@@ -539,11 +543,9 @@ default {
         if (data == EOF) {
             // Past the last defined level — scale up for endless play
             WALKERS_PER_LEVEL = llMin(50, llFloor(WALKERS_PER_LEVEL * 1.2));
-            gWalkerHP = (integer)(gWalkerHP * 1.3);
-            llLinksetDataWrite("WALKER_HP",    (string)gWalkerHP);
-            llLinksetDataWrite("WALKER_SPEED", (string)gWalkerSpeed);
+            // Walker HP/speed scale automatically from level via the walker's own formula.
             llSay(0, "Endless! Level " + (string)gLevel +
-                  ": " + (string)WALKERS_PER_LEVEL + " walkers, HP=" + (string)gWalkerHP);
+                  ": " + (string)WALKERS_PER_LEVEL + " walkers");
             return;
         }
         // Skip blank lines and comments — read the next line
@@ -565,10 +567,9 @@ default {
             else if (k == "hp")    gWalkerHP = (integer)v;
             else if (k == "speed") gWalkerSpeed = (float)v;
         }
-        llLinksetDataWrite("WALKER_HP",    (string)gWalkerHP);
-        llLinksetDataWrite("WALKER_SPEED", (string)gWalkerSpeed);
+        // HP and speed are now computed inside the walker from level param.
+        // Notecard values (gWalkerHP, gWalkerSpeed) serve as documentation/lore only.
         llSay(0, "Level " + (string)gLevel + ": " + (string)WALKERS_PER_LEVEL +
-              " " + gWalkerName + " walkers, HP=" + (string)gWalkerHP +
-              ", speed=" + (string)gWalkerSpeed);
+              " " + gWalkerName + " walkers");
     }
 }

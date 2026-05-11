@@ -1,460 +1,403 @@
-/****************************************************
- * Tower Logic Script (Consolidated)
- *
- * This script handles tower behavior and game logic.
- * It supports tower type selection (when unselected) as well
- * as active behaviors (upgrading, selling, toggling, and attacking)
- * after selection.
- *
- * It communicates with the TowerEffects script (assumed on link 2)
- * by sending linked messages with stringly typed effect names.
- *
- * The dialog now includes detailed status information and only
- * shows tower types that the player can afford.
- *
- * The on-object label is set as: "TYPE [level]" followed by DPS for
- * offensive towers.
- ****************************************************/
+// Tower Logic Script
 
-// Constants
 integer GAME_CHANNEL = -12345;
 integer CHAT_CHANNEL = -10000;
-integer GENERAL_BUILDING = 0; // Unselected
+integer GENERAL_BUILDING = 0;
 integer ENERGY_PLANT = 1;
 integer DEFENSE_TOWER = 2;
 integer BALLISTIC_TOWER = 3;
 integer SNIPER_TOWER = 4;
 integer FOG_TOWER = 5;
 integer TOXIC_TOWER = 6;
+integer TESLA_TOWER = 7;
 
-// Tower names and their minimum cost (parallel lists; index 0 unused)
+// Tower names and blueprint purchase cost (index = type constant)
 list TOWER_TYPES = ["Wall", "Energy plant", "Defense tower", "Ballistic", "Sniper", "Fog", "Toxic", "Tesla", "EMP"];
-list TOWER_COSTS  = [10, 50, 50, 50, 75, 100, 200, 100, 150];
+list TOWER_COSTS = [10, 50, 50, 50, 75, 100, 200, 100, 150];
+
+// Base stats per type — all scale mathematically per level.
+// Attack types: base damage, range (m), fire interval (s).
+// Energy plant: base output per tick (every BASE_INTERVAL seconds).
+// Defense tower: base lives restored per tick (every BASE_INTERVAL seconds).
+list BASE_DAMAGE   = [0.0, 0.0, 0.0, 10.0, 25.0,  4.0,  4.0, 18.0, 0.0];
+list BASE_RANGE    = [0.0, 0.0, 0.0,  2.8,  4.0,  3.0,  2.5,  3.5, 5.0];
+list BASE_INTERVAL = [0.0, 5.0,60.0, 0.75,  2.0,  3.0,  1.0,  1.5,10.0];
+list ENERGY_COST   = [0,   0,   0,   1,     5,     2,    1,    3,   0  ];
+
+// Upgrade cost formula: TOWER_COSTS[type] * UPGRADE_BASE^level
+float UPGRADE_BASE = 1.8;
 
 // Variables
-integer debug_skip_rez = TRUE;
 integer production = TRUE;
-integer gTowerType = GENERAL_BUILDING;  // Initially unselected.
+integer gTowerType = GENERAL_BUILDING;
 integer gLevel = 1;
 integer gFunds;
 integer gLifes;
-integer gShield;
 integer gEnergy;
-integer gGameInProgress = FALSE;
 key gOwner;
 
-// (We no longer track active/inactive status)
- 
-// Default powers:
-float gAttackPower = 10.0; // for offensive towers
-float gShieldPower = 0.5;
-float gEnergyPower = 2.0;
-
-// Offensive towers parameters (only used for ballistic/sniper)
-float gTurnSpeed = 5.0; // degrees per second
+float gAttackPower;
+float gTurnSpeed = 5.0;
 rotation gTargetDirection;
 float gTargetAngle;
-float gTurretInterval = 0.75; // seconds
+float gTurretInterval = 0.75;
 float gTurretRange = 2.8;
- 
-// For sensor damage calculations
 float gTurretMissChance = 0.95;
+float gTowerHealth = 1.0;   // 1.0 = full, 0.0 = destroyed; scales attack effectiveness
+integer gPendingAoEDmg;     // set before llSensor() for AoE pass-through to sensor()
 
-float gVolume = 0.2;
-float gRezLevel;
+// Effect names (must match TOWER_FX.lsl)
+string TOUCH_FX     = "IDLEEFFECT";
+string PROJ_FX      = "PROJECTILEEFFECT";
+string PROJ_MISS_FX = "PROJECTILEMISSEFFECT";
+string TESLA_FX     = "TESLAEFFECT";
+string SNIPER_FX    = "SNIPEREFFECT";
+string FOG_FX       = "FOGEFFECT";
+string TOXIC_FX     = "TOXICEFFECT";
 
-// Effect names (Synchronized with TOWER_FX.lsl)
-string TOUCH_FX      = "IDLEEFFECT";
-string EMP_FX        = "EMPEFFECT";
-string PROJ_FX       = "PROJECTILEEFFECT";
-string PROJ_MISS_FX  = "PROJECTILEMISSEFFECT";
-string TESLA_FX      = "TESLAEFFECT";
-string SNIPER_FX     = "SNIPEREFFECT";
-string FOG_FX        = "FOGEFFECT";
-string TOXIC_FX      = "TOXICEFFECT";
+// ---- Utility -------------------------------------------------------
 
-// Host key (if applicable)
-key GAMEHOST;
-
-// --- Utility: Build a dynamic menu of affordable tower types ---
 list BuildTowerMenu() {
     list menu = [];
-    integer count = llGetListLength(TOWER_TYPES);
     integer i;
-    // Start at index 1; index 0 is the placeholder.
-    for (i = 1; i < count; ++i) {
-        integer cost = llList2Integer(TOWER_COSTS, i);
-        if (gFunds >= cost)
+    for (i = 1; i < llGetListLength(TOWER_TYPES); ++i) {
+        if (gFunds >= llList2Integer(TOWER_COSTS, i))
             menu += [llList2String(TOWER_TYPES, i)];
     }
     return menu;
 }
 
-// Functions for logic
-BroadcastDamage(key targetId) {
-    llRegionSay(GAME_CHANNEL + 2, "DMG = " + (string)(integer)gAttackPower + " " + (string)targetId);
+// Broadcast a delta to the engine on GAME_CHANNEL+1.
+// Use positive value for gains, negative for costs — engine handles both.
+BroadcastDelta(string name, integer value) {
+    llRegionSay(GAME_CHANNEL + 1, name + " + " + (string)value);
 }
 
-BroadcastValueDelta(string name, integer value) {
-    if (GAMEHOST)
-        llRegionSayTo(GAMEHOST, GAME_CHANNEL+1, name + " Δ " + (string)value);
-    else
-        llRegionSay(GAME_CHANNEL+1, name + " Δ " + (string)value);
-}
-
-BroadcastValue(string name, integer value) {
-    llRegionSay(GAME_CHANNEL+1, name + " = " + (string)value);
-}
-
-LevelUp() {
-    gLevel++;
-    // Update parameters
-    gTurretRange *= 1.05;
-    gTurretInterval *= 0.98;
-    gTurnSpeed *= 1.0025;
-    gTurretMissChance *= 0.95;
-    gAttackPower *= llSqrt(2.0);
-    gShieldPower *= 1.1;
-    gEnergyPower *= llSqrt(2.0) + 1.0;    
-}
-
-UpgradeTower() {
-    if (gFunds >= 500) {
-        BroadcastValueDelta("fund", -500);
-        gFunds -= 500;
-        LevelUp();
-        StopEMP();
-        llWhisper(0, "tower upgraded to level " + (string)gLevel);
-        DisplayHoverText();
-    } else {
-        llWhisper(0, "not enough funds to upgrade the tower.");
-    }
-}
-
-SellTower() {
-    integer refundAmount = (integer)(0.1 * (gLevel - 1) * 500);
-    gFunds += refundAmount;
-    BroadcastValueDelta("fund", refundAmount);
-    BroadcastValueDelta("tower_sold", 1);
-    if(TRUE) state SOLD;
-}
-
-Wall() {
-    llSetText("WALL\nDurability: " + (string)gLevel, <0.5, 0.5, 0.5>, 1.0);
-    // Walls do nothing but exist. 
-    // Walkers check for walls in their path via LSD or Sensor.
-}
-
-ShowTowerDialog() {
-    list menu = [];
-    string dialogText = "Tower: " + llList2String(TOWER_TYPES, gTowerType) + "\n";
-    dialogText += "Level: " + (string)gLevel + "\n";
-    
-    if (gTowerType == 0 && gLevel == 0) {
-        // BLUEPRINT MODE: Choose a tower type
-        dialogText = "CHOOSE BLUEPRINT:\nFunds: " + (string)gFunds + "\nEnergy: " + (string)gEnergy;
-        menu = llList2List(TOWER_TYPES, 0, 5); // Show first 6 types (Dialog limit is 12)
-        // Add a "Next" button if we have more types
-        if (llGetListLength(TOWER_TYPES) > 6) menu += ["Next >>"];
-    } else {
-        // OPERATIONAL MODE
-        integer upgradeCost = (integer)(llList2Integer(TOWER_COSTS, gTowerType) * llPow(2.2, gLevel));
-        dialogText += "Next Upgrade: " + (string)upgradeCost + " Funds";
-        menu = ["Upgrade", "Sell", "Status"];
-    }
-    
-    llDialog(gOwner, dialogText, menu, CHAT_CHANNEL);
-}
-
-EnergyPlant() {
-    // Production rate depends on level (Type specialization)
-    // Level 1: Solar (5), Level 2: Coal (15), Level 3: Nuclear (50)
-    integer rate = 5;
-    if (gLevel == 2) rate = 15;
-    if (gLevel >= 3) rate = 50;
-    llRegionSay(GAME_CHANNEL+1, "ENERGY + " + (string)rate);
-}
-
-DefenseTower() {
-    llRegionSay(GAME_CHANNEL+1, "life + " + (string)gLevel);
-}
-
-BallisticTower(key target) {
-    SendEffect(PROJ_FX, "", target);
-    llRegionSay(GAME_CHANNEL + 1, "ENERGY - 1");
-    llRegionSay(GAME_CHANNEL + 1, "KARMA - 1");
-}
-
-SniperTower(key target) {
-    SendEffect(SNIPER_FX, "", target);
-    llRegionSay(GAME_CHANNEL + 1, "ENERGY - 5");
-    llRegionSay(GAME_CHANNEL + 1, "KARMA - 1");
-}
-
-TeslaTower(key target) {
-    SendEffect(TESLA_FX, "", target);
-    llRegionSay(GAME_CHANNEL + 1, "ENERGY - 3");
-    llRegionSay(GAME_CHANNEL + 1, "KARMA - 2");
-}
-
-FogTower() {
-    SendEffect(FOG_FX, "", NULL_KEY);
-    llRegionSay(GAME_CHANNEL + 1, "ENERGY - 2");
-}
-
-ToxicTower() {
-    SendEffect(TOXIC_FX, "", NULL_KEY);
-    llRegionSay(GAME_CHANNEL + 1, "ENERGY - 1");
-}
-
-// Send a linked message to the effects script (assumed on link 2)
-// Format: "EffectName|parameter"
 SendEffect(string effectName, string parameter, key target) {
     llMessageLinked(2, 0, effectName + "|" + parameter, target);
 }
 
-EMPAttack() {
-    // For simplicity, offensive towers (ballistic/sniper) use sensor attack.
-    // EMP towers are no longer in a separate group.
-    llSensorRepeat("", NULL_KEY, SCRIPTED, 0.0, 0.0, 0.0); // placeholder
+// ---- Stat formulae (call after gLevel or gTowerType changes) -------
+
+RecalcStats() {
+    float base    = llList2Float(BASE_DAMAGE,   gTowerType);
+    float range   = llList2Float(BASE_RANGE,    gTowerType);
+    float interval= llList2Float(BASE_INTERVAL, gTowerType);
+    float lv      = (float)(gLevel - 1);
+
+    // Damage: grows 50% per level
+    gAttackPower = base * llPow(1.5, lv);
+
+    // Range: +0.2 m per level (linear — keeps gameplay readable)
+    gTurretRange = range + 0.2 * lv;
+
+    // Fire/tick interval: shrinks 10% per level, floored at 0.2 s
+    // Energy plants floor at 2 s; defence tower floors at 10 s
+    gTurretInterval = interval * llPow(0.9, lv);
+    if (gTowerType == ENERGY_PLANT)  gTurretInterval = llFmax(2.0,  gTurretInterval);
+    else if (gTowerType == DEFENSE_TOWER) gTurretInterval = llFmax(10.0, gTurretInterval);
+    else                             gTurretInterval = llFmax(0.2,  gTurretInterval);
+
+    // Miss chance improves with level
+    gTurretMissChance = llFmax(0.0, 0.95 * llPow(0.9, lv));
 }
 
-StopEMP() {
-    llSensorRepeat("", NULL_KEY, 0, 0.0, 0.0, 0.0);
+integer UpgradeCost() {
+    return (integer)(llList2Integer(TOWER_COSTS, gTowerType) * llPow(UPGRADE_BASE, gLevel));
 }
 
-TurretAttack2() {
+// ---- Tower actions -------------------------------------------------
+
+UpgradeTower() {
+    integer cost = UpgradeCost();
+    if (gFunds >= cost) {
+        BroadcastDelta("FUND", -cost);
+        gFunds -= cost;
+        gLevel++;
+        RecalcStats();
+        llSetTimerEvent(gTurretInterval);
+        DisplayHoverText();
+        llWhisper(0, "Upgraded to level " + (string)gLevel + ".");
+    } else {
+        llWhisper(0, "Need " + (string)cost + " funds (have " + (string)gFunds + ").");
+    }
+}
+
+SellTower() {
+    // Refund 10% of total upgrade investment
+    integer invested = 0;
+    integer i;
+    for (i = 1; i < gLevel; ++i)
+        invested += (integer)(llList2Integer(TOWER_COSTS, gTowerType) * llPow(UPGRADE_BASE, i));
+    integer refund = invested / 10;
+    BroadcastDelta("FUND", refund);
+    state SOLD;
+}
+
+RepairTower() {
+    float damage = 1.0 - gTowerHealth;
+    if (damage < 0.01) { llWhisper(0, "Already at full health."); return; }
+    integer cost = (integer)(damage * llList2Integer(TOWER_COSTS, gTowerType) * 10);
+    if (gFunds >= cost) {
+        BroadcastDelta("FUND", -cost);
+        gFunds -= cost;
+        gTowerHealth = 1.0;
+        DisplayHoverText();
+        llWhisper(0, "Repaired.");
+    } else {
+        llWhisper(0, "Need " + (string)cost + " funds to repair.");
+    }
+}
+
+EnergyPlant() {
+    // Output doubles every level (2.0^(level-1) growth, base 10/tick)
+    integer output = (integer)(10.0 * llPow(2.0, (float)(gLevel - 1)));
+    BroadcastDelta("ENERGY", output);
+}
+
+DefenseTower() {
+    // Restores 1 life per level per tick
+    BroadcastDelta("LIFE", gLevel);
+}
+
+// AoE: Fog and Toxic — broad slow-damage pulse via sensor
+AoEPulse(string effectName, integer energyCost) {
+    if (gTowerHealth <= 0.0 || gEnergy < energyCost) return;
+    BroadcastDelta("ENERGY", -energyCost);
+    gEnergy -= energyCost;
+    SendEffect(effectName, "", NULL_KEY);
+    gPendingAoEDmg = (integer)(gAttackPower * gTowerHealth);
+    llSensor("GAME_WALKER", NULL_KEY, SCRIPTED | ACTIVE | PASSIVE, gTurretRange, PI);
+}
+
+// Raycast attack for single-target towers (Ballistic, Sniper, Tesla)
+TurretAttack() {
+    if (gTowerHealth <= 0.0) return;
+
+    integer energyCost = llList2Integer(ENERGY_COST, gTowerType);
+    if (gEnergy < energyCost) {
+        llSetText("LOW ENERGY", <1.0, 0.5, 0.0>, 1.0);
+        return;
+    }
+
     gTargetAngle += gTurnSpeed * gTurretInterval * DEG_TO_RAD;
-    if (gTargetAngle > 2*PI)
-        gTargetAngle -= 2*PI;
+    if (gTargetAngle > TWO_PI) gTargetAngle -= TWO_PI;
     gTargetDirection = llEuler2Rot(<0.0, 0.0, gTargetAngle>);
     llSetRot(gTargetDirection);
+
     vector from = llGetPos();
-    vector to = from + <gTurretRange, 0.0, 0.0> * gTargetDirection;
-    list rayResults = llCastRay(from, to, [RC_MAX_HITS, 1, RC_REJECT_TYPES, RC_REJECT_AGENTS]);
-    if (llList2Integer(rayResults, -1) > 0) {
-        key targetId = llList2Key(rayResults, 0);
+    vector to   = from + <gTurretRange, 0.0, 0.0> * gTargetDirection;
+    list ray = llCastRay(from, to, [RC_MAX_HITS, 1, RC_REJECT_TYPES, RC_REJECT_AGENTS]);
+
+    if (llList2Integer(ray, -1) > 0) {
+        key targetId = llList2Key(ray, 0);
         if (~llSubStringIndex(llKey2Name(targetId), "walker")) {
-            integer energyCost = 1;
-            if (gTowerType == SNIPER_TOWER) energyCost = 5;
-            BroadcastValueDelta("ENERGY", -energyCost);
-            BroadcastValueDelta("KARMA", -1);
+            BroadcastDelta("ENERGY", -energyCost);
+            BroadcastDelta("KARMA", -1);
+            gEnergy -= energyCost;
+
+            // Combat wear: 0.2% health per shot
+            gTowerHealth -= 0.002;
+            if (gTowerHealth < 0.0) gTowerHealth = 0.0;
+
+            integer effectiveDmg = (integer)(gAttackPower * gTowerHealth);
+
             if (llFrand(1.0) >= gTurretMissChance) {
-                BroadcastDamage(targetId);
-                SendEffect(PROJ_FX, "", targetId);
+                llRegionSay(GAME_CHANNEL + 2,
+                    "DMG = " + (string)effectiveDmg + " " + (string)targetId);
+                string fx = PROJ_FX;
+                if (gTowerType == SNIPER_TOWER) fx = SNIPER_FX;
+                else if (gTowerType == TESLA_TOWER) fx = TESLA_FX;
+                SendEffect(fx, "", targetId);
             } else {
-                vector targetPos = llList2Vector(rayResults, 1);
-                string param = (string)targetPos + "|" + (string)0.9;
-                SendEffect(PROJ_MISS_FX, param, NULL_KEY);
+                SendEffect(PROJ_MISS_FX, (string)llList2Vector(ray, 1) + "|0.9", NULL_KEY);
             }
         }
     }
 }
 
-TurretAttack() {
-    gTargetAngle += gTurnSpeed * gTurretInterval * DEG_TO_RAD;
-    if (gTargetAngle > 2*PI)
-        gTargetAngle -= 2*PI;
-    gTargetDirection = llEuler2Rot(<0.0, 0.0, gTargetAngle>);
-    llSetRot(gTargetDirection);
-    llSensor("", NULL_KEY, ACTIVE|PASSIVE|SCRIPTED, gTurretRange, PI/8.0);
-}
-
-AttackTower() {
-    // For offensive towers (Ballistic and Sniper), sensor damage is used.
-    TurretAttack2();
-}
-
 float z;
-vector HoverColor() {    
+vector HoverColor() {
     z += 0.01;
     return <llSin(z), llSin(2.7*z), llSin(8.2*z)>;
 }
 
-// Display hover text as "TYPE [level]" plus, for offensive towers, DPS.
 DisplayHoverText() {
-    string hoverText;
-    if(gTowerType == GENERAL_BUILDING) {
-        hoverText = "Type not selected";
-        llSetText(hoverText, <1,0,0>, 1.0);
+    if (gTowerType == GENERAL_BUILDING) {
+        llSetText("touch to select type", <1,0,0>, 1.0);
         return;
     }
-    string typeStr = llList2String(TOWER_TYPES, gTowerType);
-    hoverText = typeStr + " [" + (string)gLevel + "]";
-    // For offensive towers (Ballistic and Sniper) compute DPS.
-    if(gTowerType == BALLISTIC_TOWER || gTowerType == SNIPER_TOWER) {
-         integer dps = (integer)(gAttackPower / gTurretInterval);
-         hoverText += "\nDPS: " + (string)dps;
+    if (gTowerHealth <= 0.0) {
+        llSetText("DESTROYED\ntouch to repair", <0.6,0,0>, 1.0);
+        return;
     }
-    // Optionally add current funds.
-    hoverText += "\nFunds: " + (string)gFunds;
-    llSetText(hoverText, HoverColor(), 1.0);
+    string t = llList2String(TOWER_TYPES, gTowerType) + " [" + (string)gLevel + "]";
+    if (gTowerType == BALLISTIC_TOWER || gTowerType == SNIPER_TOWER || gTowerType == TESLA_TOWER) {
+        t += "\nDPS: " + (string)(integer)(gAttackPower * gTowerHealth / gTurretInterval);
+    } else if (gTowerType == ENERGY_PLANT) {
+        t += "\nOutput: " + (string)(integer)(10.0 * llPow(2.0, (float)(gLevel-1))) + "/tick";
+    }
+    if (gTowerHealth < 0.99)
+        t += "\nHP: " + (string)(integer)(gTowerHealth * 100.0) + "%";
+    t += "\nFunds: " + (string)gFunds;
+    llSetText(t, HoverColor(), 1.0);
 }
 
-// Consolidated state: handles both tower type selection and active behavior.
+ShowTowerDialog() {
+    string txt = llList2String(TOWER_TYPES, gTowerType) +
+                 " Lv" + (string)gLevel +
+                 "\nHP: " + (string)(integer)(gTowerHealth * 100.0) + "%" +
+                 "\nFunds: " + (string)gFunds +
+                 "\nUpgrade: " + (string)UpgradeCost() + " funds";
+    list menu = ["Upgrade", "Sell"];
+    if (gTowerHealth < 0.99) {
+        float dmg = 1.0 - gTowerHealth;
+        integer rcost = (integer)(dmg * llList2Integer(TOWER_COSTS, gTowerType) * 10);
+        txt += "\nRepair: " + (string)rcost + " funds";
+        menu += ["Repair"];
+    }
+    llDialog(gOwner, txt, menu, CHAT_CHANNEL);
+}
+
+// ---- States --------------------------------------------------------
+
 default {
     state_entry() {
-        if (llGetObjectName() != "GAME_TOWER")
-            state stop;
+        if (llGetObjectName() != "GAME_TOWER") state stop;
         llSetText("", ZERO_VECTOR, 0.0);
-        if (!production)
-            gFunds = 100000;
+        if (!production) gFunds = 100000;
         CHAT_CHANNEL = -10000 - (integer)llFrand(2e9);
-        if (llGetStartParameter())
-            GAME_CHANNEL = llGetStartParameter();
-        if(TRUE) state tower;
-    }
-    
-    on_rez(integer sequence) {
-        // 1. Fetch the Game Channel from LSD
+        // GAME_CHANNEL from LSD (most reliable) or start_param fallback
         string chanStr = llLinksetDataRead("GAME_CHANNEL");
         if (chanStr != "") GAME_CHANNEL = (integer)chanStr;
-        
-        // 2. Fetch our intended Region Position for Sim-Wide support
+        else if (llGetStartParameter()) GAME_CHANNEL = llGetStartParameter();
+        state tower;
+    }
+
+    on_rez(integer sequence) {
+        string chanStr = llLinksetDataRead("GAME_CHANNEL");
+        if (chanStr != "") GAME_CHANNEL = (integer)chanStr;
         string posStr = llLinksetDataRead("REZZ_POS_" + (string)sequence);
         if (posStr != "") {
             llSetRegionPos((vector)posStr);
             llLinksetDataDelete("REZZ_POS_" + (string)sequence);
         }
-        
-        if(TRUE) state tower;
+        state tower;
     }
 }
 
-state stop {
-    state_entry() {}    
-}
+state stop { state_entry() {} }
 
 state tower {
     state_entry() {
         llListen(CHAT_CHANNEL, "", NULL_KEY, "");
         llListen(GAME_CHANNEL, "", NULL_KEY, "");
-        llListen(GAME_CHANNEL+2, "", NULL_KEY, "");
+        llListen(GAME_CHANNEL + 2, "", NULL_KEY, "");
         if (gTowerType == GENERAL_BUILDING) {
             llSetTimerEvent(10);
-            string prompt = "Tower selection\nFunds: " + (string)gFunds + "\n" +
-                            "Lives: " + (string)gLifes + "\n" +
-                            "Shield: " + (string)gShield + "\n" +
-                            "Energy: " + (string)gEnergy + "\n" +
-                            "Level: " + (string)gLevel + "\n\nSelect type (cost: 50+)";
-            llSetText(prompt, <1,0,0>, 1.0);
+            llSetText("touch to\nselect type", <1,0,0>, 1.0);
         } else {
+            RecalcStats();
             llSetTimerEvent(gTurretInterval);
             DisplayHoverText();
         }
     }
-    
+
     touch_start(integer num_detected) {
+        gOwner = llDetectedKey(0);
         if (gTowerType == GENERAL_BUILDING) {
-            gOwner = llDetectedKey(0);
-            SendEffect(TOUCH_FX, "", llGetOwner());
-            list menu = BuildTowerMenu(); // Only show affordable types.
-            if(llGetListLength(menu) == 0) {
-                llInstantMessage(gOwner, "not enough funds for any tower type.");
+            list menu = BuildTowerMenu();
+            if (llGetListLength(menu) == 0) {
+                llInstantMessage(gOwner, "Not enough funds for any tower type.");
             } else {
-                string selText = "Tower selection\nFunds: " + (string)gFunds + "\n" +
-                                 "Lives: " + (string)gLifes + "\n" +
-                                 "Shield: " + (string)gShield + "\n" +
-                                 "Energy: " + (string)gEnergy + "\n" +
-                                 "Level: " + (string)gLevel + "\n\nSelect type (cost: 50+)";
-                llDialog(gOwner, selText, menu, CHAT_CHANNEL);
+                string txt = (string)["Select type\nFunds: ", gFunds,
+                                      "  Energy: ", gEnergy];
+                llDialog(gOwner, txt, menu, CHAT_CHANNEL);
             }
         } else {
-            gOwner = llDetectedKey(0);
             ShowTowerDialog();
-            SendEffect(PROJ_FX, "", llGetOwner());
         }
     }
-    
+
     listen(integer channel, string name, key id, string message) {
-        if (channel == GAME_CHANNEL+2) {
-            if (llToLower(message) == "td game stop")
-                if(TRUE) state SOLD;
-            if (llToLower(message) == "td game pause")
-                ; // to-do: pause game.
+        if (channel == GAME_CHANNEL + 2) {
+            if (llToLower(message) == "td game stop") state SOLD;
+            return;
         }
-        if (channel == CHAT_CHANNEL) {
-            if (gTowerType == GENERAL_BUILDING) {
-                string cmd = llToLower(message);
-                integer count = llGetListLength(TOWER_TYPES);
-                integer i;
-                for(i = 1; i < count; ++i) {
-                    string typeStr = llToLower(llList2String(TOWER_TYPES, i));
-                    integer cost = llList2Integer(TOWER_COSTS, i);
-                    if (cmd == typeStr) {
-                        if(gFunds >= cost) {
-                            gFunds -= cost;
-                            llRegionSay(GAME_CHANNEL + 1, "ENERGY - 25");
-                            gTowerType = i; // Set selected type.
-                            BroadcastValueDelta("fund", -cost);
-                            // No active/inactive toggle now.
-                            DisplayHoverText();
-                        } else {
-                            llInstantMessage(id, "not enough funds");
-                        }
-                        return;
-                    }
-                }
-            } else {
-                string cmd = llToLower(message);
-                if (cmd == "upgrade") {
-                    UpgradeTower();
-                } else if (cmd == "sell") {
-                    SellTower();
-                } else if (cmd == "halt/continue") {
-                    ; //ToggleTower();
-                }
-            }
-        } else if (channel == GAME_CHANNEL) {
-            gFunds = (integer)llJsonGetValue(message, ["funds"]);
-            gLifes = (integer)llJsonGetValue(message, ["life"]);
-            gShield = (integer)llJsonGetValue(message, ["shield"]);
+        if (channel == GAME_CHANNEL) {
+            gFunds  = (integer)llJsonGetValue(message, ["funds"]);
+            gLifes  = (integer)llJsonGetValue(message, ["life"]);
             gEnergy = (integer)llJsonGetValue(message, ["energy"]);
+            return;
         }
-    }
-    
-    timer() {
+        // CHAT_CHANNEL — dialog responses
         if (gTowerType == GENERAL_BUILDING) {
-            llSetText("touch to select\na building type", <1,0,0>, 1.0);
-        } else {
-            // For simplicity, each tower type now acts on its own.
-            if (gTowerType == ENERGY_PLANT) {
-                EnergyPlant();
-            } else if (gTowerType == DEFENSE_TOWER) {
-                DefenseTower();
-            } else if (gTowerType == BALLISTIC_TOWER || gTowerType == SNIPER_TOWER) {
-                AttackTower();
-            } else if (gTowerType == FOG_TOWER) {
-                FogTower();
-            } else if (gTowerType == TOXIC_TOWER) {
-                ToxicTower();
-            }
-            DisplayHoverText();
-        }
-    }
-    
-    sensor(integer num_detected) {
-        if (gTowerType == BALLISTIC_TOWER || gTowerType == SNIPER_TOWER) {
+            string cmd = llToLower(message);
             integer i;
-            for (i = 0; i < num_detected; i++) {
-                key targetId = llDetectedKey(i);
-                if (~llSubStringIndex(llDetectedName(i), "walker")) {
-                    BroadcastDamage(targetId);
-                    SendEffect(PROJ_FX, "", targetId);
+            for (i = 1; i < llGetListLength(TOWER_TYPES); ++i) {
+                if (cmd == llToLower(llList2String(TOWER_TYPES, i))) {
+                    integer cost = llList2Integer(TOWER_COSTS, i);
+                    if (gFunds >= cost) {
+                        BroadcastDelta("FUND", -cost);
+                        BroadcastDelta("ENERGY", -25); // construction surge
+                        gFunds -= cost;
+                        gTowerType = i;
+                        gLevel = 1;
+                        RecalcStats();
+                        llSetTimerEvent(gTurretInterval);
+                        DisplayHoverText();
+                    } else {
+                        llInstantMessage(id, "Not enough funds.");
+                    }
+                    return;
                 }
             }
+        } else {
+            string cmd = llToLower(message);
+            if      (cmd == "upgrade") UpgradeTower();
+            else if (cmd == "sell")    SellTower();
+            else if (cmd == "repair")  RepairTower();
+        }
+    }
+
+    timer() {
+        if (gTowerType == GENERAL_BUILDING) return;
+
+        if (gTowerType == ENERGY_PLANT) {
+            EnergyPlant();
+        } else if (gTowerType == DEFENSE_TOWER) {
+            DefenseTower();
+        } else if (gTowerType == BALLISTIC_TOWER ||
+                   gTowerType == SNIPER_TOWER    ||
+                   gTowerType == TESLA_TOWER) {
+            TurretAttack();
+        } else if (gTowerType == FOG_TOWER) {
+            AoEPulse(FOG_FX, llList2Integer(ENERGY_COST, FOG_TOWER));
+        } else if (gTowerType == TOXIC_TOWER) {
+            AoEPulse(TOXIC_FX, llList2Integer(ENERGY_COST, TOXIC_TOWER));
+        }
+        DisplayHoverText();
+    }
+
+    // Single-target sensor (used by TurretAttack for SL sensor sweep variant, not currently active)
+    // AoE sensor response for Fog/Toxic
+    sensor(integer n) {
+        if (gPendingAoEDmg > 0) {
+            integer i;
+            for (i = 0; i < n; ++i) {
+                if (~llSubStringIndex(llDetectedName(i), "walker"))
+                    llRegionSay(GAME_CHANNEL + 2,
+                        "DMG = " + (string)gPendingAoEDmg + " " + (string)llDetectedKey(i));
+            }
+            gPendingAoEDmg = 0;
         }
     }
 }
 
 state SOLD {
     state_entry() {
-        StopEMP();
         llSetTimerEvent(0);
         llParticleSystem([]);
-        if (production)
-            if ((llGetObjectName() == "GAME_TOWER"))
-                if (~llSubStringIndex(llGetObjectDesc(), (string)GAME_CHANNEL))
-                    llDie();
+        if (production) llDie();
     }
 }
