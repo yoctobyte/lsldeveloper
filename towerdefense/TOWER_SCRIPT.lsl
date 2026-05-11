@@ -145,12 +145,6 @@ Wall() {
     // Walkers check for walls in their path via LSD or Sensor.
 }
 
-Ballistic() {
-    llRegionSay(GAME_CHANNEL + 1, "ENERGY - 1");
-    llRegionSay(GAME_CHANNEL + 1, "KARMA - 1");
-    list targets = ScanForWalkers();
-}
-
 ShowTowerDialog() {
     list menu = [];
     string dialogText = "Tower: " + llList2String(TOWER_TYPES, gTowerType) + "\n";
@@ -241,6 +235,10 @@ TurretAttack2() {
     if (llList2Integer(rayResults, -1) > 0) {
         key targetId = llList2Key(rayResults, 0);
         if (~llSubStringIndex(llKey2Name(targetId), "walker")) {
+            integer energyCost = 1;
+            if (gTowerType == SNIPER_TOWER) energyCost = 5;
+            BroadcastValueDelta("ENERGY", -energyCost);
+            BroadcastValueDelta("KARMA", -1);
             if (llFrand(1.0) >= gTurretMissChance) {
                 BroadcastDamage(targetId);
                 SendEffect(PROJ_FX, "", targetId);

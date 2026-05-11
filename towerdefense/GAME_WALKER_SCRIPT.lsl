@@ -378,25 +378,20 @@ state active {
     
     listen(integer channel, string name, key id, string message) {
         if (channel == GAME_CHANNEL + 2) {
-            list tokens=llParseString2List (message, [" "], []);            
-            if (llGetSubString(message, 0, 5) != "DMG = ") //quick check on 2 params
+            if (llToLower(message) == "td game stop") {
+                llDie();
                 return;
-            else {
-                //integer hitValue = (integer)llGetSubString(message, 6, -1);
-                integer hitValue = (integer)llList2String(tokens, 2);
-                key targetId = (key)llList2String (tokens, 3);
-                //see if we are target
-                if (targetId != llGetKey())
-                    return;
-                
-                //we are targeted. process.                
-                gWalkerLife -= hitValue;
-                
-                if (gWalkerLife <= 0) {
-                    MoveToStartPosition();
-                    gWalkerState = 2;
-                    state defeated;
-                }
+            }
+            if (llGetSubString(message, 0, 5) != "DMG = ") return;
+            list tokens = llParseString2List(message, [" "], []);
+            integer hitValue = (integer)llList2String(tokens, 2);
+            key targetId = (key)llList2String(tokens, 3);
+            if (targetId != llGetKey()) return;
+            gWalkerLife -= hitValue;
+            if (gWalkerLife <= 0) {
+                MoveToStartPosition();
+                gWalkerState = 2;
+                state defeated;
             }
         }
     }

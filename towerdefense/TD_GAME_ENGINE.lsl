@@ -299,7 +299,7 @@ string BroadcastData() {
 }
 
 BuildingTowerProgress(integer percentage) {
-    llSetText ((string)["Constructing Tower ",percentage,"%"], <255,128,64>, 1.0);
+    llSetText("Constructing Tower " + (string)percentage + "%", <1.0, 0.5, 0.25>, 1.0);
 }
 
 // -------------------- Event Handlers --------------------
@@ -401,18 +401,13 @@ default {
                    gGameInProgress = FALSE;
                    llSetTimerEvent(0);
                    llSay(0, "Game paused. Touch board to resume.");
-              } else if (message == "Stop") {                   
-                   if (gGameInProgress) {
-                        //llSay(0, "Tower placement canceled.");
-                        gGameInProgress = FALSE;
-                        llSetTimerEvent(0);
-                        llSay(0, "The game was forcefully stopped!");
-                        llRegionSay (GAME_CHANNEL+2, "TD GAME STOP");
-                        llSleep (1.0);
-                        //llSay(0, "Resetting in 30 seconds.");
-                        //llSleep(30.0);
-                        llResetScript();
-                   }
+              } else if (message == "Stop") {
+                   gGameInProgress = FALSE;
+                   llSetTimerEvent(0);
+                   llSay(0, "Game stopped.");
+                   llRegionSay(GAME_CHANNEL + 2, "TD GAME STOP");
+                   llSleep(1.0);
+                   llResetScript();
               } else if (message == "Place Tower") {
                    // Use the precomputed nearest grid coordinates.
                    RezGameTower();

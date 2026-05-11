@@ -58,10 +58,28 @@ We will align all scripts to the following channel map:
 - **Road Masking**: Dynamic unbuildable zones burned into LSD from the path data.
 - **Visual Suite**: Custom particles for Tesla, Sniper, Fog, and Toxic attacks.
 
-## Phase 3: Content & Cartography (IN PROGRESS)
-- **Map Design**: Regional paths designed (Snake, Spiral, Crossroads).
-- **Enemy Variety**: Define Ant, Scorpion, and Boss stats in notecard.
-- **Level Progression**: Tutorial-first onboarding (Selection -> Synergy).
+## Phase 3: Content & Cartography (COMPLETED)
+- **Map Design**: Regional paths designed (Snake, Spiral, Crossroads) in MAPS.txt.
+- **Enemy Variety**: Ant, Scorpion, Fly, Drone, Tank, Boss defined in TD_GAME_LEVELS.txt.
+- **Level Progression**: 15 levels with full difficulty arc + endless scaling after EOF.
+- **Help Card**: TD_HELP.txt notecard delivered in-game via Help button.
+
+## Phase 4: Bug Fixes & Compile Correctness (COMPLETED)
+- Removed orphaned dead code from TD_GAME_ENGINE dataserver event.
+- Fixed TOWER_FX: missing closing } on PlayProjectileMissEffect.
+- Fixed TOWER_SCRIPT: declared TOUCH_FX; fixed BroadcastDamage to send
+  "DMG = X <uuid>" on GAME_CHANNEL+2 (was wrong channel+format);
+  fixed JSON key "lifes"→"life"; removed dead Ballistic() with undefined
+  ScanForWalkers(); added energy+karma drain on each turret shot.
+- Fixed GAME_WALKER_SCRIPT: rez race — state initial immediately went
+  to active, skipping self-transport; restructured to use
+  llGetStartParameter() in fetchParams; added on_rez llResetScript()
+  to all persistent states; applied per-level HP/speed from LSD;
+  speed now scales path duration; walkers handle "TD GAME STOP".
+- Fixed TD_GAME_ENGINE: WALKERS_PER_LEVEL 2→20; DrawRoadMap called
+  at game start; level-transition uses timer countdown instead of
+  llSleep; game-over check on lives≤0; Pause/Resume flow; Stop works
+  from both in-game and paused states; notecard cursor skips comments.
 
 ## Conceptual Ideas (Future)
 - **Team Play**: The sim-wide scale invites collaborative or competitive team play.
