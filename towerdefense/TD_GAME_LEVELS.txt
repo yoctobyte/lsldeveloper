@@ -28,3 +28,35 @@ theme=Industrial, num=40, type=Drone, hp=200, speed=0.7, note=Manage your Batter
 # Level 7: Resistance (Armor)
 # Goal: Armored walkers. Requires Sniper towers or Toxic DoT.
 theme=Fortress, num=20, type=Tank, hp=500, speed=0.2, note=Use Snipers for Armor.
+
+# Level 8: Swarm (Volume)
+# High count, low HP — AoE towers shine here.
+theme=Hive, num=40, type=Ant, hp=20, speed=1.2, note=AoE towers shine here.
+
+# Level 9: Blitz (Speed)
+# Very fast walkers — upgrade tower range or they outrun your sensors.
+theme=Canyon, num=25, type=Fly, hp=120, speed=1.5, note=Upgrade range to keep up.
+
+# Level 10: Endurance (Boss)
+# Fewer but extremely tough boss walkers. Every shot matters.
+theme=Volcano, num=10, type=Boss, hp=1000, speed=0.3, note=Save Karma for bosses.
+
+# Level 11: Siege (Mixed Wave)
+# Tanks followed immediately by Flies — prioritise correctly.
+theme=Ruins, num=30, type=Mixed, hp=300, speed=0.7, note=Prioritise target order.
+
+# Level 12: Blackout (Energy Crisis)
+# Double energy cost this wave — Energy Plants are critical.
+theme=Industrial, num=30, type=Drone, hp=250, speed=0.6, note=Build extra plants.
+
+# Level 13: Relentless (No Break)
+# Large wave with minimal inter-walker gap.
+theme=Tundra, num=40, type=Scorpion, hp=350, speed=0.5, note=No breathing room.
+
+# Level 14: The Gauntlet (Everything)
+# Full mixed wave: fast, armored, numerous.
+theme=Wasteland, num=50, type=Mixed, hp=400, speed=0.8, note=Full build required.
+
+# Level 15: Apocalypse (Final)
+# Maximum difficulty. Bosses + Flies + full energy pressure.
+theme=Volcanic, num=40, type=Boss, hp=2000, speed=0.5, note=Last stand.

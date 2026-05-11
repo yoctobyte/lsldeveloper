@@ -89,6 +89,8 @@ list gOccupiedSquares;
 integer gLevelTransitionCountdown = -1;
 
 key gLevelsNotecard = "TD_GAME_LEVELS";
+integer gNotecardLine = 0;    // current read position; advances past comments/blanks
+key gNotecardQuery = NULL_KEY;
 
 // Walker path waypoints in 0..100 scale — mirrors GAME_WALKER_SCRIPT MOTION list.
 // Used once at game start to burn road squares into LSD via DrawRoadMap().
@@ -245,10 +247,15 @@ RezGameTower() {
     }
 }
 
-// Read level data from a notecard.
-ReadLevelData(integer level) {
+// Advance the notecard cursor to the next data line for the current level.
+ReadNextLevelLine() {
     if (llGetInventoryType(gLevelsNotecard) == INVENTORY_NOTECARD)
-         llGetNotecardLine(gLevelsNotecard, level);
+        gNotecardQuery = llGetNotecardLine(gLevelsNotecard, gNotecardLine++);
+}
+
+ReadLevelData(integer level) {
+    // level param kept for signature compat; actual read uses gNotecardLine cursor
+    ReadNextLevelLine();
 }
 
 // Update the score vector based on level, time efficiency, and resource management.
@@ -366,6 +373,7 @@ default {
                    gLevel = 1;
                    gFunds = 100; gLives = 10; gShield = 100; gEnergy = 100; gKarma = 10000;
                    gLevelCompletedWalkers = 0; gGameWalkerCounter = 0;
+                   gNotecardLine = 0; gLevelTransitionCountdown = -1;
                    llLinksetDataReset();
                    llLinksetDataWrite("GAME_CHANNEL", (string)GAME_CHANNEL);
                    llLinksetDataWrite("BOARD_POS",   (string)llGetPos());
@@ -532,10 +540,25 @@ default {
     }
     
     dataserver(key query_id, string data) {
-        if (data == EOF || data == "") return;
-        if (llGetSubString(data, 0, 0) == "#") return;
+        if (query_id != gNotecardQuery) return; // stale read
+        if (data == EOF) {
+            // Past the last defined level — scale up for endless play
+            WALKERS_PER_LEVEL = llMin(50, llFloor(WALKERS_PER_LEVEL * 1.2));
+            gWalkerHP = (integer)(gWalkerHP * 1.3);
+            llLinksetDataWrite("WALKER_HP",    (string)gWalkerHP);
+            llLinksetDataWrite("WALKER_SPEED", (string)gWalkerSpeed);
+            llSay(0, "Endless! Level " + (string)gLevel +
+                  ": " + (string)WALKERS_PER_LEVEL + " walkers, HP=" + (string)gWalkerHP);
+            return;
+        }
+        // Skip blank lines and comments — read the next line
+        string trimmed = llStringTrim(data, STRING_TRIM);
+        if (trimmed == "" || llGetSubString(trimmed, 0, 0) == "#") {
+            ReadNextLevelLine();
+            return;
+        }
 
-        list params = llParseString2List(data, [","], []);
+        list params = llParseString2List(trimmed, [","], []);
         integer i;
         for (i = 0; i < llGetListLength(params); ++i) {
             list kv = llParseString2List(llList2String(params, i), ["="], []);
@@ -547,10 +570,10 @@ default {
             else if (k == "hp")    gWalkerHP = (integer)v;
             else if (k == "speed") gWalkerSpeed = (float)v;
         }
-        // Push level params to LSD so walkers read them on rez
         llLinksetDataWrite("WALKER_HP",    (string)gWalkerHP);
         llLinksetDataWrite("WALKER_SPEED", (string)gWalkerSpeed);
         llSay(0, "Level " + (string)gLevel + ": " + (string)WALKERS_PER_LEVEL +
-              " walkers, HP=" + (string)gWalkerHP + ", speed=" + (string)gWalkerSpeed);
+              " " + gWalkerName + " walkers, HP=" + (string)gWalkerHP +
+              ", speed=" + (string)gWalkerSpeed);
     }
 }
