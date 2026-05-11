@@ -44,14 +44,55 @@ The tokens `<` and `>` are used for both vector/rotation literals and comparison
 - **LSO**: 16KB (legacy).
 - Memory includes bytecode, stack, and heap.
 
-### Linkset Data (LSD) - "Object Storage" (2026 Update)
-- Introduced in 2022, expanded in 2024/2025.
-- **Shared Access**: All scripts in the same linkset share the same LSD.
-- **Limit**: **128KB total** per linkset (Associated with the root prim).
-- **Persistence**: Persists across script resets, rezzing, and region restarts.
-- **Advanced Querying**: `llLinksetDataFindKeys(string pattern)` supports regex searching for keys.
-- **Protected Data**: `llLinksetDataWriteProtected` allows securing keys from other scripts (if permissions allow).
-- **Events**: `linkset_data(integer action, string name, string value)` fires in all scripts.
+### Linkset Data (LSD) — Shared Object Storage
+
+Introduced ~2022 and the preferred alternative to link-message-based state sharing. Think of it as a per-linkset key-value store that all scripts in the object can read and write.
+
+**Limits**
+- **128 KB** total per linkset (stored on the root prim)
+- Max **4096** key-value pairs
+- Keys and values are both `string`; cast other types before storing
+
+**Persistence** — survives script resets, `llResetScript()`, object rezzing, and region restarts. Does **not** survive `llLinksetDataReset()` or the object being deleted.
+
+**Core API**
+
+| Function | Returns | Notes |
+|---|---|---|
+| `llLinksetDataWrite(name, value)` | `integer` 0=OK | Create or overwrite a key |
+| `llLinksetDataRead(name)` | `string` | Returns `""` if key absent |
+| `llLinksetDataDelete(name)` | `integer` 0=OK | Remove a single key |
+| `llLinksetDataReset()` | `integer` | Remove **all** keys |
+| `llLinksetDataCountKeys()` | `integer` | Number of keys currently stored |
+| `llLinksetDataFindKeys(pattern, start, count)` | `list` | Regex search on key names; paginates with start+count |
+
+**Protected writes** (cross-script locking)
+
+Scripts can lock individual keys so only code that knows the token can touch them:
+```lsl
+llLinksetDataWriteProtected(string name, string value, string token)
+llLinksetDataReadProtected(string name, string token)
+llLinksetDataDeleteProtected(string name, string token)
+```
+
+**`linkset_data` event**
+
+Fires in every script in the linkset when any key changes:
+```lsl
+linkset_data(integer action, string name, string value) { ... }
+```
+`action` constants:
+- `LINKSETDATA_UPDATE` — key was written or overwritten
+- `LINKSETDATA_DELETE` — key was deleted
+- `LINKSETDATA_RESET` — all data was cleared
+- `LINKSETDATA_PROTECTED_UNSET` — a protected key was accessed with the wrong token
+
+**Patterns used in this project**
+- Engine writes board geometry at start (`BOARD_POS`, `BOARD_SCALE`, `BOARD_ROT`, `SPAWN_POS`, `FINISH_POS`) so rezzed walkers/towers read them without any chat protocol.
+- `REZZ_POS_<seq>` written before `llRezObject`; the spawned object reads it, calls `llSetRegionPos`, then deletes the key — zero-overhead sim-wide transport.
+- `WALKER_HP` / `WALKER_SPEED` written after each level-notecard load so every walker in the wave shares the same stats.
+- `ROAD_x_y` / `WALL_x_y` used as a 2-D boolean grid burned into LSD at game start for fast O(1) occupancy checks.
+- `llLinksetDataReset()` called on new game to guarantee a clean slate.
 
 ### SLua (Luau) Integration (2026 Beta)
 - As of early 2026, **SLua** (based on Luau) is in open beta.
@@ -139,7 +180,7 @@ Developing complex applications in LSL requires working within tight resource co
   - **Cons**: Can "flood" the event queue if too many scripts are listening; limited payload size (one string).
 - **Linkset Data (`llLinksetDataWrite`)**:
   - **Pros**: Shared state persistency; avoids "lost" messages (state is always there); multiple scripts can poll or react to `linkset_data` events.
-  - **Cons**: Slightly higher overhead than a direct message; 64KB total limit for the whole object.
+  - **Cons**: Slightly higher overhead than a direct message; **128 KB** total limit for the whole linkset (not per-script).
 - **Global Storage**: For data that must persist even if the object is deleted and re-rezzed, use **Experience KVP** (requires Experience permissions).
 
 ### Scaling beyond 64KB
