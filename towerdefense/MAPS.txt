@@ -1,0 +1,30 @@
+# Tower Defense: Map & Path Cartography
+
+This document defines the "Motion Paths" for walkers across different regional scales.
+
+## Map 1: The Great Snake (Regional Gauntlet)
+*   **Scale**: 256x256m (Full Sandbox)
+*   **Grid**: 30x50
+*   **Path**: A long, winding S-curve designed for maximum exposure to towers.
+*   **Coordinates (Normalized 0..100)**:
+    [5,5], [95,5], [95,20], [5,20], [5,35], [95,35], [95,50], [5,50], [5,65], [95,65], [95,80], [5,80], [5,95], [95,95]
+
+## Map 2: The Spiral (Center Focus)
+*   **Scale**: 64x64m (Quarter Sim)
+*   **Grid**: 30x50
+*   **Path**: An inward spiral ending at a central "Command Center" at <0.5, 0.5>.
+*   **Coordinates (Normalized 0..100)**:
+    [0,0], [100,0], [100,100], [10,100], [10,20], [80,20], [80,80], [30,80], [30,40], [60,40], [60,60], [50,50]
+
+## Map 3: The Crossroads (Co-op Concept)
+*   **Scale**: 128x128m
+*   **Path**: Two intersecting paths that share a central "Kill Zone". Requires players to defend two fronts.
+*   **Path A**: [0,50], [100,50]
+*   **Path B**: [50,0], [50,100]
+
+---
+
+## Obstacle Logic (Map Overlays)
+To define "Unbuildable" zones, we use a simple exclusion rule in the Engine:
+*   **Road Mask**: Any grid square within 2 units of the path is automatically `IsValidTowerPosition = FALSE`.
+*   **Water/Void**: Hardcoded exclusion zones (e.g., all squares where `x > 20 && x < 40 && y > 10 && y < 30`).

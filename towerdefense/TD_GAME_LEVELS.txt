@@ -1,0 +1,30 @@
+# Tower Defense Levels & Tutorial Progression
+# Format: theme, num_walkers, walker_type, walker_hp, walker_speed, note
+
+# Level 1: Introduction (The Basics)
+# Goal: Simply pick the right tower type (Ballistic) to stop a slow, weak wave.
+theme=TrainingGrounds, num=10, type=Ant, hp=30, speed=0.4, note=Pick the right tower.
+
+# Level 2: Diversity (Variety)
+# Goal: Experiment with different tower types. Place one of each effectively.
+theme=Fields, num=15, type=Ant, hp=50, speed=0.5, note=Place one of each type.
+
+# Level 3: Concentration (The Upgrade)
+# Goal: One strong tower is better than many weak ones. Upgrade a single tower.
+theme=ChokePoint, num=20, type=Scorpion, hp=150, speed=0.3, note=Focus on one upgrade.
+
+# Level 4: Selection (The Choice)
+# Goal: Place two types, but only one is effective for this wave. Upgrade the right one.
+theme=Desert, num=20, type=Fly, hp=80, speed=0.8, note=Upgrade the effective type.
+
+# Level 5: Synergy (The Pair)
+# Goal: Combine two specific towers and upgrade both to handle a mixed wave.
+theme=Valley, num=30, type=Mixed, hp=100, speed=0.6, note=Upgrade both towers.
+
+# Level 6: Sustainability (Energy Management)
+# Goal: High output wave requires managing the Energy Battery and Karma pool.
+theme=Industrial, num=40, type=Drone, hp=200, speed=0.7, note=Manage your Battery.
+
+# Level 7: Resistance (Armor)
+# Goal: Armored walkers. Requires Sniper towers or Toxic DoT.
+theme=Fortress, num=20, type=Tank, hp=500, speed=0.2, note=Use Snipers for Armor.
