@@ -134,7 +134,11 @@ class Parser:
             self.consume(TokenType.SEMICOLON, "Expected ';'")
             return ReturnStmt(expr)
         if self.match(TokenType.STATE):
-            state_name = self.consume(TokenType.IDENTIFIER, "Expected state name").value
+            if self.check(TokenType.DEFAULT):
+                self.advance()
+                state_name = "default"
+            else:
+                state_name = self.consume(TokenType.IDENTIFIER, "Expected state name").value
             self.consume(TokenType.SEMICOLON, "Expected ';'")
             return StateChangeStmt(state_name)
         if self.match(TokenType.JUMP):

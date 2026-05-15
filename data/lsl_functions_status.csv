@@ -67,7 +67,7 @@ llDetectedType,partial,,reads current simplified sensor detection record
 llDetectedVel,partial,,reads current simplified sensor detection record
 llDialog,partial,,records latest dialog and emits button responses through chat
 llDie,partial,,stub: prints not implemented and returns default void
-llDumpList2String,missing,,
+llDumpList2String,partial,,
 llEdgeOfWorld,missing,,
 llEjectFromLand,partial,,stub: prints not implemented and returns default void
 llEmail,partial,,stub: prints not implemented and returns default void
@@ -80,7 +80,7 @@ llFindNotecardTextSync,missing,NEW I,
 llFleeFrom,missing,I,
 llFloor,missing,,
 llForceMouselook,missing,,
-llFrand,missing,,
+llFrand,partial,,
 llGenerateKey,missing,I,
 llGetAccel,missing,,
 llGetAgentInfo,missing,,
@@ -109,7 +109,7 @@ llGetDayLength,missing,I,
 llGetDayOffset,missing,I,
 llGetDisplayName,partial,,reads demo avatar display name
 llGetEnergy,missing,,
-llGetEnv,missing,U,
+llGetEnv,partial,U,
 llGetEnvironment,missing,I,
 llGetExperienceDetails,missing,X I,
 llGetExperienceErrorMessage,missing,X I,
@@ -236,7 +236,7 @@ llHMAC,missing,I,
 llHTTPRequest,partial,,stdlib HTTP request; simplified options/headers/events
 llHTTPResponse,missing,,
 llInsertString,missing,,
-llInstantMessage,missing,,
+llInstantMessage,partial,,
 llIntegerToBase64,missing,,
 llIsFriend,missing,I,
 llIsLinkGLTFMaterial,missing,NEW I,
@@ -305,7 +305,7 @@ llMakeSmoke,partial,D,stub: prints not implemented and returns default void
 llManageEstateAccess,missing,I,
 llMapBeacon,missing,NEW I,
 llMapDestination,partial,,stub: prints not implemented and returns default void
-llMD5String,missing,,
+llMD5String,partial,,
 llMessageLinked,partial,,queues link_message in linkset; ignores target details
 llMinEventDelay,partial,,stub: prints not implemented and returns default void
 llModifyLand,partial,,stub: prints not implemented and returns default void
@@ -321,8 +321,8 @@ llOverMyLand,partial,,stub: prints not implemented and returns default integer
 llOwnerSay,partial,,prints to stdout
 llParcelMediaCommandList,missing,,
 llParcelMediaQuery,missing,,
-llParseString2List,missing,,
-llParseStringKeepNulls,missing,,
+llParseString2List,partial,,
+llParseStringKeepNulls,partial,,
 llParticleSystem,partial,,stores particle parameters on the current prim without rendering
 llPassCollisions,partial,,stub: prints not implemented and returns default void
 llPassTouches,partial,,stub: prints not implemented and returns default void
@@ -438,7 +438,7 @@ llSetPos,partial,,sets harness object position
 llSetPrimitiveParams,partial,,supports a small model-backed PRIM_* subset
 llSetPrimMediaParams,missing,,
 llSetPrimURL,missing,D,
-llSetRegionPos,missing,I,
+llSetRegionPos,partial,I,
 llSetRemoteScriptAccessPin,partial,,stub: prints not implemented and returns default void
 llSetRenderMaterial,missing,NEW,
 llSetRot,partial,,sets harness object rotation
@@ -496,8 +496,8 @@ llTeleportAgent,partial,I,stub: prints not implemented and returns default void
 llTeleportAgentGlobalCoords,partial,I,stub: prints not implemented and returns default void
 llTeleportAgentHome,partial,,stub: prints not implemented and returns default void
 llTextBox,partial,,stub: prints not implemented and returns default void
-llToLower,missing,,
-llToUpper,missing,,
+llToLower,partial,,
+llToUpper,partial,,
 llTransferLindenDollars,missing,I,
 llTransferOwnership,missing,NEW I,
 llTriggerSound,partial,,stores triggered sound state and history without audio playback

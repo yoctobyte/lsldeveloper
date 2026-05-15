@@ -8,7 +8,7 @@ def test_execution_context_seeds_lsl_constants_from_dedicated_module():
 
     assert ctx.globals["NULL_KEY"] == NULL_KEY
     assert ctx.globals["INVENTORY_SCRIPT"] == 10
-    assert ctx.globals["PRIM_NAME"] == "PRIM_NAME"
+    assert ctx.globals["PRIM_NAME"] == 27
     assert ctx.globals["OBJECT_NAME"] == "OBJECT_NAME"
     assert ctx.globals["PARCEL_DETAILS_NAME"] == "PARCEL_DETAILS_NAME"
 

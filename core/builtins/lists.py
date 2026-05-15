@@ -87,6 +87,56 @@ def ll_csv_2_list(evaluator, args):
     return LSLList(str(args[0]).split(","))
 
 
+@builtin("llDumpList2String")
+def ll_dump_list_2_string(evaluator, args):
+    src = args[0]
+    sep = str(args[1])
+    return sep.join(str(e) for e in src)
+
+
+def _parse_string(source: str, separators: list, spacers: list, keep_nulls: bool) -> LSLList:
+    # LSL llParseString2List / llParseStringKeepNulls:
+    # Split source on any separator or spacer token. Separators are discarded;
+    # spacers are kept as elements. Empty elements are dropped unless keep_nulls.
+    seps = [str(s) for s in separators]
+    spcs = [str(s) for s in spacers]
+    all_tokens = seps + spcs
+    # Sort longest first so multi-char tokens match before their prefixes.
+    all_tokens.sort(key=len, reverse=True)
+
+    result = []
+    current = ""
+    i = 0
+    while i < len(source):
+        matched = False
+        for token in all_tokens:
+            if source[i:i + len(token)] == token:
+                if keep_nulls or current:
+                    result.append(current)
+                current = ""
+                if token in spcs:
+                    result.append(token)
+                i += len(token)
+                matched = True
+                break
+        if not matched:
+            current += source[i]
+            i += 1
+    if keep_nulls or current:
+        result.append(current)
+    return LSLList(result)
+
+
+@builtin("llParseString2List")
+def ll_parse_string_2_list(evaluator, args):
+    return _parse_string(str(args[0]), list(args[1]), list(args[2]), keep_nulls=False)
+
+
+@builtin("llParseStringKeepNulls")
+def ll_parse_string_keep_nulls(evaluator, args):
+    return _parse_string(str(args[0]), list(args[1]), list(args[2]), keep_nulls=True)
+
+
 @builtin("llList2List")
 def ll_list_2_list(evaluator, args):
     src = args[0]
