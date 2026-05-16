@@ -8,19 +8,24 @@ Run it with:
 ./ide.sh path/to/project-folder
 ```
 
-A project is just a folder containing `project.json`. The JSON stores objects
-and their script sources. All projects currently use the same seeded background
-world: one offline region, one parcel, demo owner/visitor avatars, and the
-project's scripted objects.
+A project is a folder containing `project.json` plus editable `.lsl` files.
+The JSON stores object metadata and each script's file path; script source lives
+in separate files such as `objects/Control Panel/scripts/control.lsl`. All
+projects currently use the same seeded background world: one offline region,
+one parcel, demo owner/visitor avatars, and the project's scripted objects.
 
 Current IDE behavior:
 
 - Traditional menu bar plus the top action toolbar.
+- Create a new project folder from File -> New Project.
 - Add multiple objects.
 - Add multiple scripts inside each object.
 - Save/load notecard contents inside objects.
 - Edit script source.
 - Save/load the project data folder.
+- Auto-detect `.lsl` files added under the project folder. Files under
+  `objects/<object>/scripts/` are attached to that object; loose `.lsl` files
+  are attached to the first project object.
 - Run all scripts in the same seeded simulator.
 - Step the simulator manually.
 - Auto tick the simulator.

@@ -1,7 +1,11 @@
-from typing import Dict, Optional
+import uuid
+from typing import Dict, Optional, Tuple, Any
 from .region import Region
 from .console import Console
 from .diagnostics import Diagnostic
+
+# Synthetic URL prefix for intra-sim HTTP routing
+SIM_URL_PREFIX = "http://sim.local/"
 
 class World:
     _instance = None
@@ -15,7 +19,31 @@ class World:
             cls._instance.latest_dialog = None
             cls._instance.max_rezzed_objects = 32
             cls._instance.rezzed_object_count = 0
+            # Intra-sim HTTP routing
+            cls._instance.url_registry: Dict[str, Any] = {}        # url → ScriptItem
+            cls._instance.pending_http: Dict[str, Tuple] = {}      # serve_key → (caller_script, caller_key)
         return cls._instance
+
+    # ── Intra-sim URL management ──────────────────────────────────────────
+    def register_url(self, script) -> str:
+        url = SIM_URL_PREFIX + uuid.uuid4().hex[:12]
+        self.url_registry[url] = script
+        return url
+
+    def release_url(self, url: str):
+        self.url_registry.pop(url, None)
+
+    def is_sim_url(self, url: str) -> bool:
+        return url.startswith(SIM_URL_PREFIX)
+
+    def resolve_url(self, url: str):
+        return self.url_registry.get(url)
+
+    def register_pending_http(self, serve_key: str, caller_script, caller_key: str):
+        self.pending_http[serve_key] = (caller_script, caller_key)
+
+    def resolve_pending_http(self, serve_key: str):
+        return self.pending_http.pop(serve_key, None)
 
     def add_region(self, region: Region):
         self.regions[region.uuid] = region
@@ -59,6 +87,8 @@ class World:
         self.latest_dialog = None
         self.max_rezzed_objects = 32
         self.rezzed_object_count = 0
+        self.url_registry = {}
+        self.pending_http = {}
 
     def add_diagnostic(self, diagnostic: Diagnostic):
         self.diagnostics.append(diagnostic)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -383,13 +384,23 @@ REMOTE_RELAY_SCRIPT = """default {
 class ProjectScript:
     name: str
     source: str = DEFAULT_SCRIPT
+    file: str | None = None
+    dirty: bool = field(default=True, repr=False, compare=False)
 
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectScript":
-        return cls(name=str(data.get("name", "script.lsl")), source=str(data.get("source", DEFAULT_SCRIPT)))
+        return cls(
+            name=str(data.get("name", "script.lsl")),
+            source=str(data.get("source", DEFAULT_SCRIPT)),
+            file=str(data["file"]) if data.get("file") else None,
+            dirty="source" in data,
+        )
 
     def to_dict(self) -> dict:
-        return {"name": self.name, "source": self.source}
+        data = {"name": self.name}
+        if self.file:
+            data["file"] = self.file
+        return data
 
 
 @dataclass
@@ -468,7 +479,7 @@ class IdeProject:
     def __init__(self, folder: Path, objects: Optional[list[ProjectObject]] = None, world_profile: str = "couple"):
         self.folder = Path(folder)
         self.world_profile = world_profile
-        self.objects = objects or [
+        self.objects = objects if objects is not None else [
             ProjectObject(
                 "Control Panel",
                 scripts=[
@@ -500,22 +511,59 @@ class IdeProject:
         return self.folder / "project.json"
 
     @classmethod
+    def blank(cls, folder: str | Path) -> "IdeProject":
+        return cls(Path(folder), [ProjectObject("Object 1", scripts=[ProjectScript("main.lsl")])])
+
+    @classmethod
     def load(cls, folder: str | Path) -> "IdeProject":
         folder = Path(folder)
         path = folder / "project.json"
         if not path.exists():
-            return cls(folder)
+            project = cls(folder, objects=[] if list(folder.rglob("*.lsl")) else None)
+            project.sync_from_disk()
+            return project
         data = json.loads(path.read_text(encoding="utf-8"))
-        return cls(
+        project = cls(
             folder,
             [ProjectObject.from_dict(item) for item in data.get("objects", [])],
             world_profile=str(data.get("world_profile", "couple")),
         )
+        project.sync_from_disk()
+        return project
 
     def save(self):
         self.folder.mkdir(parents=True, exist_ok=True)
+        self.sync_from_disk()
+        self._assign_script_files()
+        for _obj, script in self._iter_scripts():
+            if script.file and (script.dirty or not (self.folder / script.file).exists()):
+                script_path = self.folder / script.file
+                script_path.parent.mkdir(parents=True, exist_ok=True)
+                script_path.write_text(script.source, encoding="utf-8")
+                script.dirty = False
         data = {"world_profile": self.world_profile, "objects": [obj.to_dict() for obj in self.objects]}
         self.path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+    def sync_from_disk(self):
+        self.folder.mkdir(parents=True, exist_ok=True)
+        self._assign_script_files()
+        known_files = {}
+        for obj, script in self._iter_scripts():
+            if not script.file:
+                continue
+            script_path = self.folder / script.file
+            known_files[script_path.resolve()] = (obj, script)
+            if script_path.exists() and not script.dirty:
+                script.source = script_path.read_text(encoding="utf-8")
+
+        for script_path in sorted(self.folder.rglob("*.lsl")):
+            if not script_path.is_file() or script_path.resolve() in known_files:
+                continue
+            obj = self._object_for_script_path(script_path)
+            rel_path = script_path.relative_to(self.folder).as_posix()
+            script = ProjectScript(script_path.name, script_path.read_text(encoding="utf-8"), rel_path, dirty=False)
+            obj.scripts.append(script)
+            known_files[script_path.resolve()] = (obj, script)
 
     def add_object(self, name: Optional[str] = None) -> ProjectObject:
         existing = {obj.name for obj in self.objects}
@@ -526,6 +574,7 @@ class IdeProject:
             name = f"Object {index}"
         obj = ProjectObject(name, scripts=[ProjectScript("main.lsl")])
         self.objects.append(obj)
+        self._assign_script_files()
         return obj
 
     def add_script(self, object_index: int, name: Optional[str] = None) -> ProjectScript:
@@ -538,9 +587,11 @@ class IdeProject:
             name = f"script{index}.lsl"
         script = ProjectScript(name)
         obj.scripts.append(script)
+        self._assign_script_files()
         return script
 
     def build_runtime(self, *, echo_stdout: bool = True) -> ProjectRuntime:
+        self.sync_from_disk()
         world = World()
         seeded = seed_demo_world(world, self.world_profile)
         world.console.echo_stdout = echo_stdout
@@ -566,7 +617,7 @@ class IdeProject:
                 prim.add_item(NotecardItem(project_notecard.name, project_notecard.text))
 
             for child_object in project_object.child_objects:
-                prim.add_item(ObjectInventoryItem(child_object.name, child_object.to_dict()))
+                prim.add_item(ObjectInventoryItem(child_object.name, _object_template_with_sources(child_object)))
 
             for project_script in project_object.scripts:
                 item = ScriptItem(project_script.name, project_script.source)
@@ -590,3 +641,54 @@ class IdeProject:
     def queue_state_entries(self, runtime: ProjectRuntime):
         for script in runtime.scripts.values():
             script.event_queue.push(LSLEvent("state_entry", []))
+
+    def _iter_scripts(self):
+        for obj in self.objects:
+            yield from self._iter_object_scripts(obj)
+
+    def _iter_object_scripts(self, obj: ProjectObject):
+        for script in obj.scripts:
+            yield obj, script
+        for child in obj.child_objects:
+            yield from self._iter_object_scripts(child)
+
+    def _assign_script_files(self):
+        for obj, script in self._iter_scripts():
+            if script.file:
+                continue
+            script.file = f"objects/{_safe_path_part(obj.name)}/scripts/{_safe_file_name(script.name)}"
+
+    def _object_for_script_path(self, script_path: Path) -> ProjectObject:
+        rel_parts = script_path.relative_to(self.folder).parts
+        if len(rel_parts) >= 4 and rel_parts[0] == "objects" and rel_parts[2] == "scripts":
+            object_folder = rel_parts[1]
+            for obj in self.objects:
+                if _safe_path_part(obj.name) == object_folder:
+                    return obj
+            obj = self.add_object(_display_name_from_path_part(object_folder))
+            obj.scripts.clear()
+            return obj
+        if not self.objects:
+            self.objects.append(ProjectObject("Object 1", scripts=[]))
+        return self.objects[0]
+
+
+def _safe_path_part(value: str) -> str:
+    cleaned = re.sub(r"[^A-Za-z0-9._ -]+", "_", value.strip()).strip(" .")
+    return cleaned or "Object"
+
+
+def _safe_file_name(value: str) -> str:
+    cleaned = _safe_path_part(value)
+    return cleaned if cleaned.endswith(".lsl") else f"{cleaned}.lsl"
+
+
+def _display_name_from_path_part(value: str) -> str:
+    return value.replace("_", " ").strip() or "Object"
+
+
+def _object_template_with_sources(obj: ProjectObject) -> dict:
+    data = obj.to_dict()
+    data["scripts"] = [{"name": script.name, "source": script.source} for script in obj.scripts]
+    data["child_objects"] = [_object_template_with_sources(child) for child in obj.child_objects]
+    return data

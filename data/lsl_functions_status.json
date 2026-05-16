@@ -436,9 +436,9 @@
     },
     {
       "name": "llEscapeURL",
-      "status": "partial",
+      "status": "missing",
       "wiki_flags": "",
-      "note": "stub: prints not implemented and returns default string"
+      "note": ""
     },
     {
       "name": "llEuler2Rot",
@@ -694,9 +694,9 @@
     },
     {
       "name": "llGetFreeMemory",
-      "status": "partial",
+      "status": "missing",
       "wiki_flags": "",
-      "note": "stub: prints not implemented and returns default integer"
+      "note": ""
     },
     {
       "name": "llGetFreeURLs",
@@ -1180,9 +1180,9 @@
     },
     {
       "name": "llGetScriptName",
-      "status": "partial",
+      "status": "missing",
       "wiki_flags": "",
-      "note": "stub: prints not implemented and returns default string"
+      "note": ""
     },
     {
       "name": "llGetScriptState",
@@ -1300,9 +1300,9 @@
     },
     {
       "name": "llGetUnixTime",
-      "status": "partial",
+      "status": "missing",
       "wiki_flags": "",
-      "note": "stub: prints not implemented and returns default integer"
+      "note": ""
     },
     {
       "name": "llGetUsedMemory",

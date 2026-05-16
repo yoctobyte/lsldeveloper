@@ -7,8 +7,8 @@ Total functions copied: 520
 | Status | Count |
 |---|---:|
 | Implemented | 19 |
-| Partial | 209 |
-| Missing | 292 |
+| Partial | 205 |
+| Missing | 296 |
 
 Wiki flags are copied from the official template where present. Local status means:
 
@@ -90,7 +90,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llEdgeOfWorld` | missing |  |  |
 | `llEjectFromLand` | partial |  | stub: prints not implemented and returns default void |
 | `llEmail` | partial |  | stub: prints not implemented and returns default void |
-| `llEscapeURL` | partial |  | stub: prints not implemented and returns default string |
+| `llEscapeURL` | missing |  |  |
 | `llEuler2Rot` | missing |  |  |
 | `llEvade` | missing | I |  |
 | `llExecCharacterCmd` | missing | I |  |
@@ -133,7 +133,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llGetExperienceDetails` | missing | X I |  |
 | `llGetExperienceErrorMessage` | missing | X I |  |
 | `llGetForce` | missing |  |  |
-| `llGetFreeMemory` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetFreeMemory` | missing |  |  |
 | `llGetFreeURLs` | missing |  |  |
 | `llGetGeometricCenter` | partial |  | stub: prints not implemented and returns default vector |
 | `llGetGMTclock` | partial |  | stub: prints not implemented and returns default float |
@@ -214,7 +214,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llGetRootRotation` | partial |  | stub: prints not implemented and returns default rotation |
 | `llGetRot` | partial |  | reads harness object rotation |
 | `llGetScale` | partial |  | reads current prim scale |
-| `llGetScriptName` | partial |  | stub: prints not implemented and returns default string |
+| `llGetScriptName` | missing |  |  |
 | `llGetScriptState` | partial |  | stub: prints not implemented and returns default integer |
 | `llGetSimStats` | missing | I |  |
 | `llGetSimulatorHostname` | missing |  |  |
@@ -234,7 +234,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llGetTimeOfDay` | partial |  | stub: prints not implemented and returns default float |
 | `llGetTimestamp` | partial |  | stub: prints not implemented and returns default string |
 | `llGetTorque` | missing |  |  |
-| `llGetUnixTime` | partial |  | stub: prints not implemented and returns default integer |
+| `llGetUnixTime` | missing |  |  |
 | `llGetUsedMemory` | partial | I | stub: prints not implemented and returns default integer |
 | `llGetUsername` | missing |  |  |
 | `llGetVel` | partial |  | reads harness object velocity |

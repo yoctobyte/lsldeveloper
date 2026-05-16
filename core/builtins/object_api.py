@@ -87,6 +87,14 @@ def ll_set_pos(evaluator, args):
     return None
 
 
+@builtin("llSetRegionPos")
+def ll_set_region_pos(evaluator, args):
+    obj = current_object(evaluator.script)
+    if obj:
+        obj.position = args[0]
+    return 1 # Returns 1 on success
+
+
 @builtin("llGetRot")
 def ll_get_rot(evaluator, args):
     obj = current_object(evaluator.script)

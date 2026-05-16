@@ -1,5 +1,5 @@
 name,status,wiki_flags,note
-llAbs,missing,,
+llAbs,implemented,,
 llAcos,missing,,
 llAddToLandBanList,missing,,
 llAddToLandPassList,partial,,stub: prints not implemented and returns default void
@@ -67,11 +67,11 @@ llDetectedType,partial,,reads current simplified sensor detection record
 llDetectedVel,partial,,reads current simplified sensor detection record
 llDialog,partial,,records latest dialog and emits button responses through chat
 llDie,partial,,stub: prints not implemented and returns default void
-llDumpList2String,partial,,
+llDumpList2String,implemented,,
 llEdgeOfWorld,missing,,
 llEjectFromLand,partial,,stub: prints not implemented and returns default void
 llEmail,partial,,stub: prints not implemented and returns default void
-llEscapeURL,partial,,stub: prints not implemented and returns default string
+llEscapeURL,implemented,,
 llEuler2Rot,missing,,
 llEvade,missing,I,
 llExecCharacterCmd,missing,I,
@@ -80,7 +80,7 @@ llFindNotecardTextSync,missing,NEW I,
 llFleeFrom,missing,I,
 llFloor,missing,,
 llForceMouselook,missing,,
-llFrand,partial,,
+llFrand,implemented,,
 llGenerateKey,missing,I,
 llGetAccel,missing,,
 llGetAgentInfo,missing,,
@@ -109,12 +109,12 @@ llGetDayLength,missing,I,
 llGetDayOffset,missing,I,
 llGetDisplayName,partial,,reads demo avatar display name
 llGetEnergy,missing,,
-llGetEnv,partial,U,
+llGetEnv,implemented,U,
 llGetEnvironment,missing,I,
 llGetExperienceDetails,missing,X I,
 llGetExperienceErrorMessage,missing,X I,
 llGetForce,missing,,
-llGetFreeMemory,partial,,stub: prints not implemented and returns default integer
+llGetFreeMemory,implemented,,
 llGetFreeURLs,missing,,
 llGetGeometricCenter,partial,,stub: prints not implemented and returns default vector
 llGetGMTclock,partial,,stub: prints not implemented and returns default float
@@ -195,7 +195,7 @@ llGetRootPosition,partial,,stub: prints not implemented and returns default vect
 llGetRootRotation,partial,,stub: prints not implemented and returns default rotation
 llGetRot,partial,,reads harness object rotation
 llGetScale,partial,,reads current prim scale
-llGetScriptName,partial,,stub: prints not implemented and returns default string
+llGetScriptName,implemented,,
 llGetScriptState,partial,,stub: prints not implemented and returns default integer
 llGetSimStats,missing,I,
 llGetSimulatorHostname,missing,,
@@ -215,7 +215,7 @@ llGetTime,partial,,stubbed constant
 llGetTimeOfDay,partial,,stub: prints not implemented and returns default float
 llGetTimestamp,partial,,stub: prints not implemented and returns default string
 llGetTorque,missing,,
-llGetUnixTime,partial,,stub: prints not implemented and returns default integer
+llGetUnixTime,implemented,,
 llGetUsedMemory,partial,I,stub: prints not implemented and returns default integer
 llGetUsername,missing,,
 llGetVel,partial,,reads harness object velocity
@@ -234,9 +234,9 @@ llGroundSlope,partial,,stub: prints not implemented and returns default vector
 llHash,missing,I,
 llHMAC,missing,I,
 llHTTPRequest,partial,,stdlib HTTP request; simplified options/headers/events
-llHTTPResponse,missing,,
+llHTTPResponse,implemented,,
 llInsertString,missing,,
-llInstantMessage,partial,,
+llInstantMessage,implemented,,
 llIntegerToBase64,missing,,
 llIsFriend,missing,I,
 llIsLinkGLTFMaterial,missing,NEW I,
@@ -305,7 +305,7 @@ llMakeSmoke,partial,D,stub: prints not implemented and returns default void
 llManageEstateAccess,missing,I,
 llMapBeacon,missing,NEW I,
 llMapDestination,partial,,stub: prints not implemented and returns default void
-llMD5String,partial,,
+llMD5String,implemented,,
 llMessageLinked,partial,,queues link_message in linkset; ignores target details
 llMinEventDelay,partial,,stub: prints not implemented and returns default void
 llModifyLand,partial,,stub: prints not implemented and returns default void
@@ -321,8 +321,8 @@ llOverMyLand,partial,,stub: prints not implemented and returns default integer
 llOwnerSay,partial,,prints to stdout
 llParcelMediaCommandList,missing,,
 llParcelMediaQuery,missing,,
-llParseString2List,partial,,
-llParseStringKeepNulls,partial,,
+llParseString2List,implemented,,
+llParseStringKeepNulls,implemented,,
 llParticleSystem,partial,,stores particle parameters on the current prim without rendering
 llPassCollisions,partial,,stub: prints not implemented and returns default void
 llPassTouches,partial,,stub: prints not implemented and returns default void
@@ -340,7 +340,7 @@ llRegionSay,partial,,routes through harness chat without range semantics
 llRegionSayTo,partial,,routes through harness chat without private delivery semantics
 llReleaseCamera,missing,D,
 llReleaseControls,partial,,stub: prints not implemented and returns default void
-llReleaseURL,partial,,stub: prints not implemented and returns default void
+llReleaseURL,implemented,,
 llRemoteDataReply,partial,D,stub: prints not implemented and returns default void
 llRemoteDataSetRegion,missing,D,
 llRemoteLoadScript,missing,R,
@@ -359,7 +359,7 @@ llRequestInventoryData,partial,,stub: prints not implemented and returns default
 llRequestPermissions,partial,,stub: prints not implemented and returns default void
 llRequestSecureURL,partial,,stub: prints not implemented and returns default key
 llRequestSimulatorData,partial,,stub: prints not implemented and returns default key
-llRequestURL,partial,,stub: prints not implemented and returns default key
+llRequestURL,implemented,,
 llRequestUserKey,missing,I,
 llRequestUsername,partial,,synchronous name lookup instead of dataserver event
 llResetAnimationOverride,missing,I,
@@ -438,7 +438,7 @@ llSetPos,partial,,sets harness object position
 llSetPrimitiveParams,partial,,supports a small model-backed PRIM_* subset
 llSetPrimMediaParams,missing,,
 llSetPrimURL,missing,D,
-llSetRegionPos,partial,I,
+llSetRegionPos,implemented,I,
 llSetRemoteScriptAccessPin,partial,,stub: prints not implemented and returns default void
 llSetRenderMaterial,missing,NEW,
 llSetRot,partial,,sets harness object rotation
@@ -483,7 +483,7 @@ llStopPointAt,missing,R,
 llStopSound,partial,,clears current stored sound state
 llStringLength,implemented,,Python string length
 llStringToBase64,missing,,
-llStringTrim,missing,,
+llStringTrim,implemented,,
 llSubStringIndex,implemented,,Python substring search
 llTakeCamera,missing,D,
 llTakeControls,partial,,stub: prints not implemented and returns default void
@@ -496,13 +496,13 @@ llTeleportAgent,partial,I,stub: prints not implemented and returns default void
 llTeleportAgentGlobalCoords,partial,I,stub: prints not implemented and returns default void
 llTeleportAgentHome,partial,,stub: prints not implemented and returns default void
 llTextBox,partial,,stub: prints not implemented and returns default void
-llToLower,partial,,
-llToUpper,partial,,
+llToLower,implemented,,
+llToUpper,implemented,,
 llTransferLindenDollars,missing,I,
 llTransferOwnership,missing,NEW I,
 llTriggerSound,partial,,stores triggered sound state and history without audio playback
 llTriggerSoundLimited,partial,,stub: prints not implemented and returns default void
-llUnescapeURL,missing,,
+llUnescapeURL,implemented,,
 llUnSit,partial,,stub: prints not implemented and returns default void
 llUpdateCharacter,missing,I,
 llUpdateKeyValue,missing,X I,

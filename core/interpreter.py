@@ -113,7 +113,11 @@ class Evaluator:
         if node.op == '+': return left + right
         if node.op == '-': return left - right
         if node.op == '*': return left * right
-        if node.op == '/': return left / right
+        if node.op == '/':
+            # LSL integer division truncates toward zero (C semantics)
+            if isinstance(left, int) and isinstance(right, int):
+                return int(left / right) if right != 0 else 0
+            return left / right
         if node.op == '%': return left % right
         if node.op == '&': return int(left) & int(right)
         if node.op == '|': return int(left) | int(right)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import random
+import urllib.parse
 
 from core.types import LSLList
 
@@ -80,6 +81,32 @@ def ll_get_env(evaluator, args):
     if name == "region_hostname" and region:
         return region.name.lower().replace(" ", "-") + ".lindenlab.com"
     return env_map.get(name, "")
+
+
+@builtin("llEscapeURL")
+def ll_escape_url(evaluator, args):
+    return urllib.parse.quote(str(args[0]), safe="")
+
+
+@builtin("llUnescapeURL")
+def ll_unescape_url(evaluator, args):
+    return urllib.parse.unquote(str(args[0]))
+
+
+@builtin("llStringTrim")
+def ll_string_trim(evaluator, args):
+    text  = str(args[0])
+    flags = int(args[1])
+    if flags == 1:   # STRING_TRIM_HEAD
+        return text.lstrip()
+    if flags == 2:   # STRING_TRIM_TAIL
+        return text.rstrip()
+    return text.strip()  # STRING_TRIM = 3
+
+
+@builtin("llAbs")
+def ll_abs(evaluator, args):
+    return abs(int(args[0]))
 
 
 @builtin("llInstantMessage")

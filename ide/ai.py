@@ -131,6 +131,7 @@ def apply_ai_edits(project, edits: list[AiEdit]) -> list[str]:
             for script in obj.scripts:
                 if script.name == edit.script_name:
                     script.source = edit.source.rstrip() + "\n"
+                    script.dirty = True
                     changed.append(f"{obj.name}/{script.name}")
                     break
             break

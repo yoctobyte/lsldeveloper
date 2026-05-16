@@ -34,7 +34,7 @@ class LslIdeApp(tk.Tk):
         self.lines_var = tk.StringVar(value="Lines: 0")
         self.dialog_message_var = tk.StringVar(value="No active dialog")
         self.problem_rows: list[object] = []
-        self._dialog_signature = None
+        self._dialog_signature = object()
         self._problems_signature = None
         self._fps_window_start = time.monotonic()
         self._fps_window_ticks = 0
@@ -48,6 +48,7 @@ class LslIdeApp(tk.Tk):
         toolbar = ttk.Frame(self)
         toolbar.pack(side=tk.TOP, fill=tk.X)
 
+        ttk.Button(toolbar, text="New", command=self.new_project).pack(side=tk.LEFT, padx=2, pady=2)
         ttk.Button(toolbar, text="Open", command=self.open_project).pack(side=tk.LEFT, padx=2, pady=2)
         ttk.Button(toolbar, text="Save", command=self.save_project).pack(side=tk.LEFT, padx=2, pady=2)
         ttk.Separator(toolbar, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=4)
@@ -149,6 +150,7 @@ class LslIdeApp(tk.Tk):
         self.config(menu=menu)
 
         file_menu = tk.Menu(menu, tearoff=False)
+        file_menu.add_command(label="New Project...", command=self.new_project, accelerator="Ctrl+N")
         file_menu.add_command(label="Open Project...", command=self.open_project, accelerator="Ctrl+O")
         file_menu.add_command(label="Save Project", command=self.save_project, accelerator="Ctrl+S")
         file_menu.add_separator()
@@ -176,6 +178,7 @@ class LslIdeApp(tk.Tk):
         console_menu.add_command(label="Clear Console", command=self.clear_console)
         menu.add_cascade(label="Console", menu=console_menu)
 
+        self.bind_all("<Control-n>", lambda _event: self.new_project())
         self.bind_all("<Control-o>", lambda _event: self.open_project())
         self.bind_all("<Control-s>", lambda _event: self.save_project())
         self.bind_all("<F5>", lambda _event: self.run_project())
@@ -363,15 +366,48 @@ class LslIdeApp(tk.Tk):
     def save_current_editor(self):
         script = self.selected_script()
         if script:
-            script.source = self.editor.get("1.0", tk.END).rstrip() + "\n"
+            source = self.editor.get("1.0", tk.END).rstrip() + "\n"
+            if source != script.source:
+                script.source = source
+                script.dirty = True
 
     def _load_selected_script(self):
+        self.project.sync_from_disk()
         script = self.selected_script()
         self.editor.delete("1.0", tk.END)
         if script:
             self.editor.insert("1.0", script.source)
         self.editor.edit_modified(False)
         self._update_line_status()
+
+    def _replace_project(self, project: IdeProject, status: str):
+        self._stop_auto_tick()
+        self.project = project
+        self.runtime = None
+        self.selected_object_index = 0
+        self.selected_script_index = 0
+        self._dialog_signature = object()
+        self._problems_signature = None
+        self._reset_fps()
+        self.clear_console()
+        self._refresh_dialog_panel()
+        self._clear_problems()
+        self.title(f"LSL Developer - {self.project.folder}")
+        self._refresh_lists()
+        self._load_selected_script()
+        self._set_status(status)
+
+    def new_project(self):
+        parent = filedialog.askdirectory(initialdir=str(self.project.folder.parent), title="Choose Parent Folder")
+        if not parent:
+            return
+        name = simpledialog.askstring("New Project", "Folder name:", initialvalue="lsl_project")
+        if not name:
+            return
+        folder = Path(parent) / name
+        project = IdeProject.blank(folder)
+        project.save()
+        self._replace_project(project, f"Created {project.folder}")
 
     def on_object_selected(self, _event=None):
         selection = self.object_list.curselection()
@@ -394,18 +430,8 @@ class LslIdeApp(tk.Tk):
     def open_project(self):
         folder = filedialog.askdirectory(initialdir=str(self.project.folder))
         if folder:
-            self._stop_auto_tick()
             self.save_current_editor()
-            self.project = IdeProject.load(folder)
-            self.runtime = None
-            self._refresh_dialog_panel()
-            self._clear_problems()
-            self.title(f"LSL Developer - {self.project.folder}")
-            self.selected_object_index = 0
-            self.selected_script_index = 0
-            self._refresh_lists()
-            self._load_selected_script()
-            self._set_status(f"Opened {self.project.folder}")
+            self._replace_project(IdeProject.load(folder), f"Opened {folder}")
 
     def save_project(self):
         self.save_current_editor()
@@ -513,6 +539,7 @@ class LslIdeApp(tk.Tk):
             messagebox.showerror("Missing Question", "Enter a question or change request for the AI.")
             return
         self.save_current_editor()
+        self.project.sync_from_disk()
         self.ai_busy = True
         self.ai_button.configure(state=tk.DISABLED)
         self._set_status("AI request running")

@@ -1,0 +1,25 @@
+{
+  "world_profile": "couple",
+  "objects": [
+    {
+      "name": "Board A",
+      "description": "TTChess P2P test board — requester",
+      "position": [120.0, 128.0, 25.0],
+      "scripts": [
+        {"name": "ChessEngine.lsl", "file": "../../ttchess/ChessEngine.lsl"},
+        {"name": "NodeHTTP.lsl",    "file": "../../ttchess/NodeHTTP.lsl"},
+        {"name": "NodeManager.lsl", "file": "../../ttchess/NodeManager.lsl"}
+      ]
+    },
+    {
+      "name": "Board B",
+      "description": "TTChess P2P test board — peer/responder",
+      "position": [136.0, 128.0, 25.0],
+      "scripts": [
+        {"name": "ChessEngine.lsl", "file": "../../ttchess/ChessEngine.lsl"},
+        {"name": "NodeHTTP.lsl",    "file": "../../ttchess/NodeHTTP.lsl"},
+        {"name": "NodeManager.lsl", "file": "../../ttchess/NodeManager.lsl"}
+      ]
+    }
+  ]
+}

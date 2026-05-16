@@ -1,0 +1,82 @@
+{
+  "world_profile": "couple",
+  "objects": [
+    {
+      "name": "Control Panel",
+      "description": "",
+      "position": [
+        128.0,
+        128.0,
+        25.0
+      ],
+      "scripts": [
+        {
+          "name": "control.lsl",
+          "source": "integer touches;\ninteger timer_seen;\ninteger radar_seen;\ninteger network_seen;\ninteger dialog_seen;\ninteger inter_object_seen;\ninteger dataserver_pass;\nstring note_value;\nstring link_ack;\nkey note_request;\n\ndefault {\n    state_entry() {\n        llListen(0, \"\", NULL_KEY, \"\");\n        llListen(-9000, \"\", NULL_KEY, \"\");\n        llSetObjectDesc(\"storage:object\");\n        llSetPrimitiveParams([PRIM_DESC, \"storage:prim\"]);\n        llLinksetDataWrite(\"mode\", \"boot\");\n        note_request = llGetNotecardLine(\"Config\", 0);\n        llMessageLinked(LINK_SET, 100, \"within-object\", \"\");\n        llSetTimerEvent(0.2);\n        llSensorRepeat(\"\", NULL_KEY, AGENT | ACTIVE | PASSIVE | SCRIPTED, 96.0, 3.14, 0.2);\n        llHTTPRequest(\"data:text/plain,offline-network-ok\", [], \"\");\n        llOwnerSay(\"control ready\");\n    }\n\n    touch_start(integer total_number) {\n        touches += total_number;\n        llOwnerSay(\"touch \" + (string)touches);\n        llDialog(llGetOwner(), \"Mode?\", [\"Start\", \"Stop\", \"Status\"], -9000);\n    }\n\n    listen(integer channel, string name, key id, string message) {\n        if (channel == -9000) {\n            dialog_seen = TRUE;\n            llOwnerSay(\"dialog \" + message);\n        }\n        if (channel == 0 && message == \"remote pong\") {\n            inter_object_seen = TRUE;\n            llOwnerSay(\"remote reply\");\n        }\n    }\n\n    link_message(integer sender_num, integer num, string message, key id) {\n        link_ack = message;\n        llOwnerSay(\"link \" + message);\n    }\n\n    dataserver(key queryid, string data) {\n        if (queryid == note_request) {\n            note_value = data;\n            if (data == \"mode=offline-demo\") {\n                dataserver_pass = TRUE;\n                llOwnerSay(\"dataserver pass \" + data);\n            } else {\n                llOwnerSay(\"dataserver fail \" + data);\n            }\n        }\n    }\n\n    timer() {\n        timer_seen = TRUE;\n        llSetTimerEvent(0.0);\n        llOwnerSay(\"timer\");\n    }\n\n    sensor(integer total_number) {\n        radar_seen = TRUE;\n        llSensorRemove();\n        llOwnerSay(\"radar \" + llDetectedName(0));\n    }\n\n    http_response(key request_id, integer status, list metadata, string body) {\n        network_seen = TRUE;\n        llOwnerSay(\"network \" + (string)status + \" \" + body);\n    }\n}\n"
+        },
+        {
+          "name": "helper.lsl",
+          "source": "default {\n    link_message(integer sender_num, integer num, string message, key id) {\n        if (message == \"within-object\") {\n            llLinksetDataWrite(\"helper\", \"linked\");\n            llMessageLinked(LINK_SET, 101, \"helper-ack\", \"\");\n        }\n    }\n}\n"
+        },
+        {
+          "name": "language_probe.lsl",
+          "source": "integer for_sum;\ninteger while_count;\ninteger do_count;\ninteger condition_score;\ninteger state_seen;\ninteger list_score;\ninteger explicit_int;\nfloat parsed_float;\nvector parsed_vec;\nrotation parsed_rot;\nstring type_summary;\nstring final_status;\nlist global_list;\n\ninteger add(integer left, integer right) {\n    return left + right;\n}\n\ndefault {\n    state_entry() {\n        integer i;\n        for (i = 0; i < 5; i++) {\n            for_sum += i;\n        }\n\n        while (while_count < 3) {\n            while_count++;\n        }\n\n        do {\n            do_count++;\n        } while (do_count < 2);\n\n        if (for_sum == 10 && while_count == 3) {\n            condition_score += add(1, 1);\n        } else {\n            condition_score = -100;\n        }\n\n        if (FALSE || do_count == 2) {\n            condition_score += 3;\n        }\n\n        list local_list = [\"alpha\", 7, 2.5, <1.0, 2.0, 3.0>, <0.0, 0.0, 0.0, 1.0>];\n        global_list = local_list + [\"omega\"];\n        list_score = llGetListLength(global_list);\n        if (llList2String(global_list, 0) == \"alpha\") {\n            list_score += 10;\n        }\n        if (llList2Integer(global_list, 1) == 7) {\n            list_score += 20;\n        }\n        if (llList2Float(global_list, 2) == 2.5) {\n            list_score += 30;\n        }\n        if (llList2Vector(global_list, 3) == <1.0, 2.0, 3.0>) {\n            list_score += 40;\n        }\n        if (llList2Rot(global_list, 4) == <0.0, 0.0, 0.0, 1.0>) {\n            list_score += 50;\n        }\n\n        explicit_int = (integer)\"42.9\";\n        parsed_float = (float)\"3.5\";\n        parsed_vec = (vector)\"<4.0, 5.0, 6.0>\";\n        parsed_rot = (rotation)\"<0.0, 0.0, 0.0, 1.0>\";\n        type_summary = (string)explicit_int + \"|\" + (string)parsed_float + \"|\" + (string)parsed_vec;\n\n        state ready;\n    }\n}\n\nstate ready {\n    state_entry() {\n        state_seen = TRUE;\n        final_status = \"language ok\";\n        llOwnerSay(final_status);\n    }\n}\n"
+        },
+        {
+          "name": "environment_probe.lsl",
+          "source": "integer api_pass;\ninteger api_fail;\ninteger io_seen;\ninteger inventory_scripts;\ninteger agent_count;\ninteger running_scripts;\nstring env_region;\nstring env_parcel;\nstring object_desc_seen;\nstring prim_desc_seen;\nstring linkset_seen;\nstring parcel_music_seen;\nstring object_detail_name;\nvector pos_seen;\nstring confirmation;\n\nrecord(integer ok) {\n    if (ok) {\n        api_pass++;\n    } else {\n        api_fail++;\n    }\n}\n\ndefault {\n    state_entry() {\n        llListen(5, \"\", NULL_KEY, \"api ping\");\n\n        env_region = llGetRegionName();\n        record(env_region == \"Offline Sandbox\");\n\n        list parcel = llGetParcelDetails(llGetPos(), [PARCEL_DETAILS_NAME, PARCEL_DETAILS_AREA]);\n        env_parcel = llList2String(parcel, 0);\n        record(env_parcel == \"Offline Parcel\");\n        record(llList2Integer(parcel, 1) == 65536);\n\n        list agents = llGetAgentList(AGENT_LIST_REGION, []);\n        agent_count = llGetListLength(agents);\n        record(agent_count >= 2);\n\n        inventory_scripts = llGetInventoryNumber(INVENTORY_SCRIPT);\n        record(inventory_scripts >= 4);\n        record(llGetInventoryType(\"Config\") == INVENTORY_NOTECARD);\n\n        llSetObjectDesc(\"api-probe-object\");\n        object_desc_seen = llGetObjectDesc();\n        record(object_desc_seen == \"api-probe-object\");\n\n        llSetPrimitiveParams([PRIM_DESC, \"api-probe-prim\", PRIM_SIZE, <1.0, 1.5, 2.0>]);\n        list prim = llGetPrimitiveParams([PRIM_DESC, PRIM_SIZE]);\n        prim_desc_seen = llList2String(prim, 0);\n        record(prim_desc_seen == \"api-probe-prim\");\n        record(llList2Vector(prim, 1) == <1.0, 1.5, 2.0>);\n\n        llLinksetDataWrite(\"api\", \"persistent\");\n        linkset_seen = llLinksetDataRead(\"api\");\n        record(linkset_seen == \"persistent\");\n\n        llSetParcelMusicURL(\"https://example.invalid/test-music\");\n        parcel_music_seen = llGetParcelMusicURL();\n        record(parcel_music_seen == \"https://example.invalid/test-music\");\n\n        llSetPos(<129.0, 129.0, 26.0>);\n        pos_seen = llGetPos();\n        record(pos_seen == <129.0, 129.0, 26.0>);\n\n        list details = llGetObjectDetails(llGetKey(), [OBJECT_NAME, OBJECT_DESC, OBJECT_RUNNING_SCRIPT_COUNT]);\n        object_detail_name = llList2String(details, 0);\n        running_scripts = llList2Integer(details, 2);\n        record(object_detail_name == \"Control Panel\");\n        record(llList2String(details, 1) == \"api-probe-object\");\n        record(running_scripts >= 4);\n\n        confirmation = \"api pass \" + (string)api_pass + \" fail \" + (string)api_fail;\n        llOwnerSay(confirmation);\n    }\n\n    listen(integer channel, string name, key id, string message) {\n        io_seen = TRUE;\n        record(message == \"api ping\");\n        confirmation = \"api pass \" + (string)api_pass + \" fail \" + (string)api_fail;\n        llOwnerSay(\"io pass \" + name);\n    }\n}\n"
+        },
+        {
+          "name": "rez_probe.lsl",
+          "source": "integer rez_seen;\ninteger rez_count_before;\ninteger rez_count_after;\nkey child_key;\n\ndefault {\n    state_entry() {\n        rez_count_before = llGetInventoryNumber(INVENTORY_OBJECT);\n        llRezObject(\"Seeded Child\", llGetPos() + <2.0, 0.0, 0.0>, <0.0, 0.0, 0.0>, <0.0, 0.0, 0.0, 1.0>, 7);\n    }\n\n    object_rez(key id) {\n        rez_seen = TRUE;\n        child_key = id;\n        rez_count_after = llGetInventoryNumber(INVENTORY_OBJECT);\n        llOwnerSay(\"rez pass \" + (string)id);\n    }\n}\n"
+        },
+        {
+          "name": "sensor_probe.lsl",
+          "source": "integer phase;\ninteger agent_total;\ninteger object_total;\ninteger named_total;\ninteger no_sensor_seen;\ninteger repeat_events;\ninteger removed_count;\nstring first_agent_name;\nkey first_agent_key;\nvector first_agent_pos;\ninteger first_agent_type;\nstring first_object_name;\ninteger first_object_type;\n\ndefault {\n    state_entry() {\n        llSensor(\"\", NULL_KEY, AGENT, 96.0, 3.14);\n    }\n\n    sensor(integer total_number) {\n        if (phase == 0) {\n            agent_total = total_number;\n            first_agent_name = llDetectedName(0);\n            first_agent_key = llDetectedKey(0);\n            first_agent_pos = llDetectedPos(0);\n            first_agent_type = llDetectedType(0);\n            phase = 1;\n            llSensor(\"Fixture Cube\", NULL_KEY, ACTIVE | PASSIVE | SCRIPTED, 96.0, 3.14);\n        } else if (phase == 1) {\n            object_total = total_number;\n            first_object_name = llDetectedName(0);\n            first_object_type = llDetectedType(0);\n            phase = 2;\n            llSensor(\"External Visitor\", NULL_KEY, AGENT, 96.0, 3.14);\n        } else if (phase == 2) {\n            named_total = total_number;\n            phase = 3;\n            llSensor(\"Nobody Here\", NULL_KEY, AGENT, 5.0, 3.14);\n        } else if (phase == 4) {\n            repeat_events++;\n            if (repeat_events >= 2) {\n                llSensorRemove();\n                removed_count = repeat_events;\n                llOwnerSay(\"sensor pass agents \" + (string)agent_total + \" objects \" + (string)object_total + \" repeats \" + (string)repeat_events);\n            }\n        }\n    }\n\n    no_sensor() {\n        if (phase == 3) {\n            no_sensor_seen = TRUE;\n            phase = 4;\n            llSensorRepeat(\"\", NULL_KEY, AGENT, 96.0, 3.14, 0.2);\n        }\n    }\n}\n"
+        }
+      ],
+      "notecards": [
+        {
+          "name": "Config",
+          "text": "mode=offline-demo\nnetwork=data-url\n"
+        }
+      ],
+      "child_objects": [
+        {
+          "name": "Seeded Child",
+          "description": "Inventory object used by llRezObject tests",
+          "position": [
+            128.0,
+            128.0,
+            25.0
+          ],
+          "scripts": [
+            {
+              "name": "child.lsl",
+              "source": "default {\n    state_entry() {\n        llSetObjectDesc(\"rezzed child active\");\n        llOwnerSay(\"child ready\");\n    }\n}\n"
+            }
+          ],
+          "notecards": [],
+          "child_objects": []
+        }
+      ]
+    },
+    {
+      "name": "Remote Relay",
+      "description": "",
+      "position": [
+        132.0,
+        128.0,
+        25.0
+      ],
+      "scripts": [
+        {
+          "name": "relay.lsl",
+          "source": "default {\n    state_entry() {\n        llListen(0, \"\", NULL_KEY, \"ping remote\");\n        llOwnerSay(\"relay ready\");\n    }\n\n    listen(integer channel, string name, key id, string message) {\n        llSay(0, \"remote pong\");\n    }\n}\n"
+        }
+      ],
+      "notecards": [],
+      "child_objects": []
+    }
+  ]
+}

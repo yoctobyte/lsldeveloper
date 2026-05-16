@@ -1,3 +1,5 @@
+import json
+
 from core.types import LSLRotation, LSLVector, NULL_KEY
 from ide.project import IdeProject, ProjectObject, ProjectScript
 
@@ -60,6 +62,51 @@ default {
     assert messages[0].channel == 7
     assert messages[0].source_name == "Speaker Root"
     assert messages[1].text == "Speaker Root:ping"
+
+
+def test_ide_project_stores_scripts_as_files(tmp_path):
+    project = IdeProject(
+        tmp_path,
+        [ProjectObject("Box", scripts=[ProjectScript("main.lsl", "default {}\n")])],
+    )
+
+    project.save()
+
+    script_path = tmp_path / "objects" / "Box" / "scripts" / "main.lsl"
+    project_data = json.loads((tmp_path / "project.json").read_text(encoding="utf-8"))
+
+    assert script_path.read_text(encoding="utf-8") == "default {}\n"
+    assert project_data["objects"][0]["scripts"] == [
+        {"name": "main.lsl", "file": "objects/Box/scripts/main.lsl"}
+    ]
+
+
+def test_ide_project_loads_external_script_file_edits(tmp_path):
+    project = IdeProject(
+        tmp_path,
+        [ProjectObject("Box", scripts=[ProjectScript("main.lsl", "default {}\n")])],
+    )
+    project.save()
+    script_path = tmp_path / "objects" / "Box" / "scripts" / "main.lsl"
+    script_path.write_text('default { state_entry() { llOwnerSay("external"); } }\n', encoding="utf-8")
+
+    loaded = IdeProject.load(tmp_path)
+
+    assert 'llOwnerSay("external")' in loaded.objects[0].scripts[0].source
+
+
+def test_ide_project_auto_detects_dropped_lsl_files(tmp_path):
+    (tmp_path / "loose.lsl").write_text("default {}\n", encoding="utf-8")
+    nested = tmp_path / "objects" / "Console" / "scripts"
+    nested.mkdir(parents=True)
+    (nested / "console.lsl").write_text("default { state_entry() {} }\n", encoding="utf-8")
+
+    loaded = IdeProject.load(tmp_path)
+
+    scripts_by_object = {obj.name: [script.name for script in obj.scripts] for obj in loaded.objects}
+
+    assert scripts_by_object["Object 1"] == ["loose.lsl"]
+    assert scripts_by_object["Console"] == ["console.lsl"]
 
 
 def test_ide_project_text_input_routes_through_avatar_chat(tmp_path):

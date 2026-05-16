@@ -3,6 +3,7 @@ from typing import List
 from sim.world import World
 from sim.prim import ScriptItem
 from events.queue import LSLEvent
+from core.interpreter import ReturnException
 from core.interpreter import Evaluator, ExecutionContext
 from core.exceptions import StateChangeException
 from core.builtins.runtime import queue_sensor_event
@@ -53,6 +54,8 @@ class SimulationLoop:
         handler._event_detected = event.detected
         try:
             self._run_handler(script, handler, event.args)
+        except ReturnException:
+            pass  # early return from an event handler is normal
         except Exception as exc:
             script.running = False
             obj = script.container_prim.parent_object if script.container_prim else None
