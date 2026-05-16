@@ -19,6 +19,7 @@ from . import primitive as _primitive
 from . import region_api as _region_api
 from . import rez as _rez
 from . import sensors as _sensors
+from . import math_api as _math_api
 from . import strings as _strings
 from . import stubs as _stubs
 from . import time_api as _time_api

@@ -1,6 +1,6 @@
 name,status,wiki_flags,note
 llAbs,implemented,,
-llAcos,missing,,
+llAcos,implemented,,
 llAddToLandBanList,missing,,
 llAddToLandPassList,partial,,stub: prints not implemented and returns default void
 llAdjustDamage,missing,NEW,
@@ -10,8 +10,8 @@ llAllowInventoryDrop,partial,,stub: prints not implemented and returns default v
 llAngleBetween,missing,,
 llApplyImpulse,partial,,stub: prints not implemented and returns default void
 llApplyRotationalImpulse,partial,,stub: prints not implemented and returns default void
-llAsin,missing,,
-llAtan2,missing,,
+llAsin,implemented,,
+llAtan2,implemented,,
 llAttachToAvatar,partial,,stub: prints not implemented and returns default void
 llAttachToAvatarTemp,partial,I,stub: prints not implemented and returns default void
 llAvatarOnLinkSitTarget,missing,I,
@@ -23,7 +23,7 @@ llBase64ToString,missing,,
 llBreakAllLinks,missing,,
 llBreakLink,missing,,
 llCastRay,missing,I,
-llCeil,missing,,
+llCeil,implemented,,
 llChar,missing,I,
 llClearCameraParams,partial,,stub: prints not implemented and returns default void
 llClearLinkMedia,missing,I,
@@ -34,7 +34,7 @@ llCollisionFilter,partial,,stub: prints not implemented and returns default void
 llCollisionSound,missing,,
 llCollisionSprite,missing,,
 llComputeHash,missing,NEW,
-llCos,missing,,
+llCos,implemented,,
 llCreateCharacter,missing,I,
 llCreateKeyValue,missing,X I,
 llCreateLink,partial,,stub: prints not implemented and returns default void
@@ -75,10 +75,10 @@ llEscapeURL,implemented,,
 llEuler2Rot,missing,,
 llEvade,missing,I,
 llExecCharacterCmd,missing,I,
-llFabs,missing,,
+llFabs,implemented,,
 llFindNotecardTextSync,missing,NEW I,
 llFleeFrom,missing,I,
-llFloor,missing,,
+llFloor,implemented,,
 llForceMouselook,missing,,
 llFrand,implemented,,
 llGenerateKey,missing,I,
@@ -292,8 +292,8 @@ llListSort,missing,,
 llListSortStrided,missing,I,
 llListStatistics,missing,,
 llLoadURL,partial,,stub: prints not implemented and returns default void
-llLog,missing,,
-llLog10,missing,,
+llLog,implemented,,
+llLog10,implemented,,
 llLookAt,missing,,
 llLoopSound,partial,,stores looping sound state and history without audio playback
 llLoopSoundMaster,missing,,
@@ -309,7 +309,7 @@ llMD5String,implemented,,
 llMessageLinked,partial,,queues link_message in linkset; ignores target details
 llMinEventDelay,partial,,stub: prints not implemented and returns default void
 llModifyLand,partial,,stub: prints not implemented and returns default void
-llModPow,missing,,
+llModPow,implemented,,
 llMoveToTarget,missing,,
 llName2Key,missing,I,
 llNavigateTo,missing,,
@@ -330,7 +330,7 @@ llPatrolPoints,missing,I,
 llPlaySound,partial,,stores current sound state and history without audio playback
 llPlaySoundSlave,missing,,
 llPointAt,missing,R,
-llPow,missing,,
+llPow,implemented,,
 llPreloadSound,partial,,records preloaded sound names on the current prim
 llPursue,missing,I,
 llPushObject,partial,,stub: prints not implemented and returns default void
@@ -384,7 +384,7 @@ llRotBetween,missing,,
 llRotLookAt,partial,,stub: prints not implemented and returns default void
 llRotTarget,missing,,
 llRotTargetRemove,missing,,
-llRound,missing,,
+llRound,implemented,,
 llSameGroup,missing,,
 llSay,partial,,routes chat in harness or prints to stdout
 llScaleByFactor,missing,I,
@@ -464,13 +464,13 @@ llSHA1String,missing,,
 llSHA256String,missing,I,
 llShout,partial,,routes through harness chat without range semantics
 llSignRSA,missing,I,
-llSin,missing,,
+llSin,implemented,,
 llSitOnLink,missing,,
 llSitTarget,partial,,stub: prints not implemented and returns default void
 llSleep,partial,,stub: prints not implemented and returns default void
 llSound,missing,D,
 llSoundPreload,missing,D,
-llSqrt,missing,,
+llSqrt,implemented,,
 llsRGB2Linear,missing,I,
 llStartAnimation,missing,,
 llStartObjectAnimation,missing,,
@@ -487,7 +487,7 @@ llStringTrim,implemented,,
 llSubStringIndex,implemented,,Python substring search
 llTakeCamera,missing,D,
 llTakeControls,partial,,stub: prints not implemented and returns default void
-llTan,missing,,
+llTan,implemented,,
 llTarget,partial,,stub: prints not implemented and returns default integer
 llTargetedEmail,missing,I,
 llTargetOmega,missing,,
@@ -506,9 +506,9 @@ llUnescapeURL,implemented,,
 llUnSit,partial,,stub: prints not implemented and returns default void
 llUpdateCharacter,missing,I,
 llUpdateKeyValue,missing,X I,
-llVecDist,missing,,
-llVecMag,missing,,
-llVecNorm,missing,,
+llVecDist,implemented,,
+llVecMag,implemented,,
+llVecNorm,implemented,,
 llVerifyRSA,missing,I,
 llVolumeDetect,partial,,stub: prints not implemented and returns default void
 llWanderWithin,partial,I,stub: prints not implemented and returns default void
