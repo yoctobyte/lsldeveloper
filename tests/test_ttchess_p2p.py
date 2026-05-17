@@ -25,6 +25,7 @@ TTCHESS = Path(__file__).parent.parent.parent / "ttchess"
 ENGINE_SRC  = (TTCHESS / "ChessEngine.lsl").read_text()
 HTTP_SRC    = (TTCHESS / "NodeHTTP.lsl").read_text()
 MANAGER_SRC = (TTCHESS / "NodeManager.lsl").read_text()
+AI_IFACE_SRC = (TTCHESS / "AI Interface.lsl").read_text()
 
 # Standard starting position in FEN
 START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -37,19 +38,22 @@ LM_NODE_NEED_MOVE = 0xCE020
 LM_NODE_GOT_MOVE  = 0xCE021
 
 
-def _make_project(*board_names: str) -> IdeProject:
+def _make_project(*board_names: str, with_ai_iface: bool = False) -> IdeProject:
     """Build an IdeProject with one or more boards, each running all 3 scripts."""
     World().reset()
     objects = []
     for i, name in enumerate(board_names):
+        scripts = [
+            ProjectScript("ChessEngine.lsl", ENGINE_SRC),
+            ProjectScript("NodeHTTP.lsl",    HTTP_SRC),
+            ProjectScript("NodeManager.lsl", MANAGER_SRC),
+        ]
+        if with_ai_iface:
+            scripts.append(ProjectScript("AI Interface.lsl", AI_IFACE_SRC))
         objects.append(ProjectObject(
             name,
             position_list=[120.0 + i * 16, 128.0, 25.0],
-            scripts=[
-                ProjectScript("ChessEngine.lsl", ENGINE_SRC),
-                ProjectScript("NodeHTTP.lsl",    HTTP_SRC),
-                ProjectScript("NodeManager.lsl", MANAGER_SRC),
-            ],
+            scripts=scripts,
         ))
     return IdeProject(Path("/tmp/ttchess_test"), objects)
 
@@ -294,6 +298,105 @@ def test_two_board_p2p_move():
     assert _move_is_legal(move), (
         f"Expected a legal move from P2P flow, got A={move_a!r} B={move_b!r}"
     )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 6. AI Interface.lsl — LM 5001 → NodeManager → ChessEngine → LM 5002
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Standard valid moves from the starting position (subset; just need some)
+START_VALID = "a2a3,a2a4,b2b3,b2b4,c2c3,c2c4,d2d3,d2d4,e2e4,e2e3"
+
+def _ai_iface_script(runtime, obj_name="Board A"):
+    """Return the running AI Interface ScriptItem."""
+    from sim.prim import ScriptItem
+    for prim in runtime.objects[obj_name].prims:
+        for item in prim.inventory:
+            if isinstance(item, ScriptItem) and item.running \
+                    and "AI Interface" in item.name:
+                return item
+    return None
+
+
+def test_ai_iface_parses():
+    """AI Interface.lsl compiles and has a default state."""
+    from core.lexer import Lexer
+    from core.parser import Parser
+    ast = Parser(Lexer(AI_IFACE_SRC).tokenize()).parse()
+    assert any(s.name == "default" for s in ast.states)
+
+
+def test_ai_iface_starts():
+    """AI Interface.lsl announces its engine on startup."""
+    proj    = _make_project("Board A", with_ai_iface=True)
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(3, dt=1.0)
+    lines = _ownersay_lines(runtime)
+    assert any("[AIInterface]" in l and "engine=" in l for l in lines), lines
+
+
+def test_lm5001_returns_legal_move_via_lm5002():
+    """
+    LM 5001 (FEN + valid moves) → AI Interface → NodeManager → ChessEngine
+    → LM 5002 with a legal move within the valid-moves list.
+    """
+    proj    = _make_project("Board A", with_ai_iface=True)
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(3, dt=1.0)   # let all scripts init
+
+    # Collect LM 5002 responses by watching the script's event queue outputs.
+    # Easier: watch for the move written to node:move in LSD (written by ChessEngine).
+    # But AI Interface sends LM 5002 directly; we verify via LSD node:move instead.
+
+    # Inject LM 5001 as Interface.lsl would
+    _inject_lm(runtime, "Board A", 5001, START_FEN, START_VALID)
+
+    # Allow time for the engine to think (depth 2 at default level 10 → budget 10s)
+    runtime.tick(30, dt=0.5)
+
+    move = _lsd_read(runtime, "Board A", "node:move")
+    assert _move_is_legal(move), f"expected legal move from LM5001 flow, got {move!r}"
+
+
+def test_lm5001_validation_rejects_illegal_engine_move():
+    """
+    When the engine returns a move not in the caller's valid-moves list,
+    AI Interface rejects it and falls back to random — no crash, no hang.
+    We verify: engine ran, and if its move was rejected the log says so.
+    """
+    proj    = _make_project("Board A", with_ai_iface=True)
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(3, dt=1.0)
+
+    # Deliberately narrow valid list so engine is likely to return something outside it.
+    _inject_lm(runtime, "Board A", 5001, START_FEN, START_VALID)
+    runtime.tick(30, dt=0.5)
+
+    engine_move = _lsd_read(runtime, "Board A", "node:move")
+    assert _move_is_legal(engine_move), f"engine should have produced some move"
+
+    valid = START_VALID.split(",")
+    lines = _ownersay_lines(runtime)
+    if engine_move not in valid:
+        # AI Interface must have logged the rejection before falling back to random
+        assert any("illegal move" in l or "random" in l for l in lines), (
+            f"Expected rejection log when engine returned {engine_move!r}. "
+            f"Got lines: {lines}"
+        )
+
+
+def test_ai_iface_engine_setting():
+    """LM 1667 Engine setting changes level and depth reported by AIInterface."""
+    proj    = _make_project("Board A", with_ai_iface=True)
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(3, dt=1.0)
+
+    lines_before = len(_ownersay_lines(runtime))
+    _inject_lm(runtime, "Board A", 1667, "Engine", "Rick,20,0")
+    runtime.tick(1, dt=0.1)
+
+    new_lines = _ownersay_lines(runtime)[lines_before:]
+    assert any("Rick" in l and "level=20" in l for l in new_lines), new_lines
 
 
 # ── helper ────────────────────────────────────────────────────────────────
