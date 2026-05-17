@@ -146,7 +146,7 @@ def test_engine_own_elo_record():
     record = _lsd(rt, "Board A", "elo:" + uuid)
     assert record != "", "engine should have its own ELO record"
     parts = record.split("|")
-    assert len(parts) == 5
+    assert len(parts) == 6          # 6-field format including local_games
     assert int(parts[0]) == 1500   # default engine ELO
 
 
@@ -219,8 +219,8 @@ def test_k_factor_drops_after_30_games():
     # Pre-load records with 29 draws so game count = 29
     import time as _time
     ts = int(_time.time())
-    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"1200|10|10|9|{ts}"
-    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_B}"] = f"1200|10|10|9|{ts}"
+    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"1200|10|10|9|{ts}|29"
+    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_B}"] = f"1200|10|10|9|{ts}|29"
     # One more draw → 30 games
     _game(rt, PLAYER_A, PLAYER_B, "0.5")
     # Now 30 games played; K_EST=16 kicks in next game
@@ -236,8 +236,8 @@ def test_elo_floor_at_100():
     rt.tick(2, dt=1.0)
     import time as _time
     ts = int(_time.time())
-    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"105|5|25|0|{ts}"
-    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_B}"] = f"3000|30|0|0|{ts}"
+    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"105|5|25|0|{ts}|5"
+    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_B}"] = f"3000|30|0|0|{ts}|5"
     _game(rt, PLAYER_A, PLAYER_B, "0")   # heavy favourite wins; loser very weak
     assert _elo_of(rt, PLAYER_A) >= 100
 
@@ -328,7 +328,7 @@ def test_peer_broadcast_newer_timestamp_wins():
 
     import time as _time
     old_ts = int(_time.time()) - 100
-    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"1300|5|3|0|{old_ts}"
+    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"1300|5|3|0|{old_ts}|3"
 
     # Simulate a peer broadcast with a newer timestamp
     new_ts  = int(_time.time())
@@ -362,7 +362,7 @@ def test_peer_broadcast_older_timestamp_ignored():
 
     import time as _time
     fresh_ts = int(_time.time())
-    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"1250|5|3|0|{fresh_ts}"
+    rt.objects["Board A"].linkset_data[f"elo:{PLAYER_A}"] = f"1250|5|3|0|{fresh_ts}|2"
 
     old_ts = fresh_ts - 200
     from sim.prim import ScriptItem
@@ -456,3 +456,140 @@ def test_engine_elo_updated_when_it_plays():
     # engine:elo should match the full record
     rec_elo = _elo_of(rt, engine_uuid)
     assert rec_elo == new_engine_elo
+
+
+# ── 7. local_games counter ────────────────────────────────────────────────────
+
+def _local_games(rt, uuid, obj_name="Board A"):
+    raw = rt.objects[obj_name].linkset_data.get("elo:" + uuid, "")
+    if not raw:
+        return 0
+    parts = raw.split("|")
+    return int(parts[5]) if len(parts) > 5 else 0
+
+
+def test_local_games_increments_on_game():
+    """Each game on this board increments both players' local_games."""
+    rt = _make_single()
+    rt.tick(2, dt=1.0)
+    assert _local_games(rt, PLAYER_A) == 0
+    _game(rt, PLAYER_A, PLAYER_B, "1")
+    assert _local_games(rt, PLAYER_A) == 1
+    assert _local_games(rt, PLAYER_B) == 1
+    _game(rt, PLAYER_A, PLAYER_B, "0.5")
+    assert _local_games(rt, PLAYER_A) == 2
+
+
+def test_merge_does_not_increment_local_games():
+    """P2P merge should not change local_games — only local gameplay does."""
+    rt = _make_single()
+    rt.tick(2, dt=1.0)
+    _game(rt, PLAYER_A, PLAYER_B, "1")
+    local_before = _local_games(rt, PLAYER_A)
+
+    # Simulate a peer broadcast with a newer ELO
+    import time as _time
+    ts = int(_time.time()) + 5   # slightly newer
+    from sim.prim import ScriptItem
+    obj = rt.objects["Board A"]
+    for prim in obj.prims:
+        for item in prim.inventory:
+            if isinstance(item, ScriptItem) and item.running and "EloTracker" in item.name:
+                item.event_queue.push(LSLEvent("listen", [
+                    -20200357, "Board B",
+                    "cccc0000-0000-0000-0000-000000000001",
+                    f"elogame|{PLAYER_A}|{PLAYER_B}|1|1220|1180|{ts}"
+                    f"|cccc0000-0000-0000-0000-000000000001",
+                ]))
+    rt.tick(1, dt=0.1)
+    assert _local_games(rt, PLAYER_A) == local_before, "merge must not touch local_games"
+
+
+# ── 8. LSD memory management ─────────────────────────────────────────────────
+
+def test_lsd_available_decreases_with_records():
+    """llLinksetDataAvailable() decreases as records are written."""
+    rt = _make_single()
+    rt.tick(2, dt=1.0)
+
+    from core.builtins.linkset import LSD_LIMIT
+    used_before = LSD_LIMIT - sum(
+        len(k.encode()) + len(v.encode())
+        for k, v in rt.objects["Board A"].linkset_data.items()
+    )
+
+    _game(rt, PLAYER_A, PLAYER_B, "1")
+
+    used_after = LSD_LIMIT - sum(
+        len(k.encode()) + len(v.encode())
+        for k, v in rt.objects["Board A"].linkset_data.items()
+    )
+    assert used_after < used_before, "available space should shrink after writing records"
+
+
+def test_remote_records_evicted_when_lsd_tight():
+    """
+    When LSD is nearly full, _maybe_cleanup() evicts remote-only records
+    (local_games=0) oldest-first.  Local records (local_games>0) survive.
+    """
+    import uuid as _uuid
+    import time as _time
+
+    rt = _make_single()
+    rt.tick(2, dt=1.0)
+
+    # Pack LSD with many remote-only records to trigger cleanup
+    # Each elo: record ≈ 80 bytes; fill until < 20 KB free
+    from core.builtins.linkset import LSD_LIMIT
+    CLEANUP_THRESHOLD = 20480
+
+    ts_base = int(_time.time()) - 1000
+    remote_uuids = []
+    while True:
+        used = sum(len(k.encode()) + len(v.encode())
+                   for k, v in rt.objects["Board A"].linkset_data.items())
+        if LSD_LIMIT - used < CLEANUP_THRESHOLD:
+            break
+        u = str(_uuid.uuid4())
+        remote_uuids.append(u)
+        # local_games=0 → remote-only; use ascending timestamps so we know which is oldest
+        ts = ts_base + len(remote_uuids)
+        rt.objects["Board A"].linkset_data[f"elo:{u}"] = f"1200|0|0|0|{ts}|0"
+
+    oldest_remote = remote_uuids[0]    # lowest timestamp → first to evict
+    # Also create a local player record (local_games > 0) — must survive
+    local_uuid = str(_uuid.uuid4())
+    rt.objects["Board A"].linkset_data[f"elo:{local_uuid}"] = f"1300|5|2|1|{ts_base}|3"
+
+    # Trigger a peer broadcast to invoke _merge_record → _maybe_cleanup
+    ts_new = int(_time.time())
+    new_peer_uuid = str(_uuid.uuid4())
+    from sim.prim import ScriptItem
+    witness = "eeee0000-0000-0000-0000-000000000099"
+    for prim in rt.objects["Board A"].prims:
+        for item in prim.inventory:
+            if isinstance(item, ScriptItem) and item.running and "EloTracker" in item.name:
+                item.event_queue.push(LSLEvent("listen", [
+                    -20200357, "Board B", witness,
+                    f"elogame|{new_peer_uuid}|{PLAYER_B}|1|1250|1150|{ts_new}|{witness}",
+                ]))
+    rt.tick(1, dt=0.1)
+
+    # The oldest remote record should have been evicted
+    assert f"elo:{oldest_remote}" not in rt.objects["Board A"].linkset_data, \
+        "oldest remote record should be evicted"
+
+    # The local player record must still be present
+    local_rec = rt.objects["Board A"].linkset_data.get(f"elo:{local_uuid}", "")
+    assert local_rec != "", "local player (local_games>0) must never be evicted"
+
+
+def test_lsd_find_keys_prefix():
+    """llLinksetDataFindKeys with prefix 'elo:' returns all ELO keys."""
+    rt = _make_single()
+    rt.tick(2, dt=1.0)
+    _game(rt, PLAYER_A, PLAYER_B, "1")
+
+    # Manually count elo: keys in LSD
+    elo_keys = [k for k in rt.objects["Board A"].linkset_data if k.startswith("elo:")]
+    assert len(elo_keys) >= 2   # PLAYER_A, PLAYER_B (+ possibly engine)

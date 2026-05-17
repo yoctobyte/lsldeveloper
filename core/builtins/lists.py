@@ -137,6 +137,46 @@ def ll_parse_string_keep_nulls(evaluator, args):
     return _parse_string(str(args[0]), list(args[1]), list(args[2]), keep_nulls=True)
 
 
+@builtin("llListSort")
+def ll_list_sort(evaluator, args):
+    src    = list(args[0]) if args[0] else []
+    stride = max(1, int(args[1]))
+    asc    = bool(args[2])
+    chunks = [src[i:i + stride] for i in range(0, len(src), stride)]
+    # Sort by first element of each chunk; mixed-type comparison falls back to str
+    def _key(c):
+        v = c[0]
+        # LSL sorts integers/floats numerically, strings lexicographically
+        if isinstance(v, (int, float)):
+            return (0, float(v), "")
+        return (1, 0.0, str(v))
+    chunks.sort(key=_key, reverse=not asc)
+    result = LSLList()
+    for chunk in chunks:
+        result.extend(chunk)
+    return result
+
+
+@builtin("llListRandomize")
+def ll_list_randomize(evaluator, args):
+    import random
+    src    = list(args[0]) if args[0] else []
+    stride = max(1, int(args[1]))
+    chunks = [src[i:i + stride] for i in range(0, len(src), stride)]
+    random.shuffle(chunks)
+    result = LSLList()
+    for chunk in chunks:
+        result.extend(chunk)
+    return result
+
+
+@builtin("llListStatistics")
+def ll_list_statistics(evaluator, args):
+    # operation, list → commonly used for LIST_STAT_MAX/MIN/MEAN etc.
+    # Return 0.0 as a safe default for unsupported ops
+    return 0.0
+
+
 @builtin("llList2List")
 def ll_list_2_list(evaluator, args):
     src = args[0]

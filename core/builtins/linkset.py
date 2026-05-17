@@ -37,6 +37,37 @@ def ll_linkset_data_reset(evaluator, args):
     return None
 
 
+LSD_LIMIT = 131072  # 128 KB, matches SL
+
+
+@builtin("llLinksetDataAvailable")
+def ll_linkset_data_available(evaluator, args):
+    obj = current_object(evaluator.script)
+    if not obj:
+        return LSD_LIMIT
+    used = sum(len(k.encode()) + len(v.encode()) for k, v in obj.linkset_data.items())
+    return max(0, LSD_LIMIT - used)
+
+
+@builtin("llLinksetDataFindKeys")
+def ll_linkset_data_find_keys(evaluator, args):
+    from core.types import LSLList
+    obj = current_object(evaluator.script)
+    if not obj:
+        return LSLList()
+    pattern = str(args[0])
+    start   = int(args[1])
+    count   = int(args[2])
+    matches = [k for k in obj.linkset_data if pattern in k]
+    if start:
+        matches = matches[start:]
+    if count:
+        matches = matches[:count]
+    result = LSLList()
+    result.extend(matches)
+    return result
+
+
 @builtin("llMessageLinked")
 def ll_message_linked(evaluator, args):
     script = evaluator.script
