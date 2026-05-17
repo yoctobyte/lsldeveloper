@@ -358,31 +358,65 @@ def test_lm5001_returns_legal_move_via_lm5002():
     assert _move_is_legal(move), f"expected legal move from LM5001 flow, got {move!r}"
 
 
-def test_lm5001_validation_rejects_illegal_engine_move():
+def test_engine_plays_correct_color_white():
     """
-    When the engine returns a move not in the caller's valid-moves list,
-    AI Interface rejects it and falls back to random — no crash, no hang.
-    We verify: engine ran, and if its move was rejected the log says so.
+    With white to move in starting FEN, the engine must return a move whose
+    source square is on rank 1 or 2 (white's home ranks).
+    This catches the board-flip bug where the whole rank mapping was inverted.
+    """
+    proj    = _make_project("Board A")
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(2, dt=1.0)
+    _inject_lm(runtime, "Board A", LM_ENGINE_SEARCH, START_FEN, "2|5000")
+    runtime.tick(20, dt=0.5)
+    move = _lsd_read(runtime, "Board A", "node:move")
+    assert _move_is_legal(move), f"no legal move: {move!r}"
+    from_rank = move[1]   # second char of "e2e4" is the source rank digit
+    assert from_rank in ("1", "2"), (
+        f"White move should come from rank 1 or 2, got {move!r}"
+    )
+
+
+def test_engine_plays_correct_color_black():
+    """Black to move: source square must be on rank 7 or 8."""
+    BLACK_FEN = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+    proj    = _make_project("Board A")
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(2, dt=1.0)
+    _inject_lm(runtime, "Board A", LM_ENGINE_SEARCH, BLACK_FEN, "2|5000")
+    runtime.tick(20, dt=0.5)
+    move = _lsd_read(runtime, "Board A", "node:move")
+    assert _move_is_legal(move), f"no legal move: {move!r}"
+    from_rank = move[1]
+    assert from_rank in ("7", "8"), (
+        f"Black move should come from rank 7 or 8, got {move!r}"
+    )
+
+
+def test_lm5001_move_in_valid_list():
+    """
+    The move sent on LM 5002 must be in the supplied valid-moves list.
+    Now that the engine plays for the correct color, it should return a
+    white move that AI Interface accepts directly (no random fallback needed).
     """
     proj    = _make_project("Board A", with_ai_iface=True)
     runtime = proj.build_runtime(echo_stdout=False)
     runtime.tick(3, dt=1.0)
 
-    # Deliberately narrow valid list so engine is likely to return something outside it.
-    _inject_lm(runtime, "Board A", 5001, START_FEN, START_VALID)
+    # All 20 legal white moves from starting position
+    all_white = ("a2a3,a2a4,b2b3,b2b4,c2c3,c2c4,d2d3,d2d4,"
+                 "e2e3,e2e4,f2f3,f2f4,g2g3,g2g4,h2h3,h2h4,"
+                 "b1a3,b1c3,g1f3,g1h3")
+    _inject_lm(runtime, "Board A", 5001, START_FEN, all_white)
     runtime.tick(30, dt=0.5)
 
-    engine_move = _lsd_read(runtime, "Board A", "node:move")
-    assert _move_is_legal(engine_move), f"engine should have produced some move"
-
-    valid = START_VALID.split(",")
+    move = _lsd_read(runtime, "Board A", "node:move")
+    valid = all_white.split(",")
+    assert move in valid, f"engine returned {move!r}, not in white's legal moves"
     lines = _ownersay_lines(runtime)
-    if engine_move not in valid:
-        # AI Interface must have logged the rejection before falling back to random
-        assert any("illegal move" in l or "random" in l for l in lines), (
-            f"Expected rejection log when engine returned {engine_move!r}. "
-            f"Got lines: {lines}"
-        )
+    assert not any("illegal move" in l for l in lines), (
+        f"AI Interface should not have rejected a valid white move; logs: {lines}"
+    )
 
 
 def test_ai_iface_engine_setting():
