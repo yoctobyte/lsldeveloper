@@ -374,15 +374,17 @@ def test_profile_page_recent_games(server):
 # 6. LSL simulation: EloTracker → real HTTP → Flask → DB
 # ══════════════════════════════════════════════════════════════════════════════
 
+LM_CONFIG_APIBASE = 0xCE040
+
+
 def _make_elotracker_project(server_url: str):
-    """Build a runtime with EloTracker.lsl, APIBASE patched to server_url."""
+    """Build a runtime with EloTracker.lsl; APIBASE is set via LM_CONFIG_APIBASE."""
     from ide.project import IdeProject, ProjectObject, ProjectScript
     from sim.world import World
 
     World().reset()
 
     src = (TTCHESS_SRC / "EloTracker.lsl").read_text()
-    src = src.replace('"http://127.0.0.1:5001"', f'"{server_url}"')
 
     from pathlib import Path as _Path
     proj = IdeProject(
@@ -434,6 +436,10 @@ def test_elotracker_posts_game_to_flask(server):
     proj    = _make_elotracker_project(server)
     runtime = proj.build_runtime(echo_stdout=False)
     runtime.tick(2, dt=1.0)
+
+    # Point EloTracker at the test server via the same mechanism NodeManager uses
+    _inject_lm(runtime, "Board", LM_CONFIG_APIBASE, server)
+    runtime.tick(1, dt=0.1)
 
     # Read initial ELO counts from DB (may already have rows from earlier tests)
     with sqlite3.connect(models.DB_PATH) as conn:
