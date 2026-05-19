@@ -9,6 +9,9 @@
         {"name": "ChessEngine.lsl", "file": "../../ttchess/ChessEngine.lsl"},
         {"name": "NodeHTTP.lsl",    "file": "../../ttchess/NodeHTTP.lsl"},
         {"name": "NodeManager.lsl", "file": "../../ttchess/NodeManager.lsl"}
+      ],
+      "notecards": [
+        {"name": "TTChess Config", "text": "http://127.0.0.1:5001\n"}
       ]
     },
     {
@@ -19,6 +22,9 @@
         {"name": "ChessEngine.lsl", "file": "../../ttchess/ChessEngine.lsl"},
         {"name": "NodeHTTP.lsl",    "file": "../../ttchess/NodeHTTP.lsl"},
         {"name": "NodeManager.lsl", "file": "../../ttchess/NodeManager.lsl"}
+      ],
+      "notecards": [
+        {"name": "TTChess Config", "text": "http://127.0.0.1:5001\n"}
       ]
     }
   ]

@@ -433,6 +433,95 @@ def test_ai_iface_engine_setting():
     assert any("Rick" in l and "level=20" in l for l in new_lines), new_lines
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 7. Notecard config: NodeManager reads "TTChess Config" and broadcasts APIBASE
+# ═══════════════════════════════════════════════════════════════════════════
+
+LM_CONFIG_APIBASE = 0xCE040
+
+# Tiny observer script: captures the LM_CONFIG_APIBASE broadcast into LSD.
+_OBSERVER_SRC = """\
+integer LM_CONFIG_APIBASE = 0xCE040;
+default {
+    link_message(integer s, integer n, string m, key id) {
+        if (n == LM_CONFIG_APIBASE)
+            llLinksetDataWrite("config:apibase", m);
+    }
+}
+"""
+
+
+def _make_project_with_notecard(url: str) -> IdeProject:
+    from ide.project import ProjectNotecard
+    World().reset()
+    observer = ProjectScript("observer.lsl", _OBSERVER_SRC)
+    scripts = [
+        ProjectScript("ChessEngine.lsl", ENGINE_SRC),
+        ProjectScript("NodeHTTP.lsl",    HTTP_SRC),
+        ProjectScript("NodeManager.lsl", MANAGER_SRC),
+        observer,
+    ]
+    obj = ProjectObject(
+        "Board A",
+        position_list=[120.0, 128.0, 25.0],
+        scripts=scripts,
+        notecards=[ProjectNotecard("TTChess Config", url + "\n")],
+    )
+    return IdeProject(Path("/tmp/ttchess_notecard_test"), [obj])
+
+
+def test_notecard_apibase_broadcast():
+    """
+    NodeManager reads "TTChess Config" at startup, sets seedURL, and broadcasts
+    LM_CONFIG_APIBASE to all linked scripts.  The observer script captures the
+    broadcast into LSD; we assert the URL matches what was in the notecard.
+    """
+    test_url = "http://127.0.0.1:5001"
+    proj     = _make_project_with_notecard(test_url)
+    runtime  = proj.build_runtime(echo_stdout=False)
+    runtime.tick(5, dt=1.0)
+
+    received = _lsd_read(runtime, "Board A", "config:apibase")
+    assert received == test_url, (
+        f"Expected LM_CONFIG_APIBASE broadcast of {test_url!r}, got {received!r}"
+    )
+
+
+def test_notecard_empty_falls_back_gracefully():
+    """An empty notecard line leaves seedURL at its hardcoded default (no crash)."""
+    from ide.project import ProjectNotecard
+    World().reset()
+    obj = ProjectObject(
+        "Board A",
+        position_list=[120.0, 128.0, 25.0],
+        scripts=[
+            ProjectScript("ChessEngine.lsl", ENGINE_SRC),
+            ProjectScript("NodeHTTP.lsl",    HTTP_SRC),
+            ProjectScript("NodeManager.lsl", MANAGER_SRC),
+        ],
+        notecards=[ProjectNotecard("TTChess Config", "")],
+    )
+    proj    = IdeProject(Path("/tmp/ttchess_notecard_empty"), [obj])
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(5, dt=1.0)
+
+    # No crash — NodeManager should still start and acquire its sim URL
+    url = _lsd_read(runtime, "Board A", "node:url")
+    assert url.startswith("http://sim.local/"), f"unexpected node:url: {url!r}"
+
+
+def test_no_notecard_still_starts():
+    """Without a notecard, NodeManager falls back immediately to llSetTimerEvent."""
+    proj    = _make_project("Board A")   # no notecard
+    runtime = proj.build_runtime(echo_stdout=False)
+    runtime.tick(5, dt=1.0)
+
+    lines = _ownersay_lines(runtime)
+    assert any("NodeManager" in l and "ready" in l for l in lines), lines
+    url = _lsd_read(runtime, "Board A", "node:url")
+    assert url.startswith("http://sim.local/"), f"unexpected node:url: {url!r}"
+
+
 # ── helper ────────────────────────────────────────────────────────────────
 
 def _world_from_runtime(runtime) -> World:

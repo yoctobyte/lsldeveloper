@@ -97,13 +97,18 @@ def ll_http_request(evaluator, args):
         import urllib.error
         import urllib.request
 
-        method = "GET"
+        method      = "GET"
+        content_type = None
         for i in range(0, len(opts) - 1, 2):
             if opts[i] == "HTTP_METHOD":
                 method = str(opts[i + 1])
+            elif opts[i] == "HTTP_MIMETYPE":
+                content_type = str(opts[i + 1])
 
         data = None if method == "GET" else body.encode("utf-8")
         req  = urllib.request.Request(url, data=data, method=method)
+        if content_type and data is not None:
+            req.add_header("Content-Type", content_type)
         with urllib.request.urlopen(req, timeout=10) as resp:
             resp_body = resp.read().decode("utf-8", errors="replace")
             status    = resp.getcode() or 200

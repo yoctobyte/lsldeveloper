@@ -7,6 +7,7 @@ LSL_CONSTANTS = {
     "TRUE": 1,
     "FALSE": 0,
     "NULL_KEY": NULL_KEY,
+    "EOF": "\n\n\n",
     "AGENT": 1,
     "ACTIVE": 2,
     "PASSIVE": 4,
