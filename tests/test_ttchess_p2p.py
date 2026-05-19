@@ -11,14 +11,20 @@ Run:
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
 import pytest
 
 from events.queue import LSLEvent
-from ide.project import IdeProject, ProjectObject, ProjectScript
+from ide.project import IdeProject, ProjectObject, ProjectScript, ProjectNotecard
 from sim.world import World
+
+# When TTCHESS_LIVE_URL is set, each sim board gets a "TTChess Config" notecard
+# pointing at the live server so NodeManager uses the real seed registry and
+# can route moves through the actual Stockfish backend.
+_LIVE_URL = os.environ.get("TTCHESS_LIVE_URL", "").rstrip("/")
 
 # Absolute paths to the actual LSL scripts
 TTCHESS = Path(__file__).parent.parent.parent / "ttchess"
@@ -39,8 +45,13 @@ LM_NODE_GOT_MOVE  = 0xCE021
 
 
 def _make_project(*board_names: str, with_ai_iface: bool = False) -> IdeProject:
-    """Build an IdeProject with one or more boards, each running all 3 scripts."""
+    """Build an IdeProject with one or more boards, each running all 3 scripts.
+
+    When TTCHESS_LIVE_URL is set, each board gets a "TTChess Config" notecard
+    so NodeManager points its seed registry at the live server.
+    """
     World().reset()
+    notecards = [ProjectNotecard("TTChess Config", _LIVE_URL + "\n")] if _LIVE_URL else []
     objects = []
     for i, name in enumerate(board_names):
         scripts = [
@@ -54,6 +65,7 @@ def _make_project(*board_names: str, with_ai_iface: bool = False) -> IdeProject:
             name,
             position_list=[120.0 + i * 16, 128.0, 25.0],
             scripts=scripts,
+            notecards=notecards,
         ))
     return IdeProject(Path("/tmp/ttchess_test"), objects)
 
