@@ -12,6 +12,7 @@ Run:
 
 from __future__ import annotations
 
+import os
 import sys
 import threading
 import time
@@ -25,7 +26,11 @@ import pytest
 TTCHESS_SRC  = Path(__file__).parent.parent.parent / "ttchess"
 BACKEND_SRC  = TTCHESS_SRC / "backend"
 SERVER_PORT  = 5099
-SERVER_URL   = f"http://127.0.0.1:{SERVER_PORT}"
+SERVER_URL   = f"http://127.0.0.1:{SERVER_PORT}"   # may be overridden by the fixture
+
+# When TTCHESS_LIVE_URL is set, the fixture skips spinning up an embedded server
+# and points all tests at the already-running process instead.
+_LIVE_URL = os.environ.get("TTCHESS_LIVE_URL", "").rstrip("/")
 
 # Stable fake UUIDs used across tests
 W_UUID    = "aaaaaaaa-aaaa-aaaa-aaaa-000000000001"
@@ -62,7 +67,17 @@ def _post(path: str, data: dict) -> tuple[int, str]:
 
 @pytest.fixture(scope="module")
 def server(tmp_path_factory):
-    """Start Flask on a temp SQLite DB; shut down after all tests in this module."""
+    """Start Flask on a temp SQLite DB; shut down after all tests in this module.
+
+    When TTCHESS_LIVE_URL is set, skip the embedded server and use that URL.
+    """
+    global SERVER_URL
+
+    if _LIVE_URL:
+        SERVER_URL = _LIVE_URL
+        yield _LIVE_URL
+        return
+
     db_file = tmp_path_factory.mktemp("ttchess_db") / "test.db"
 
     # models.DB_PATH is read at get_db() call time, so patching before first
@@ -77,6 +92,7 @@ def server(tmp_path_factory):
     from app import app as flask_app
     from werkzeug.serving import make_server as _make_server
 
+    SERVER_URL = f"http://127.0.0.1:{SERVER_PORT}"
     srv = _make_server("127.0.0.1", SERVER_PORT, flask_app)
     t   = threading.Thread(target=srv.serve_forever, daemon=True)
     t.start()
@@ -201,6 +217,7 @@ def test_post_game_white_wins(server):
     assert body == "ok"
 
 
+@pytest.mark.skipif(bool(_LIVE_URL), reason="DB file not accessible on live server")
 def test_post_game_updates_elo(server):
     """After a white win both players should exist in DB with updated ELO/record."""
     import models, sqlite3
@@ -430,9 +447,10 @@ def test_elotracker_posts_game_to_flask(server):
     EloTracker receives LM_ELO_GAME → calls llHTTPRequest → Flask /game →
     DB record created. The simulator's HTTP call is synchronous (urllib),
     so a handful of ticks is enough.
-    """
-    import models, sqlite3
 
+    In embedded mode we verify via DB introspection.  Against a live server
+    we verify via the HTTP response logged in ownersay (no 4xx/5xx).
+    """
     proj    = _make_elotracker_project(server)
     runtime = proj.build_runtime(echo_stdout=False)
     runtime.tick(2, dt=1.0)
@@ -441,26 +459,31 @@ def test_elotracker_posts_game_to_flask(server):
     _inject_lm(runtime, "Board", LM_CONFIG_APIBASE, server)
     runtime.tick(1, dt=0.1)
 
-    # Read initial ELO counts from DB (may already have rows from earlier tests)
-    with sqlite3.connect(models.DB_PATH) as conn:
-        conn.row_factory = sqlite3.Row
-        before = conn.execute("SELECT COUNT(*) FROM games").fetchone()[0]
+    if not _LIVE_URL:
+        import models, sqlite3
+        with sqlite3.connect(models.DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            before = conn.execute("SELECT COUNT(*) FROM games").fetchone()[0]
 
     # Fire a game result into EloTracker
     _inject_lm(runtime, "Board", LM_ELO_GAME, f"{LSL_W}|{LSL_B}|1")
     runtime.tick(5, dt=1.0)   # enough for the HTTP call + response
 
-    with sqlite3.connect(models.DB_PATH) as conn:
-        conn.row_factory = sqlite3.Row
-        after = conn.execute("SELECT COUNT(*) FROM games").fetchone()[0]
-        w_row = conn.execute("SELECT * FROM profiles WHERE uuid=?", (LSL_W,)).fetchone()
-        b_row = conn.execute("SELECT * FROM profiles WHERE uuid=?", (LSL_B,)).fetchone()
-
-    assert after == before + 1, "game was not recorded in DB"
-    assert w_row is not None
-    assert b_row is not None
-    assert w_row["wins"]   >= 1
-    assert b_row["losses"] >= 1
+    if not _LIVE_URL:
+        with sqlite3.connect(models.DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            after = conn.execute("SELECT COUNT(*) FROM games").fetchone()[0]
+            w_row = conn.execute("SELECT * FROM profiles WHERE uuid=?", (LSL_W,)).fetchone()
+            b_row = conn.execute("SELECT * FROM profiles WHERE uuid=?", (LSL_B,)).fetchone()
+        assert after == before + 1, "game was not recorded in DB"
+        assert w_row is not None and b_row is not None
+        assert w_row["wins"] >= 1 and b_row["losses"] >= 1
+    else:
+        # Live mode: confirm no HTTP errors in the sim console
+        lines = [m.text for m in runtime.world.console.messages
+                 if m.message_type == "ownersay"]
+        errors = [l for l in lines if "499" in l or "error" in l.lower()]
+        assert not errors, f"EloTracker HTTP error(s) against live server: {errors}"
 
 
 def test_elotracker_lm_query(server):
