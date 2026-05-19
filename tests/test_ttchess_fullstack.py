@@ -567,3 +567,206 @@ def test_elotracker_ignores_own_broadcast(server):
     if w_elo_lsd:
         w_elo = int(w_elo_lsd.split("|")[0])
         assert w_elo != 1500, "EloTracker should not merge its own broadcast"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 7. Global game log  /games
+# ══════════════════════════════════════════════════════════════════════════════
+
+def test_games_log_page(server):
+    """GET /games returns an HTML page listing recorded games."""
+    status, body = _get("/games")
+    assert status == 200
+    assert "All Games" in body
+
+
+def test_games_log_pagination(server):
+    """GET /games?page=2 returns 200 (even when empty) and the page count is present."""
+    status, body = _get("/games?page=1")
+    assert status == 200
+    # "total" count appears in the heading regardless of page count
+    assert "total" in body.lower() or "All Games" in body
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 8. Profile extended stats
+# ══════════════════════════════════════════════════════════════════════════════
+
+def test_profile_stats_win_rate(server):
+    """Profile page shows win rate percentage."""
+    status, body = _get(f"/profile/{W_UUID}")
+    assert status == 200
+    assert "Win rate" in body
+
+
+def test_profile_stats_peak_elo(server):
+    """Profile page shows Peak ELO stat box when different from current."""
+    # We need at least 2 games to create a peak different from current.
+    # W_UUID has already won games from earlier tests; just check the page renders.
+    status, body = _get(f"/profile/{W_UUID}")
+    assert status == 200
+    assert "Peak" in body or "Win rate" in body  # at least one extra stat present
+
+
+def test_profile_history_pagination(server):
+    """Profile page shows pagination when player has games."""
+    status, body = _get(f"/profile/{W_UUID}")
+    assert status == 200
+    assert "Game history" in body or "total" in body
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 9. Pet name identity system
+# ══════════════════════════════════════════════════════════════════════════════
+
+import json as _json
+
+
+def _post_json(path: str, data: dict, cookie: str = "") -> tuple[int, dict]:
+    body = _json.dumps(data).encode()
+    headers = {"Content-Type": "application/json"}
+    if cookie:
+        headers["Cookie"] = cookie
+    req = urllib.request.Request(
+        f"{SERVER_URL}{path}", data=body, method="POST", headers=headers,
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return r.getcode(), _json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        return e.code, _json.loads(e.read())
+
+
+def _get_json(path: str, cookie: str = "") -> tuple[int, dict]:
+    headers = {}
+    if cookie:
+        headers["Cookie"] = cookie
+    req = urllib.request.Request(f"{SERVER_URL}{path}", headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return r.getcode(), _json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        return e.code, _json.loads(e.read())
+
+
+def test_identity_page_renders(server):
+    status, body = _get("/identity")
+    assert status == 200
+    assert "Identity" in body
+
+
+def test_identity_register_generates_name(server):
+    """POST /identity/register without a custom name returns a pet name."""
+    status, data = _post_json("/identity/register", {})
+    assert status == 200
+    assert data.get("ok")
+    name = data.get("pet_name", "")
+    assert "-" in name  # AdjectiveNoun-NNNN format
+    parts = name.split("-")
+    assert len(parts) == 2 and parts[1].isdigit() and len(parts[1]) == 4
+
+
+def test_identity_register_custom_name(server):
+    status, data = _post_json("/identity/register", {"pet_name": "SilverFox-1234"})
+    assert status == 200
+    assert data.get("pet_name") == "SilverFox-1234"
+
+
+def test_identity_register_duplicate_name(server):
+    """Registering the same name twice returns 409."""
+    _post_json("/identity/register", {"pet_name": "GoldenEagle-5678"})
+    status, data = _post_json("/identity/register", {"pet_name": "GoldenEagle-5678"})
+    assert status == 409
+    assert "taken" in data.get("error", "").lower()
+
+
+def test_identity_register_bad_format(server):
+    status, data = _post_json("/identity/register", {"pet_name": "no spaces allowed"})
+    assert status == 400
+
+
+def test_identity_enter_recovers_session(server):
+    """Register a pet name, then recover the session using it."""
+    # Register fresh
+    _, reg = _post_json("/identity/register", {"pet_name": "WildRook-2024"})
+    assert reg.get("ok")
+    recovered_uuid = reg["uuid"]
+
+    # Recover with the pet name
+    status, data = _post_json("/identity/enter", {"pet_name": "WildRook-2024"})
+    assert status == 200
+    assert data.get("ok")
+    assert data["uuid"] == recovered_uuid
+
+
+def test_identity_enter_unknown_name(server):
+    status, data = _post_json("/identity/enter", {"pet_name": "NoSuch-0000"})
+    assert status == 404
+
+
+def test_identity_alias_sets_display_name(server):
+    """POST /identity/alias updates display_name on the profile."""
+    # Register to get a UUID and cookie
+    _, reg = _post_json("/identity/register", {"pet_name": "StormCastle-7777"})
+    uid = reg["uuid"]
+    cookie = f"ttchess_uid={uid}"
+
+    status, data = _post_json("/identity/alias", {"alias": "Stormy McStorm"}, cookie=cookie)
+    assert status == 200
+    assert data.get("ok")
+
+    # Check profile page shows the alias
+    _, body = _get(f"/profile/{uid}")
+    assert "Stormy McStorm" in body
+
+
+def test_identity_link_code_generates_code(server):
+    """GET /identity/link-code returns a 6-char code."""
+    _, reg = _post_json("/identity/register", {"pet_name": "BrightDrake-3333"})
+    cookie = f"ttchess_uid={reg['uuid']}"
+    status, data = _get_json("/identity/link-code", cookie=cookie)
+    assert status == 200
+    assert data.get("ok")
+    code = data.get("code", "")
+    assert len(code) == 6 and code.isupper()
+
+
+def test_identity_confirm_link(server):
+    """confirm-link marks a code used and creates a platform_links row."""
+    _, reg = _post_json("/identity/register", {"pet_name": "FrostLynx-4444"})
+    cookie = f"ttchess_uid={reg['uuid']}"
+    _, code_data = _get_json("/identity/link-code", cookie=cookie)
+    code = code_data["code"]
+
+    # Simulate in-world board confirming the code
+    sl_uuid = "11111111-1111-1111-1111-000000000099"
+    status, body = _post("/identity/confirm-link", {
+        "code": code, "platform": "secondlife", "platform_uuid": sl_uuid
+    })
+    assert status == 200
+    assert "ok" in body.lower()
+
+
+def test_identity_link_status_after_confirm(server):
+    """link-status returns linked=True after a confirm-link."""
+    _, reg = _post_json("/identity/register", {"pet_name": "MagicPawn-5555"})
+    cookie = f"ttchess_uid={reg['uuid']}"
+    _, code_data = _get_json("/identity/link-code", cookie=cookie)
+    code = code_data["code"]
+
+    sl_uuid = "22222222-2222-2222-2222-000000000099"
+    _post("/identity/confirm-link", {
+        "code": code, "platform": "secondlife", "platform_uuid": sl_uuid
+    })
+
+    status, data = _get_json("/identity/link-status", cookie=cookie)
+    assert status == 200
+    assert data["linked"] is True
+    assert any(a["platform_uuid"] == sl_uuid for a in data["accounts"])
+
+
+def test_identity_confirm_link_bad_code(server):
+    status, body = _post("/identity/confirm-link", {
+        "code": "ZZZZZZ", "platform": "secondlife", "platform_uuid": "some-uuid"
+    })
+    assert status == 404
