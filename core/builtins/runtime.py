@@ -21,9 +21,12 @@ from . import rez as _rez
 from . import sensors as _sensors
 from . import math_api as _math_api
 from . import strings as _strings
-from . import stubs as _stubs
 from . import time_api as _time_api
+from . import script_control as _script_control
 from .sensors import queue_sensor_event
+
+# stubs must be imported last so that it only stubs out functions that weren't already registered
+from . import stubs as _stubs
 from .stubs import REGISTERED_STUBS
 
 

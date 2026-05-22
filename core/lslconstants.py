@@ -1,12 +1,22 @@
 from __future__ import annotations
 
-from .types import NULL_KEY
+from .types import NULL_KEY, LSLVector, LSLRotation
 
 
 LSL_CONSTANTS = {
     "TRUE": 1,
     "FALSE": 0,
     "NULL_KEY": NULL_KEY,
+    "PI": 3.141592653589793,
+    "TWO_PI": 6.283185307179586,
+    "PI_BY_TWO": 1.5707963267948966,
+    "DEG_TO_RAD": 0.017453292519943295,
+    "RAD_TO_DEG": 57.29577951308232,
+    "SQRT2": 1.4142135623730951,
+    "ZERO_VECTOR": LSLVector(0.0, 0.0, 0.0),
+    "ZERO_ROTATION": LSLRotation(0.0, 0.0, 0.0, 1.0),
+    "TOUCH_INVALID_FACE": -1,
+    "TOUCH_INVALID_TEXCOORD": LSLVector(-1.0, -1.0, 0.0),
     "EOF": "\n\n\n",
     "AGENT": 1,
     "ACTIVE": 2,

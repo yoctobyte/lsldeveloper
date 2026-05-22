@@ -19,6 +19,7 @@ class Prim:
         self.parent_object: Optional['LSLObject'] = None
         self.link_number = 0
         self.inventory: List[InventoryItem] = []
+        self.num_faces = 6
 
     def add_item(self, item: 'InventoryItem'):
         self.inventory.append(item)

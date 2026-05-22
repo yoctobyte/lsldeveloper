@@ -39,7 +39,7 @@ class LSLObject:
         # Link numbers: root is 1, child is 2...
         prim.link_number = len(self.prims)
 
-    def dispatch_event(self, event_name: str, args: list, link_num: int = 0):
+    def dispatch_event(self, event_name: str, args: list, link_num: int = 0, detected: list = None):
         from events.queue import LSLEvent
         from .prim import ScriptItem
 
@@ -48,7 +48,7 @@ class LSLObject:
                 continue
             for item in prim.inventory:
                 if isinstance(item, ScriptItem) and item.running:
-                    item.event_queue.push(LSLEvent(event_name, args))
+                    item.event_queue.push(LSLEvent(event_name, args, detected))
 
     def __str__(self):
         return f"Object('{self.name}', {self.uuid}, Prims: {len(self.prims)})"

@@ -16,12 +16,34 @@ def ll_set_timer_event(evaluator, args):
 
 @builtin("llGetTime")
 def ll_get_time(evaluator, args):
-    return 0.05
+    script = evaluator.script
+    if not script:
+        return 0.0
+    if not hasattr(script, "time_reset_point"):
+        script.time_reset_point = time.monotonic()
+    return time.monotonic() - script.time_reset_point
 
 
 @builtin("llResetTime")
 def ll_reset_time(evaluator, args):
+    script = evaluator.script
+    if script:
+        script.time_reset_point = time.monotonic()
     return None
+
+
+@builtin("llGetAndResetTime")
+def ll_get_and_reset_time(evaluator, args):
+    script = evaluator.script
+    if not script:
+        return 0.0
+    if not hasattr(script, "time_reset_point"):
+        script.time_reset_point = time.monotonic()
+        return 0.0
+    now = time.monotonic()
+    elapsed = now - script.time_reset_point
+    script.time_reset_point = now
+    return elapsed
 
 
 @builtin("llGetUnixTime")

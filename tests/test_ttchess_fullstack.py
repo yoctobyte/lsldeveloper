@@ -132,7 +132,7 @@ def test_engines_json(server):
     import json
     data = json.loads(body)
     assert "engines" in data
-    assert any(e["name"] == "Tania" for e in data["engines"])
+    assert any(e["name"] == "tania_dupe" for e in data["engines"])
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -143,13 +143,13 @@ def test_ttcapi_elo_by_name(server):
     """?elo=Tania-4+AI  →  plain integer"""
     status, body = _get("/ttcapi.php?elo=Tania-4+AI")
     assert status == 200
-    assert int(body.strip()) == 1200
+    assert int(body.strip()) == 1500
 
 
 def test_ttcapi_elo_direct(server):
     status, body = _get("/ttcapi.php?elo=Dude")
     assert status == 200
-    assert int(body.strip()) == 2300
+    assert int(body.strip()) == 2600
 
 
 def test_ttcapi_findopponents(server):
@@ -172,11 +172,11 @@ def test_ttcapi_getaidetails(server):
     """?getaidetails=Tania  →  'fname lname level random duration'"""
     status, body = _get("/ttcapi.php?getaidetails=Tania")
     assert status == 200
-    parts = body.strip().split()
-    assert parts[0] == "Tania"   # fname
-    assert parts[1] == "Dupe"    # lname
-    assert int(parts[2]) == 4    # level
-    assert int(parts[4]) == 30   # duration
+    parts = body.strip().split("|")
+    assert parts[0] == "tania_dupe"   # key
+    assert parts[1] == "Tania Dupe"  # display name
+    assert int(parts[2]) == 1500     # elo
+    assert int(parts[3]) == 30       # duration
 
 
 def test_ttcapi_aivsai(server):
@@ -185,9 +185,14 @@ def test_ttcapi_aivsai(server):
     assert status == 200
     lines = [l for l in body.strip().splitlines() if l]
     assert len(lines) == 2
-    # Each line: "fname lname level random"
+    # Each line: "key|display name|elo|duration"
     for line in lines:
-        assert len(line.split()) >= 4
+        parts = line.split("|")
+        assert len(parts) == 4
+        assert parts[0]
+        assert parts[1]
+        assert int(parts[2]) > 0
+        assert int(parts[3]) > 0
 
 
 def test_ttcapi_rankings(server):

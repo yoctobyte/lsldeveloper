@@ -438,11 +438,11 @@ def test_ai_iface_engine_setting():
     runtime.tick(3, dt=1.0)
 
     lines_before = len(_ownersay_lines(runtime))
-    _inject_lm(runtime, "Board A", 1667, "Engine", "Rick,20,0")
+    _inject_lm(runtime, "Board A", 1667, "Engine", "Rick,1200,0")
     runtime.tick(1, dt=0.1)
 
     new_lines = _ownersay_lines(runtime)[lines_before:]
-    assert any("Rick" in l and "level=20" in l for l in new_lines), new_lines
+    assert any("Rick" in l and "elo=1200" in l for l in new_lines), new_lines
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -549,11 +549,14 @@ def _patch_project_object():
     _orig_init = ProjectObject.__init__
 
     def _new_init(self, name, description="", position_list=None, scripts=None,
-                  notecards=None, child_objects=None, **kw):
-        pos = LSLVector(*(position_list or [128.0, 128.0, 25.0]))
+                  notecards=None, child_objects=None, position=None, **kw):
+        if position is not None:
+            pos = position
+        else:
+            pos = LSLVector(*(position_list or [128.0, 128.0, 25.0]))
         _orig_init(self, name, description=description, position=pos,
                    scripts=scripts or [], notecards=notecards or [],
-                   child_objects=child_objects or [])
+                   child_objects=child_objects or [], **kw)
 
     ProjectObject.__init__ = _new_init
 

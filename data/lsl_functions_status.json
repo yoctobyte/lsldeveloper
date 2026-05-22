@@ -4,15 +4,15 @@
   "functions": [
     {
       "name": "llAbs",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "absolute integer value"
     },
     {
       "name": "llAcos",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "arc cosine in radians"
     },
     {
       "name": "llAddToLandBanList",
@@ -70,15 +70,15 @@
     },
     {
       "name": "llAsin",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "arc sine in radians"
     },
     {
       "name": "llAtan2",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "arc tangent of y/x"
     },
     {
       "name": "llAttachToAvatar",
@@ -148,9 +148,9 @@
     },
     {
       "name": "llCeil",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "smallest integer value not less than arg"
     },
     {
       "name": "llChar",
@@ -214,9 +214,9 @@
     },
     {
       "name": "llCos",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "cosine of angle in radians"
     },
     {
       "name": "llCreateCharacter",
@@ -352,39 +352,39 @@
     },
     {
       "name": "llDetectedTouchBinormal",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "reads current simplified touch detection record"
     },
     {
       "name": "llDetectedTouchFace",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "reads current simplified touch detection record"
     },
     {
       "name": "llDetectedTouchNormal",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "reads current simplified touch detection record"
     },
     {
       "name": "llDetectedTouchPos",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "reads current simplified touch detection record"
     },
     {
       "name": "llDetectedTouchST",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "reads current simplified touch detection record"
     },
     {
       "name": "llDetectedTouchUV",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "reads current simplified touch detection record"
     },
     {
       "name": "llDetectedType",
@@ -412,9 +412,9 @@
     },
     {
       "name": "llDumpList2String",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "dump list to string"
     },
     {
       "name": "llEdgeOfWorld",
@@ -436,9 +436,9 @@
     },
     {
       "name": "llEscapeURL",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "URL escape string"
     },
     {
       "name": "llEuler2Rot",
@@ -460,9 +460,9 @@
     },
     {
       "name": "llFabs",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "absolute float value"
     },
     {
       "name": "llFindNotecardTextSync",
@@ -478,9 +478,9 @@
     },
     {
       "name": "llFloor",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "largest integer value not greater than arg"
     },
     {
       "name": "llForceMouselook",
@@ -490,9 +490,9 @@
     },
     {
       "name": "llFrand",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "random float"
     },
     {
       "name": "llGenerateKey",
@@ -664,9 +664,9 @@
     },
     {
       "name": "llGetEnv",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "U",
-      "note": ""
+      "note": "reads current simplified simulator environment attributes"
     },
     {
       "name": "llGetEnvironment",
@@ -694,9 +694,9 @@
     },
     {
       "name": "llGetFreeMemory",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "returns fixed simulated free memory"
     },
     {
       "name": "llGetFreeURLs",
@@ -928,9 +928,9 @@
     },
     {
       "name": "llGetNumberOfSides",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "returns the face count of the prim running the script"
     },
     {
       "name": "llGetObjectAnimationNames",
@@ -1180,9 +1180,9 @@
     },
     {
       "name": "llGetScriptName",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "returns current script filename"
     },
     {
       "name": "llGetScriptState",
@@ -1300,9 +1300,9 @@
     },
     {
       "name": "llGetUnixTime",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "current unix timestamp"
     },
     {
       "name": "llGetUsedMemory",
@@ -1414,9 +1414,9 @@
     },
     {
       "name": "llHTTPResponse",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "sends simplified HTTP response"
     },
     {
       "name": "llInsertString",
@@ -1426,9 +1426,9 @@
     },
     {
       "name": "llInstantMessage",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "",
-      "note": ""
+      "note": "emits diagnostic console instant message"
     },
     {
       "name": "llIntegerToBase64",
@@ -1516,9 +1516,9 @@
     },
     {
       "name": "llLinksetDataAvailable",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "I",
-      "note": ""
+      "note": "linkset data storage available"
     },
     {
       "name": "llLinksetDataCountFound",
@@ -1552,9 +1552,9 @@
     },
     {
       "name": "llLinksetDataFindKeys",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "I",
-      "note": ""
+      "note": "find keys in linkset data"
     },
     {
       "name": "llLinksetDataListKeys",
@@ -1726,9 +1726,9 @@
     },
     {
       "name": "llListRandomize",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "randomize list elements"
     },
     {
       "name": "llListReplaceList",
@@ -1738,9 +1738,9 @@
     },
     {
       "name": "llListSort",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "sort list elements"
     },
     {
       "name": "llListSortStrided",
@@ -1750,9 +1750,9 @@
     },
     {
       "name": "llListStatistics",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "compute list statistics"
     },
     {
       "name": "llLoadURL",
@@ -1762,15 +1762,15 @@
     },
     {
       "name": "llLog",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "natural logarithm"
     },
     {
       "name": "llLog10",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "base 10 logarithm"
     },
     {
       "name": "llLookAt",
@@ -1840,9 +1840,9 @@
     },
     {
       "name": "llMD5String",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "MD5 hash"
     },
     {
       "name": "llMessageLinked",
@@ -1864,9 +1864,9 @@
     },
     {
       "name": "llModPow",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "modulo power of positive integers"
     },
     {
       "name": "llMoveToTarget",
@@ -1936,15 +1936,15 @@
     },
     {
       "name": "llParseString2List",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "parse string to list"
     },
     {
       "name": "llParseStringKeepNulls",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "parse string to list keeping nulls"
     },
     {
       "name": "llParticleSystem",
@@ -1990,9 +1990,9 @@
     },
     {
       "name": "llPow",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "power function"
     },
     {
       "name": "llPreloadSound",
@@ -2314,9 +2314,9 @@
     },
     {
       "name": "llRound",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "rounded integer"
     },
     {
       "name": "llSameGroup",
@@ -2638,9 +2638,9 @@
     },
     {
       "name": "llSetRegionPos",
-      "status": "missing",
+      "status": "partial",
       "wiki_flags": "I",
-      "note": ""
+      "note": "updates harness object region position within limits"
     },
     {
       "name": "llSetRemoteScriptAccessPin",
@@ -2794,9 +2794,9 @@
     },
     {
       "name": "llSin",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "sine of angle in radians"
     },
     {
       "name": "llSitOnLink",
@@ -2830,9 +2830,9 @@
     },
     {
       "name": "llSqrt",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "square root"
     },
     {
       "name": "llsRGB2Linear",
@@ -2908,9 +2908,9 @@
     },
     {
       "name": "llStringTrim",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "string trimming"
     },
     {
       "name": "llSubStringIndex",
@@ -2932,9 +2932,9 @@
     },
     {
       "name": "llTan",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "tangent of angle in radians"
     },
     {
       "name": "llTarget",
@@ -2986,15 +2986,15 @@
     },
     {
       "name": "llToLower",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "convert to lowercase"
     },
     {
       "name": "llToUpper",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "convert to uppercase"
     },
     {
       "name": "llTransferLindenDollars",
@@ -3022,9 +3022,9 @@
     },
     {
       "name": "llUnescapeURL",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "URL unescape string"
     },
     {
       "name": "llUnSit",
@@ -3046,21 +3046,21 @@
     },
     {
       "name": "llVecDist",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "vector distance"
     },
     {
       "name": "llVecMag",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "vector magnitude"
     },
     {
       "name": "llVecNorm",
-      "status": "missing",
+      "status": "implemented",
       "wiki_flags": "",
-      "note": ""
+      "note": "vector normalization"
     },
     {
       "name": "llVerifyRSA",

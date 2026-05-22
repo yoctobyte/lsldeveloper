@@ -5,7 +5,7 @@ from sim.prim import ScriptItem
 from events.queue import LSLEvent
 from core.interpreter import ReturnException
 from core.interpreter import Evaluator, ExecutionContext
-from core.exceptions import StateChangeException
+from core.exceptions import StateChangeException, ScriptResetException
 from core.builtins.runtime import queue_sensor_event
 from sim.diagnostics import diagnostic_from_exception
 
@@ -90,6 +90,8 @@ class SimulationLoop:
             evaluator.execute(handler.body)
         except StateChangeException as e:
             self._transition_state(script, script.current_state, e.new_state)
+        except ScriptResetException:
+            pass
         finally:
             script.detected = previous_detected
             script.ctx.pop_frame()

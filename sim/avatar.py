@@ -25,11 +25,34 @@ class Avatar:
         if self.region:
             self.region.broadcast_chat(self.uuid, self.name, channel, message)
 
-    def touch(self, object_uuid: str, link_num: int = 0):
+    def touch(
+        self,
+        object_uuid: str,
+        link_num: int = 0,
+        face: int = -1,
+        uv: LSLVector = LSLVector(-1.0, -1.0, 0.0),
+    ):
         if self.region:
             obj = self.region.objects.get(object_uuid)
             if obj:
-                obj.dispatch_event("touch_start", [1]) # num_detected
+                detected_record = {
+                    "name": self.name,
+                    "key": self.uuid,
+                    "owner": self.uuid,
+                    "pos": self.position,
+                    "rot": self.rotation,
+                    "vel": LSLVector(),
+                    "group": self.group_key,
+                    "type": 1,  # AGENT
+                    "link_number": link_num if link_num > 0 else 1,
+                    "touch_face": face,
+                    "touch_uv": uv,
+                    "touch_st": uv,
+                    "touch_binormal": LSLVector(0.0, 1.0, 0.0),
+                    "touch_normal": LSLVector(0.0, 0.0, 1.0),
+                    "touch_pos": obj.position,
+                }
+                obj.dispatch_event("touch_start", [1], detected=[detected_record])
 
     def __str__(self):
         return f"Avatar('{self.name}', {self.uuid})"

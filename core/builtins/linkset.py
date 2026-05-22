@@ -75,9 +75,14 @@ def ll_message_linked(evaluator, args):
     if not script or not script.container_prim or not obj:
         return None
     target_link = int(args[0])
+    link_num = script.container_prim.link_number
+    num = int(args[1])
+    str_msg = str(args[2])
+    id_key = str(args[3])
+
     event = LSLEvent(
         "link_message",
-        [script.container_prim.link_number, int(args[1]), str(args[2]), str(args[3])],
+        [link_num, num, str_msg, id_key],
     )
     for prim in obj.prims:
         if target_link > 0 and prim.link_number != target_link:
@@ -89,4 +94,14 @@ def ll_message_linked(evaluator, args):
         for item in prim.inventory:
             if isinstance(item, ScriptItem):
                 item.event_queue.push(event)
+
+    # Emit console message for the Linked Messages inspector
+    from .common import emit_console
+    emit_console(
+        script,
+        "link_message",
+        f"Sender: {link_num} | Target: {target_link} | Num: {num} | Msg: '{str_msg}' | Key: '{id_key}'",
+        source_name=obj.name,
+        source_key=obj.uuid,
+    )
     return None

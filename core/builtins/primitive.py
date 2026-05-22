@@ -132,3 +132,11 @@ def ll_set_link_primitive_params_fast(evaluator, args):
 @builtin("llSetLinkPrimitiveParams")
 def ll_set_link_primitive_params(evaluator, args):
     return ll_set_link_primitive_params_fast(evaluator, args)
+
+
+@builtin("llGetNumberOfSides")
+def ll_get_number_of_sides(evaluator, args):
+    script = evaluator.script
+    if script and script.container_prim:
+        return int(getattr(script.container_prim, "num_faces", 6))
+    return 6

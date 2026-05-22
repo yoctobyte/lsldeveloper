@@ -116,7 +116,7 @@ def lsl_format(val) -> str:
 def cast_to_lsl_type(val, target_type: str):
     if target_type == "string" or target_type == "key":
         if isinstance(val, LSLList):
-            return ",".join(map(str, val))
+            return "".join(cast_to_lsl_type(x, "string") for x in val)
         if isinstance(val, (LSLVector, LSLRotation)):
             return str(val)
         if isinstance(val, bool):

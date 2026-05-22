@@ -165,3 +165,33 @@ def ll_detected_type(evaluator, args):
 @builtin("llDetectedLinkNumber")
 def ll_detected_link_number(evaluator, args):
     return detected_at(evaluator.script, int(args[0])).get("link_number", 0)
+
+
+@builtin("llDetectedTouchUV")
+def ll_detected_touch_uv(evaluator, args):
+    return detected_at(evaluator.script, int(args[0])).get("touch_uv", LSLVector(-1.0, -1.0, 0.0))
+
+
+@builtin("llDetectedTouchBinormal")
+def ll_detected_touch_binormal(evaluator, args):
+    return detected_at(evaluator.script, int(args[0])).get("touch_binormal", LSLVector(0.0, 0.0, 0.0))
+
+
+@builtin("llDetectedTouchFace")
+def ll_detected_touch_face(evaluator, args):
+    return detected_at(evaluator.script, int(args[0])).get("touch_face", -1)
+
+
+@builtin("llDetectedTouchNormal")
+def ll_detected_touch_normal(evaluator, args):
+    return detected_at(evaluator.script, int(args[0])).get("touch_normal", LSLVector(0.0, 0.0, 0.0))
+
+
+@builtin("llDetectedTouchPos")
+def ll_detected_touch_pos(evaluator, args):
+    return detected_at(evaluator.script, int(args[0])).get("touch_pos", LSLVector(0.0, 0.0, 0.0))
+
+
+@builtin("llDetectedTouchST")
+def ll_detected_touch_st(evaluator, args):
+    return detected_at(evaluator.script, int(args[0])).get("touch_st", LSLVector(-1.0, -1.0, 0.0))

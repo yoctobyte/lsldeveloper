@@ -6,9 +6,9 @@ Total functions copied: 520
 
 | Status | Count |
 |---|---:|
-| Implemented | 19 |
-| Partial | 205 |
-| Missing | 296 |
+| Implemented | 55 |
+| Partial | 217 |
+| Missing | 248 |
 
 Wiki flags are copied from the official template where present. Local status means:
 
@@ -18,8 +18,8 @@ Wiki flags are copied from the official template where present. Local status mea
 
 | Function | Local status | Wiki flags | Notes |
 |---|---|---|---|
-| `llAbs` | missing |  |  |
-| `llAcos` | missing |  |  |
+| `llAbs` | implemented |  | absolute integer value |
+| `llAcos` | implemented |  | arc cosine in radians |
 | `llAddToLandBanList` | missing |  |  |
 | `llAddToLandPassList` | partial |  | stub: prints not implemented and returns default void |
 | `llAdjustDamage` | missing | NEW |  |
@@ -29,8 +29,8 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llAngleBetween` | missing |  |  |
 | `llApplyImpulse` | partial |  | stub: prints not implemented and returns default void |
 | `llApplyRotationalImpulse` | partial |  | stub: prints not implemented and returns default void |
-| `llAsin` | missing |  |  |
-| `llAtan2` | missing |  |  |
+| `llAsin` | implemented |  | arc sine in radians |
+| `llAtan2` | implemented |  | arc tangent of y/x |
 | `llAttachToAvatar` | partial |  | stub: prints not implemented and returns default void |
 | `llAttachToAvatarTemp` | partial | I | stub: prints not implemented and returns default void |
 | `llAvatarOnLinkSitTarget` | missing | I |  |
@@ -42,7 +42,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llBreakAllLinks` | missing |  |  |
 | `llBreakLink` | missing |  |  |
 | `llCastRay` | missing | I |  |
-| `llCeil` | missing |  |  |
+| `llCeil` | implemented |  | smallest integer value not less than arg |
 | `llChar` | missing | I |  |
 | `llClearCameraParams` | partial |  | stub: prints not implemented and returns default void |
 | `llClearLinkMedia` | missing | I |  |
@@ -53,7 +53,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llCollisionSound` | missing |  |  |
 | `llCollisionSprite` | missing |  |  |
 | `llComputeHash` | missing | NEW |  |
-| `llCos` | missing |  |  |
+| `llCos` | implemented |  | cosine of angle in radians |
 | `llCreateCharacter` | missing | I |  |
 | `llCreateKeyValue` | missing | X I |  |
 | `llCreateLink` | partial |  | stub: prints not implemented and returns default void |
@@ -76,30 +76,30 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llDetectedPos` | partial |  | reads current simplified sensor detection record |
 | `llDetectedRezzer` | missing | NEW |  |
 | `llDetectedRot` | partial |  | reads current simplified sensor detection record |
-| `llDetectedTouchBinormal` | missing |  |  |
-| `llDetectedTouchFace` | missing |  |  |
-| `llDetectedTouchNormal` | missing |  |  |
-| `llDetectedTouchPos` | missing |  |  |
-| `llDetectedTouchST` | missing |  |  |
-| `llDetectedTouchUV` | missing |  |  |
+| `llDetectedTouchBinormal` | partial |  | reads current simplified touch detection record |
+| `llDetectedTouchFace` | partial |  | reads current simplified touch detection record |
+| `llDetectedTouchNormal` | partial |  | reads current simplified touch detection record |
+| `llDetectedTouchPos` | partial |  | reads current simplified touch detection record |
+| `llDetectedTouchST` | partial |  | reads current simplified touch detection record |
+| `llDetectedTouchUV` | partial |  | reads current simplified touch detection record |
 | `llDetectedType` | partial |  | reads current simplified sensor detection record |
 | `llDetectedVel` | partial |  | reads current simplified sensor detection record |
 | `llDialog` | partial |  | records latest dialog and emits button responses through chat |
 | `llDie` | partial |  | stub: prints not implemented and returns default void |
-| `llDumpList2String` | missing |  |  |
+| `llDumpList2String` | implemented |  | dump list to string |
 | `llEdgeOfWorld` | missing |  |  |
 | `llEjectFromLand` | partial |  | stub: prints not implemented and returns default void |
 | `llEmail` | partial |  | stub: prints not implemented and returns default void |
-| `llEscapeURL` | missing |  |  |
+| `llEscapeURL` | implemented |  | URL escape string |
 | `llEuler2Rot` | missing |  |  |
 | `llEvade` | missing | I |  |
 | `llExecCharacterCmd` | missing | I |  |
-| `llFabs` | missing |  |  |
+| `llFabs` | implemented |  | absolute float value |
 | `llFindNotecardTextSync` | missing | NEW I |  |
 | `llFleeFrom` | missing | I |  |
-| `llFloor` | missing |  |  |
+| `llFloor` | implemented |  | largest integer value not greater than arg |
 | `llForceMouselook` | missing |  |  |
-| `llFrand` | missing |  |  |
+| `llFrand` | implemented |  | random float |
 | `llGenerateKey` | missing | I |  |
 | `llGetAccel` | missing |  |  |
 | `llGetAgentInfo` | missing |  |  |
@@ -128,12 +128,12 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llGetDayOffset` | missing | I |  |
 | `llGetDisplayName` | partial |  | reads demo avatar display name |
 | `llGetEnergy` | missing |  |  |
-| `llGetEnv` | missing | U |  |
+| `llGetEnv` | partial | U | reads current simplified simulator environment attributes |
 | `llGetEnvironment` | missing | I |  |
 | `llGetExperienceDetails` | missing | X I |  |
 | `llGetExperienceErrorMessage` | missing | X I |  |
 | `llGetForce` | missing |  |  |
-| `llGetFreeMemory` | missing |  |  |
+| `llGetFreeMemory` | partial |  | returns fixed simulated free memory |
 | `llGetFreeURLs` | missing |  |  |
 | `llGetGeometricCenter` | partial |  | stub: prints not implemented and returns default vector |
 | `llGetGMTclock` | partial |  | stub: prints not implemented and returns default float |
@@ -172,7 +172,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llGetNotecardLineSync` | missing | NEW I |  |
 | `llGetNumberOfNotecardLines` | partial |  | queues dataserver event with stored notecard line count |
 | `llGetNumberOfPrims` | partial |  | counts prims in current linkset |
-| `llGetNumberOfSides` | missing |  |  |
+| `llGetNumberOfSides` | implemented |  | returns the face count of the prim running the script |
 | `llGetObjectAnimationNames` | missing |  |  |
 | `llGetObjectDesc` | partial |  | reads harness object description |
 | `llGetObjectDetails` | partial | U | supports a subset of OBJECT_* constants |
@@ -214,7 +214,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llGetRootRotation` | partial |  | stub: prints not implemented and returns default rotation |
 | `llGetRot` | partial |  | reads harness object rotation |
 | `llGetScale` | partial |  | reads current prim scale |
-| `llGetScriptName` | missing |  |  |
+| `llGetScriptName` | partial |  | returns current script filename |
 | `llGetScriptState` | partial |  | stub: prints not implemented and returns default integer |
 | `llGetSimStats` | missing | I |  |
 | `llGetSimulatorHostname` | missing |  |  |
@@ -234,7 +234,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llGetTimeOfDay` | partial |  | stub: prints not implemented and returns default float |
 | `llGetTimestamp` | partial |  | stub: prints not implemented and returns default string |
 | `llGetTorque` | missing |  |  |
-| `llGetUnixTime` | missing |  |  |
+| `llGetUnixTime` | implemented |  | current unix timestamp |
 | `llGetUsedMemory` | partial | I | stub: prints not implemented and returns default integer |
 | `llGetUsername` | missing |  |  |
 | `llGetVel` | partial |  | reads harness object velocity |
@@ -253,9 +253,9 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llHash` | missing | I |  |
 | `llHMAC` | missing | I |  |
 | `llHTTPRequest` | partial |  | stdlib HTTP request; simplified options/headers/events |
-| `llHTTPResponse` | missing |  |  |
+| `llHTTPResponse` | partial |  | sends simplified HTTP response |
 | `llInsertString` | missing |  |  |
-| `llInstantMessage` | missing |  |  |
+| `llInstantMessage` | partial |  | emits diagnostic console instant message |
 | `llIntegerToBase64` | missing |  |  |
 | `llIsFriend` | missing | I |  |
 | `llIsLinkGLTFMaterial` | missing | NEW I |  |
@@ -270,13 +270,13 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llLinkAdjustSoundVolume` | missing | I |  |
 | `llLinkParticleSystem` | missing |  |  |
 | `llLinkPlaySound` | missing | I |  |
-| `llLinksetDataAvailable` | missing | I |  |
+| `llLinksetDataAvailable` | implemented | I | linkset data storage available |
 | `llLinksetDataCountFound` | missing | I |  |
 | `llLinksetDataCountKeys` | missing | I |  |
 | `llLinksetDataDelete` | implemented | I | in-memory linkset data |
 | `llLinksetDataDeleteFound` | missing | I |  |
 | `llLinksetDataDeleteProtected` | missing | I |  |
-| `llLinksetDataFindKeys` | missing | I |  |
+| `llLinksetDataFindKeys` | implemented | I | find keys in linkset data |
 | `llLinksetDataListKeys` | missing | I |  |
 | `llLinksetDataRead` | implemented | I | in-memory linkset data |
 | `llLinksetDataReadProtected` | missing | I |  |
@@ -305,14 +305,14 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llListFindListNext` | missing | I |  |
 | `llListFindStrided` | missing | I |  |
 | `llListInsertList` | missing |  |  |
-| `llListRandomize` | missing |  |  |
+| `llListRandomize` | implemented |  | randomize list elements |
 | `llListReplaceList` | implemented |  | basic slice replace |
-| `llListSort` | missing |  |  |
+| `llListSort` | implemented |  | sort list elements |
 | `llListSortStrided` | missing | I |  |
-| `llListStatistics` | missing |  |  |
+| `llListStatistics` | implemented |  | compute list statistics |
 | `llLoadURL` | partial |  | stub: prints not implemented and returns default void |
-| `llLog` | missing |  |  |
-| `llLog10` | missing |  |  |
+| `llLog` | implemented |  | natural logarithm |
+| `llLog10` | implemented |  | base 10 logarithm |
 | `llLookAt` | missing |  |  |
 | `llLoopSound` | partial |  | stores looping sound state and history without audio playback |
 | `llLoopSoundMaster` | missing |  |  |
@@ -324,11 +324,11 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llManageEstateAccess` | missing | I |  |
 | `llMapBeacon` | missing | NEW I |  |
 | `llMapDestination` | partial |  | stub: prints not implemented and returns default void |
-| `llMD5String` | missing |  |  |
+| `llMD5String` | implemented |  | MD5 hash |
 | `llMessageLinked` | partial |  | queues link_message in linkset; ignores target details |
 | `llMinEventDelay` | partial |  | stub: prints not implemented and returns default void |
 | `llModifyLand` | partial |  | stub: prints not implemented and returns default void |
-| `llModPow` | missing |  |  |
+| `llModPow` | implemented |  | modulo power of positive integers |
 | `llMoveToTarget` | missing |  |  |
 | `llName2Key` | missing | I |  |
 | `llNavigateTo` | missing |  |  |
@@ -340,8 +340,8 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llOwnerSay` | partial |  | prints to stdout |
 | `llParcelMediaCommandList` | missing |  |  |
 | `llParcelMediaQuery` | missing |  |  |
-| `llParseString2List` | missing |  |  |
-| `llParseStringKeepNulls` | missing |  |  |
+| `llParseString2List` | implemented |  | parse string to list |
+| `llParseStringKeepNulls` | implemented |  | parse string to list keeping nulls |
 | `llParticleSystem` | partial |  | stores particle parameters on the current prim without rendering |
 | `llPassCollisions` | partial |  | stub: prints not implemented and returns default void |
 | `llPassTouches` | partial |  | stub: prints not implemented and returns default void |
@@ -349,7 +349,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llPlaySound` | partial |  | stores current sound state and history without audio playback |
 | `llPlaySoundSlave` | missing |  |  |
 | `llPointAt` | missing | R |  |
-| `llPow` | missing |  |  |
+| `llPow` | implemented |  | power function |
 | `llPreloadSound` | partial |  | records preloaded sound names on the current prim |
 | `llPursue` | missing | I |  |
 | `llPushObject` | partial |  | stub: prints not implemented and returns default void |
@@ -403,7 +403,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llRotLookAt` | partial |  | stub: prints not implemented and returns default void |
 | `llRotTarget` | missing |  |  |
 | `llRotTargetRemove` | missing |  |  |
-| `llRound` | missing |  |  |
+| `llRound` | implemented |  | rounded integer |
 | `llSameGroup` | missing |  |  |
 | `llSay` | partial |  | routes chat in harness or prints to stdout |
 | `llScaleByFactor` | missing | I |  |
@@ -457,7 +457,7 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llSetPrimitiveParams` | partial |  | supports a small model-backed PRIM_* subset |
 | `llSetPrimMediaParams` | missing |  |  |
 | `llSetPrimURL` | missing | D |  |
-| `llSetRegionPos` | missing | I |  |
+| `llSetRegionPos` | partial | I | updates harness object region position within limits |
 | `llSetRemoteScriptAccessPin` | partial |  | stub: prints not implemented and returns default void |
 | `llSetRenderMaterial` | missing | NEW |  |
 | `llSetRot` | partial |  | sets harness object rotation |
@@ -483,13 +483,13 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llSHA256String` | missing | I |  |
 | `llShout` | partial |  | routes through harness chat without range semantics |
 | `llSignRSA` | missing | I |  |
-| `llSin` | missing |  |  |
+| `llSin` | implemented |  | sine of angle in radians |
 | `llSitOnLink` | missing |  |  |
 | `llSitTarget` | partial |  | stub: prints not implemented and returns default void |
 | `llSleep` | partial |  | stub: prints not implemented and returns default void |
 | `llSound` | missing | D |  |
 | `llSoundPreload` | missing | D |  |
-| `llSqrt` | missing |  |  |
+| `llSqrt` | implemented |  | square root |
 | `llsRGB2Linear` | missing | I |  |
 | `llStartAnimation` | missing |  |  |
 | `llStartObjectAnimation` | missing |  |  |
@@ -502,11 +502,11 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llStopSound` | partial |  | clears current stored sound state |
 | `llStringLength` | implemented |  | Python string length |
 | `llStringToBase64` | missing |  |  |
-| `llStringTrim` | missing |  |  |
+| `llStringTrim` | implemented |  | string trimming |
 | `llSubStringIndex` | implemented |  | Python substring search |
 | `llTakeCamera` | missing | D |  |
 | `llTakeControls` | partial |  | stub: prints not implemented and returns default void |
-| `llTan` | missing |  |  |
+| `llTan` | implemented |  | tangent of angle in radians |
 | `llTarget` | partial |  | stub: prints not implemented and returns default integer |
 | `llTargetedEmail` | missing | I |  |
 | `llTargetOmega` | missing |  |  |
@@ -515,19 +515,19 @@ Wiki flags are copied from the official template where present. Local status mea
 | `llTeleportAgentGlobalCoords` | partial | I | stub: prints not implemented and returns default void |
 | `llTeleportAgentHome` | partial |  | stub: prints not implemented and returns default void |
 | `llTextBox` | partial |  | stub: prints not implemented and returns default void |
-| `llToLower` | missing |  |  |
-| `llToUpper` | missing |  |  |
+| `llToLower` | implemented |  | convert to lowercase |
+| `llToUpper` | implemented |  | convert to uppercase |
 | `llTransferLindenDollars` | missing | I |  |
 | `llTransferOwnership` | missing | NEW I |  |
 | `llTriggerSound` | partial |  | stores triggered sound state and history without audio playback |
 | `llTriggerSoundLimited` | partial |  | stub: prints not implemented and returns default void |
-| `llUnescapeURL` | missing |  |  |
+| `llUnescapeURL` | implemented |  | URL unescape string |
 | `llUnSit` | partial |  | stub: prints not implemented and returns default void |
 | `llUpdateCharacter` | missing | I |  |
 | `llUpdateKeyValue` | missing | X I |  |
-| `llVecDist` | missing |  |  |
-| `llVecMag` | missing |  |  |
-| `llVecNorm` | missing |  |  |
+| `llVecDist` | implemented |  | vector distance |
+| `llVecMag` | implemented |  | vector magnitude |
+| `llVecNorm` | implemented |  | vector normalization |
 | `llVerifyRSA` | missing | I |  |
 | `llVolumeDetect` | partial |  | stub: prints not implemented and returns default void |
 | `llWanderWithin` | partial | I | stub: prints not implemented and returns default void |

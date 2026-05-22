@@ -12,37 +12,76 @@ def ll_get_list_length(evaluator, args):
 
 @builtin("llList2Integer")
 def ll_list_2_integer(evaluator, args):
-    return int(args[0][int(args[1])])
+    try:
+        lst = args[0]
+        idx = int(args[1])
+        if idx < -len(lst) or idx >= len(lst):
+            return 0
+        return int(lst[idx])
+    except Exception:
+        return 0
 
 
 @builtin("llList2Float")
 def ll_list_2_float(evaluator, args):
-    return float(args[0][int(args[1])])
+    try:
+        lst = args[0]
+        idx = int(args[1])
+        if idx < -len(lst) or idx >= len(lst):
+            return 0.0
+        return float(lst[idx])
+    except Exception:
+        return 0.0
 
 
 @builtin("llList2String")
 def ll_list_2_string(evaluator, args):
-    return str(args[0][int(args[1])])
+    try:
+        lst = args[0]
+        idx = int(args[1])
+        if idx < -len(lst) or idx >= len(lst):
+            return ""
+        return str(lst[idx])
+    except Exception:
+        return ""
 
 
 @builtin("llList2Key")
 def ll_list_2_key(evaluator, args):
     try:
-        return str(args[0][int(args[1])])
+        lst = args[0]
+        idx = int(args[1])
+        if idx < -len(lst) or idx >= len(lst):
+            return NULL_KEY
+        return str(lst[idx])
     except Exception:
         return NULL_KEY
 
 
 @builtin("llList2Vector")
 def ll_list_2_vector(evaluator, args):
-    value = args[0][int(args[1])]
-    return value if isinstance(value, LSLVector) else LSLVector()
+    try:
+        lst = args[0]
+        idx = int(args[1])
+        if idx < -len(lst) or idx >= len(lst):
+            return LSLVector()
+        value = lst[idx]
+        return value if isinstance(value, LSLVector) else LSLVector()
+    except Exception:
+        return LSLVector()
 
 
 @builtin("llList2Rot")
 def ll_list_2_rot(evaluator, args):
-    value = args[0][int(args[1])]
-    return value if isinstance(value, LSLRotation) else LSLRotation()
+    try:
+        lst = args[0]
+        idx = int(args[1])
+        if idx < -len(lst) or idx >= len(lst):
+            return LSLRotation()
+        value = lst[idx]
+        return value if isinstance(value, LSLRotation) else LSLRotation()
+    except Exception:
+        return LSLRotation()
 
 
 @builtin("llListFindList")

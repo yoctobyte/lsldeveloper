@@ -407,13 +407,23 @@ class ProjectScript:
 class ProjectNotecard:
     name: str
     text: str = ""
+    file: str | None = None
+    dirty: bool = field(default=True, repr=False, compare=False)
 
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectNotecard":
-        return cls(name=str(data.get("name", "Config")), text=str(data.get("text", "")))
+        return cls(
+            name=str(data.get("name", "Config")),
+            text=str(data.get("text", "")),
+            file=str(data["file"]) if data.get("file") else None,
+            dirty="text" in data,
+        )
 
     def to_dict(self) -> dict:
-        return {"name": self.name, "text": self.text}
+        data = {"name": self.name}
+        if self.file:
+            data["file"] = self.file
+        return data
 
 
 @dataclass
@@ -424,6 +434,8 @@ class ProjectObject:
     scripts: list[ProjectScript] = field(default_factory=list)
     notecards: list[ProjectNotecard] = field(default_factory=list)
     child_objects: list["ProjectObject"] = field(default_factory=list)
+    num_faces: int = 6
+    linked_prims: list[dict] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectObject":
@@ -435,6 +447,8 @@ class ProjectObject:
             scripts=[ProjectScript.from_dict(item) for item in data.get("scripts", [])],
             notecards=[ProjectNotecard.from_dict(item) for item in data.get("notecards", [])],
             child_objects=[ProjectObject.from_dict(item) for item in data.get("child_objects", [])],
+            num_faces=int(data.get("num_faces", 6)),
+            linked_prims=list(data.get("linked_prims", [])),
         )
 
     def to_dict(self) -> dict:
@@ -445,6 +459,8 @@ class ProjectObject:
             "scripts": [script.to_dict() for script in self.scripts],
             "notecards": [notecard.to_dict() for notecard in self.notecards],
             "child_objects": [obj.to_dict() for obj in self.child_objects],
+            "num_faces": self.num_faces,
+            "linked_prims": self.linked_prims,
         }
 
 
@@ -469,10 +485,10 @@ class ProjectRuntime:
         if dialog:
             self.say(button, int(dialog["channel"]))
 
-    def touch(self, object_name: str, link_num: int = 0):
+    def touch(self, object_name: str, link_num: int = 0, face: int = -1, uv: LSLVector = LSLVector(-1.0, -1.0, 0.0)):
         obj = self.objects.get(object_name)
         if obj:
-            self.avatar.touch(obj.uuid, link_num)
+            self.avatar.touch(obj.uuid, link_num, face, uv)
 
 
 class IdeProject:
@@ -535,18 +551,27 @@ class IdeProject:
         self.folder.mkdir(parents=True, exist_ok=True)
         self.sync_from_disk()
         self._assign_script_files()
+        self._assign_notecard_files()
         for _obj, script in self._iter_scripts():
             if script.file and (script.dirty or not (self.folder / script.file).exists()):
                 script_path = self.folder / script.file
                 script_path.parent.mkdir(parents=True, exist_ok=True)
                 script_path.write_text(script.source, encoding="utf-8")
                 script.dirty = False
+        for obj in self.objects:
+            for notecard in obj.notecards:
+                if notecard.file and (notecard.dirty or not (self.folder / notecard.file).exists()):
+                    nc_path = self.folder / notecard.file
+                    nc_path.parent.mkdir(parents=True, exist_ok=True)
+                    nc_path.write_text(notecard.text, encoding="utf-8")
+                    notecard.dirty = False
         data = {"world_profile": self.world_profile, "objects": [obj.to_dict() for obj in self.objects]}
         self.path.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
     def sync_from_disk(self):
         self.folder.mkdir(parents=True, exist_ok=True)
         self._assign_script_files()
+        self._assign_notecard_files()
         known_files = {}
         for obj, script in self._iter_scripts():
             if not script.file:
@@ -564,6 +589,25 @@ class IdeProject:
             script = ProjectScript(script_path.name, script_path.read_text(encoding="utf-8"), rel_path, dirty=False)
             obj.scripts.append(script)
             known_files[script_path.resolve()] = (obj, script)
+
+        known_nc_files = {}
+        for obj in self.objects:
+            for notecard in obj.notecards:
+                if not notecard.file:
+                    continue
+                nc_path = self.folder / notecard.file
+                known_nc_files[nc_path.resolve()] = (obj, notecard)
+                if nc_path.exists() and not notecard.dirty:
+                    notecard.text = nc_path.read_text(encoding="utf-8")
+
+        for nc_path in sorted(self.folder.rglob("*.nc")):
+            if not nc_path.is_file() or nc_path.resolve() in known_nc_files:
+                continue
+            obj = self._object_for_nc_path(nc_path)
+            rel_path = nc_path.relative_to(self.folder).as_posix()
+            notecard = ProjectNotecard(nc_path.name, nc_path.read_text(encoding="utf-8"), rel_path, dirty=False)
+            obj.notecards.append(notecard)
+            known_nc_files[nc_path.resolve()] = (obj, notecard)
 
     def add_object(self, name: Optional[str] = None) -> ProjectObject:
         existing = {obj.name for obj in self.objects}
@@ -609,7 +653,17 @@ class IdeProject:
                 creator_key=avatar.uuid,
             )
             prim = Prim(f"{project_object.name} Root")
+            prim.num_faces = getattr(project_object, "num_faces", 6)
             obj.add_prim(prim)
+
+            # Linked child prims
+            for idx, lp in enumerate(getattr(project_object, "linked_prims", [])):
+                name = lp.get("name", f"{project_object.name} Link {idx + 2}")
+                child_faces = int(lp.get("num_faces", 6))
+                child_prim = Prim(name)
+                child_prim.num_faces = child_faces
+                obj.add_prim(child_prim)
+
             region.add_object(obj)
             objects[project_object.name] = obj
 
@@ -672,6 +726,28 @@ class IdeProject:
             self.objects.append(ProjectObject("Object 1", scripts=[]))
         return self.objects[0]
 
+    def _assign_notecard_files(self):
+        for obj in self.objects:
+            for notecard in obj.notecards:
+                if notecard.file:
+                    continue
+                notecard.file = f"objects/{_safe_path_part(obj.name)}/notecards/{_safe_file_name_nc(notecard.name)}"
+
+    def _object_for_nc_path(self, nc_path: Path) -> ProjectObject:
+        rel_parts = nc_path.relative_to(self.folder).parts
+        if len(rel_parts) >= 4 and rel_parts[0] == "objects" and rel_parts[2] == "notecards":
+            object_folder = rel_parts[1]
+            for obj in self.objects:
+                if _safe_path_part(obj.name) == object_folder:
+                    return obj
+            obj = self.add_object(_display_name_from_path_part(object_folder))
+            obj.scripts.clear()
+            obj.notecards.clear()
+            return obj
+        if not self.objects:
+            self.objects.append(ProjectObject("Object 1", scripts=[], notecards=[]))
+        return self.objects[0]
+
 
 def _safe_path_part(value: str) -> str:
     cleaned = re.sub(r"[^A-Za-z0-9._ -]+", "_", value.strip()).strip(" .")
@@ -681,6 +757,11 @@ def _safe_path_part(value: str) -> str:
 def _safe_file_name(value: str) -> str:
     cleaned = _safe_path_part(value)
     return cleaned if cleaned.endswith(".lsl") else f"{cleaned}.lsl"
+
+
+def _safe_file_name_nc(value: str) -> str:
+    cleaned = _safe_path_part(value)
+    return cleaned if cleaned.endswith(".nc") else f"{cleaned}.nc"
 
 
 def _display_name_from_path_part(value: str) -> str:

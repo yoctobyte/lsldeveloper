@@ -43,6 +43,42 @@ IMPLEMENTED = {
     "llListReplaceList": "basic slice replace",
     "llStringLength": "Python string length",
     "llSubStringIndex": "Python substring search",
+    "llAbs": "absolute integer value",
+    "llAcos": "arc cosine in radians",
+    "llAsin": "arc sine in radians",
+    "llAtan2": "arc tangent of y/x",
+    "llCeil": "smallest integer value not less than arg",
+    "llCos": "cosine of angle in radians",
+    "llFabs": "absolute float value",
+    "llFloor": "largest integer value not greater than arg",
+    "llLog": "natural logarithm",
+    "llLog10": "base 10 logarithm",
+    "llModPow": "modulo power of positive integers",
+    "llPow": "power function",
+    "llRound": "rounded integer",
+    "llSin": "sine of angle in radians",
+    "llSqrt": "square root",
+    "llTan": "tangent of angle in radians",
+    "llVecDist": "vector distance",
+    "llVecMag": "vector magnitude",
+    "llVecNorm": "vector normalization",
+    "llFrand": "random float",
+    "llStringTrim": "string trimming",
+    "llToLower": "convert to lowercase",
+    "llToUpper": "convert to uppercase",
+    "llEscapeURL": "URL escape string",
+    "llUnescapeURL": "URL unescape string",
+    "llMD5String": "MD5 hash",
+    "llDumpList2String": "dump list to string",
+    "llListRandomize": "randomize list elements",
+    "llListSort": "sort list elements",
+    "llListStatistics": "compute list statistics",
+    "llParseString2List": "parse string to list",
+    "llParseStringKeepNulls": "parse string to list keeping nulls",
+    "llGetUnixTime": "current unix timestamp",
+    "llLinksetDataAvailable": "linkset data storage available",
+    "llLinksetDataFindKeys": "find keys in linkset data",
+    "llGetNumberOfSides": "returns the face count of the prim running the script",
 }
 
 PARTIAL = {
@@ -53,8 +89,20 @@ PARTIAL = {
     "llDetectedOwner": "reads current simplified sensor detection record",
     "llDetectedPos": "reads current simplified sensor detection record",
     "llDetectedRot": "reads current simplified sensor detection record",
+    "llDetectedTouchBinormal": "reads current simplified touch detection record",
+    "llDetectedTouchFace": "reads current simplified touch detection record",
+    "llDetectedTouchNormal": "reads current simplified touch detection record",
+    "llDetectedTouchPos": "reads current simplified touch detection record",
+    "llDetectedTouchST": "reads current simplified touch detection record",
+    "llDetectedTouchUV": "reads current simplified touch detection record",
     "llDetectedType": "reads current simplified sensor detection record",
     "llDetectedVel": "reads current simplified sensor detection record",
+    "llGetEnv": "reads current simplified simulator environment attributes",
+    "llGetFreeMemory": "returns fixed simulated free memory",
+    "llGetScriptName": "returns current script filename",
+    "llHTTPResponse": "sends simplified HTTP response",
+    "llInstantMessage": "emits diagnostic console instant message",
+    "llSetRegionPos": "updates harness object region position within limits",
     "llDialog": "records latest dialog and emits button responses through chat",
     "llGetKey": "returns current harness object UUID",
     "llGetAgentLanguage": "reads demo avatar language",
@@ -266,8 +314,40 @@ def write_markdown(rows: list[dict[str, str]]):
     MD_OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def load_offline_functions() -> list[dict[str, str]]:
+    if not JSON_OUT.exists():
+        return []
+    with JSON_OUT.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    rows = []
+    for func in data.get("functions", []):
+        name = func["name"]
+        wiki_flags = func.get("wiki_flags", "")
+        if name in IMPLEMENTED:
+            status = "implemented"
+            note = IMPLEMENTED[name]
+        elif name in PARTIAL:
+            status = "partial"
+            note = PARTIAL[name]
+        else:
+            status = "missing"
+            note = ""
+        rows.append({
+            "name": name,
+            "status": status,
+            "wiki_flags": wiki_flags,
+            "note": note
+        })
+    return rows
+
+
 def main() -> int:
-    rows = parse_functions(fetch_raw())
+    try:
+        rows = parse_functions(fetch_raw())
+        print("Fetched functions online successfully.")
+    except Exception as e:
+        print(f"Online fetch failed ({e}), falling back to offline update using existing JSON.")
+        rows = load_offline_functions()
     write_csv(rows)
     write_json(rows)
     write_markdown(rows)
